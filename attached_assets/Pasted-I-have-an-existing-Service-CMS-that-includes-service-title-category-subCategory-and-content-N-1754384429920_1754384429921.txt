@@ -1,0 +1,53 @@
+I have an existing Service CMS that includes service title, category, subCategory, and content.
+
+Now I want to expand it with the following two features:
+
+---
+
+1. ✅ **AI-Generated Testimonials**:
+   - Automatically generate 3-4 client testimonials using OpenAI when a new service is added.
+   - Each testimonial must:
+     - Be 1–2 sentences long (max 50 words)
+     - Include fictional client name and company (e.g., “Emma Watson, CTO at HealthSync”)
+     - Be relevant to the selected `category` and `subCategory`
+   - Save testimonials in the database linked with the service.
+   - On the **User side**, display them dynamically in the “What Our Clients Say” section using the **same layout/design/animation** currently used for static testimonials.
+
+---
+
+2. ✅ **Technology Stack Selection Based on Domain**:
+   - Add a new field in the Service Form for **Technology Stack**.
+   - Admin can select from 8 domains:
+     - `Machine Learning`
+     - `Blockchain`
+     - `Frontend`
+     - `Backend`
+     - `Database`
+     - `DevOps`
+     - `Mobile`
+     - `Information Security`
+   - Based on selected domains, show a multi-select dropdown of relevant technologies (e.g., for ML → TensorFlow, PyTorch; for Frontend → React, Vue).
+   - Save selected technologies in the DB with the service.
+   - On **User side**, display the selected tech stack in the "Technology Stack" section using the same design as current static display (cards, icons, animations).
+
+---
+
+3. ✅ **Make All Data Dynamic**:
+   - Remove hardcoded testimonials and tech stacks.
+   - Fetch and render all data (testimonials, technologies, etc.) dynamically from the database.
+   - Ensure the page looks the same as the current version (UI, animations, responsiveness).
+
+---
+
+💡 Optional OpenAI Prompt for Testimonials:
+Generate 4 short client testimonials for a company offering [SubCategory] services under [Category]. Each should include:
+- Client name (fictional)
+- Company
+- A 1–2 sentence quote praising the service (max 50 words)
+
+Example format:
+{
+  name: "James Patel",
+  company: "CEO at FinSync",
+  quote: "The Blockchain integration they provided was secure and seamless. Our processes are now 40% faster!"
+}

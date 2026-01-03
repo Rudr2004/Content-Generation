@@ -1,0 +1,116 @@
+{
+  "hero_section": {
+    "headline": "Hire Expert {{Developer Role}} to Build {{Desired Outcome}}",
+    "subheading": "Get top-tier {{Developer Role}} on-demand to accelerate your {{Project Type}}.",
+    "primary_cta": "{{CTA Text}}"
+  },
+
+  "intro_overview": "{{Short, impactful intro describing why hiring this role is valuable}}",
+
+  "why_hire": [
+    "{{Reason 1}}",
+    "{{Reason 2}}",
+    "{{Reason 3}}",
+    "{{Reason 4}}",
+    "{{Reason 5}}",
+    "{{Reason 6}}",
+    "{{Reason 7}}"
+  ],
+
+  "hiring_models": [
+    {
+      "model": "{{Model Name 1}}",
+      "description": "{{Description for Model 1}}",
+      "best_for": "{{Best Use Case for Model 1}}"
+    },
+    {
+      "model": "{{Model Name 2}}",
+      "description": "{{Description for Model 2}}",
+      "best_for": "{{Best Use Case for Model 2}}"
+    },
+    {
+      "model": "{{Model Name 3}}",
+      "description": "{{Description for Model 3}}",
+      "best_for": "{{Best Use Case for Model 3}}"
+    }
+  ],
+
+  "skills_expertise": {
+    "technical_skills": [
+      "{{Technical Skill 1}}",
+      "{{Technical Skill 2}}",
+      "{{Technical Skill 3}}",
+      "{{Technical Skill 4}}"
+    ],
+    "soft_skills": ["{{Soft Skill 1}}", "{{Soft Skill 2}}", "{{Soft Skill 3}}"]
+  },
+
+  "technology_stack": {
+    "languages": ["{{Language 1}}", "{{Language 2}}", "{{Language 3}}"],
+    "frameworks_libraries": [
+      "{{Framework/Library 1}}",
+      "{{Framework/Library 2}}",
+      "{{Framework/Library 3}}"
+    ],
+    "databases": ["{{Database 1}}", "{{Database 2}}"],
+    "tools_platforms": ["{{Tool/Platform 1}}", "{{Tool/Platform 2}}"]
+  },
+
+  "hiring_process": [
+    {
+      "step": "{{Step Name 1}}",
+      "description": "{{Short Description for Step 1}}"
+    },
+    {
+      "step": "{{Step Name 2}}",
+      "description": "{{Short Description for Step 2}}"
+    },
+    {
+      "step": "{{Step Name 3}}",
+      "description": "{{Short Description for Step 3}}"
+    },
+    {
+      "step": "{{Step Name 4}}",
+      "description": "{{Short Description for Step 4}}"
+    }
+  ],
+
+  "testimonials": [
+    {
+      "quote": "{{Client Quote 1}}",
+      "client": "{{Client Name 1, Position}}"
+    },
+    {
+      "quote": "{{Client Quote 2}}",
+      "client": "{{Client Name 2, Position}}"
+    },
+    {
+      "quote": "{{Client Quote 3}}",
+      "client": "{{Client Name 3, Position}}"
+    }
+  ],
+
+  "faqs": [
+    {
+      "question": "{{FAQ Question 1}}",
+      "answer": "{{FAQ Answer 1}}"
+    },
+    {
+      "question": "{{FAQ Question 2}}",
+      "answer": "{{FAQ Answer 2}}"
+    },
+    {
+      "question": "{{FAQ Question 3}}",
+      "answer": "{{FAQ Answer 3}}"
+    },
+    {
+      "question": "{{FAQ Question 4}}",
+      "answer": "{{FAQ Answer 4}}"
+    }
+  ],
+
+  "final_cta": {
+    "headline": "Hire the Best {{Developer Role}} for Your Next Project",
+    "button_text": "{{CTA Text}}"
+  }
+}

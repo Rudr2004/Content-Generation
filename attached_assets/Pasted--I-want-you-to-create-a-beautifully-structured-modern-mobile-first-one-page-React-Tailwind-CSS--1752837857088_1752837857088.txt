@@ -1,0 +1,106 @@
+ I want you to create a beautifully structured, modern, mobile-first, one-page React + Tailwind CSS website for a company offering Generative AI Development Services.
+ 
+### GOALS:
+- Better than all competitors in both UX and SEO structure.
+- Easy to scan, fast to load, and conversion optimized.
+- Clear, structured layout with modular sections and sticky navigation.
+ 
+### TECHNOLOGY STACK:
+- React with functional components
+- Tailwind CSS for styling
+- Framer Motion or basic fade-in animations
+- Lazy load images
+- Mobile-first responsive design
+ 
+---
+ 
+### PAGE STRUCTURE:
+ 
+**1. Hero Section**
+- H1: “Custom Generative AI Development Services”
+- Subheading: “AI solutions tailored to automate, innovate, and scale your business.”
+- 2 CTA buttons: [Schedule a Call] and [Get a Quote]
+- Optional AI illustration or vector background
+ 
+**2. Why Choose Us**
+- 4 Icon Cards showing key USPs like:
+  - Domain-specific model tuning
+  - GPT, Claude, Gemini, PaLM expertise
+  - Full lifecycle: design, build, integrate, maintain
+  - NDA + Security Compliance
+ 
+**3. Services Overview**
+- Grid of 6 service cards:
+  - Generative AI Consulting
+  - Data Analysis
+  - Custom Model Development
+  - AI Agent/Chatbot Building
+  - Integration into Enterprise Systems
+  - Upgrade & Maintenance
+ 
+**4. Development Process**
+- Step-by-step horizontal or vertical layout
+- Icons or numbers with titles: Requirement > Strategy > Development > Testing > Deployment > Integration
+ 
+**5. Industries Served**
+- Grid layout with icons and blurbs
+- Finance, Retail, Healthcare, Manufacturing, Legal, Travel, etc.
+ 
+**6. Business Benefits Section**
+- 4 Cards with small icons:
+  - Automation
+  - Productivity
+  - Creativity
+  - Cost Optimization
+ 
+**7. Case Studies Preview**
+- 3 Case Study Cards with short metrics
+  - “60% Faster Wine Recommendation App”
+  - “AI Medical Assistant: 2x Faster Decisions”
+  - “LLM-Powered Safety Tool: 50% Less Search Time”
+ 
+**8. AI Tech Stack**
+- Category wise breakdown:
+  - Models: GPT-4, Claude, Gemini
+  - Frameworks: PyTorch, TensorFlow
+  - Cloud: AWS, Azure, GCP
+  - Libraries: HuggingFace, LangChain
+ 
+**9. Expertise Area Cards**
+- NLP, Deep Learning, Model Fine-tuning, Annotation, Reinforcement Learning
+ 
+**10. Engagement Models**
+- 3 Column layout for:
+  - Dedicated Team
+  - Team Extension
+  - Project-based Development
+ 
+**11. Partners / Brands**
+- Grid of logos (Google, Microsoft, Scrut, Fortune 500 logos placeholder)
+ 
+**12. Contact Section**
+- Form with: Name, Email, Company, Message
+- CTA: [Start Your AI Project]
+ 
+---
+ 
+### TECHNICAL REQUIREMENTS:
+ 
+- Responsive for all devices (mobile, tablet, desktop)
+- Animate sections on scroll with subtle fade-in or slide-in effects
+- Use Tailwind utilities for layout, spacing, and responsiveness
+- Proper alt text for all images
+- Use semantic HTML5 tags
+- Use proper `<h1>` to `<h3>` hierarchy
+- Optimize for page speed with lazy loading for images
+- Internal links ready for multi-page expansion later
+- Code should be clean, modular, and reusable
+ 
+---
+ 
+### DELIVERABLE:
+- Single React file (or modularized) with all sections
+- Tailwind integrated (via PostCSS or CDN if preferred)
+- Ready to deploy or plug into an existing React project
+ 
+ 

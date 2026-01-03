@@ -1,0 +1,12 @@
+node_modules
+.env
+dist
+.DS_Store
+server/public
+vite.config.ts.*
+*.tar.
+DATABASE_CONNECTION_GUIDE.
+HIRE_DEVELOPER_CONTENT_GUIDELINES.md
+static
+.replit
+replit.md

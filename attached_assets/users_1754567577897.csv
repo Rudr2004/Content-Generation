@@ -1,0 +1,2 @@
+"id","email","password_hash","role","first_name","last_name","username","created_at","updated_at"
+"4fd1d858-f60e-41e9-adef-c45f1df43845","admin@greenapplex.com","$2b$10$X/QdgNN9Oybo4IdeftRoeuTtk7Jq/f/rQPtY0wN7kBDq9khz9ZNg6","super_admin","Admin","User",NULL,"2025-07-25 11:40:05.287021","2025-07-25 11:40:05.287021"

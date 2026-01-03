@@ -1,0 +1,102 @@
+{
+  "heroSection": {
+    "headline": "{{Primary benefit or transformation}} with our {{Service Name}}",
+    "subheading": "Helping {{Target Audience}} achieve {{Key Result}} through {{Short Service Pitch}}",
+    "ctaButton": "{{Primary Call to Action}}"
+  },
+  "introOverview": {
+    "paragraphs": ["{{Paragraph 1}}", "{{Paragraph 2}}"]
+  },
+  "serviceOfferings": {
+    "title": "Our End-to-End {{Service Name}} Solutions",
+    "components": [
+      {
+        "name": "{{Component 1 Name}}",
+        "description": "{{Brief description of how it works and benefit}}"
+      },
+      {
+        "name": "{{Component 2 Name}}",
+        "description": "{{Brief description}}"
+      },
+      {
+        "name": "{{Component 3 Name}}",
+        "description": "{{Brief description}}"
+      },
+      {
+        "name": "{{Optional Extra Component}}",
+        "description": "{{Brief description}}"
+      }
+    ]
+  },
+  "technologyTools": {
+    "coreTechnologies": ["{{Tech 1}}", "{{Tech 2}}"],
+    "platformsFrameworks": ["{{Framework 1}}", "{{Framework 2}}"],
+    "integrationTools": ["{{Tool 1}}", "{{Tool 2}}"],
+    "deploymentEnvironments": ["{{Environment 1}}", "{{Environment 2}}"]
+  },
+  "process": [
+    {
+      "step": "Discovery & Strategy",
+      "description": "{{Short Description}}"
+    },
+    {
+      "step": "Planning & Estimation",
+      "description": "{{Short Description}}"
+    },
+    {
+      "step": "Design & Development",
+      "description": "{{Short Description}}"
+    },
+    {
+      "step": "Testing & Optimization",
+      "description": "{{Short Description}}"
+    },
+    {
+      "step": "Deployment & Support",
+      "description": "{{Short Description}}"
+    }
+  ],
+  "whyChooseUs": [
+    "{{Unique Selling Point 1}}",
+    "{{Unique Selling Point 2}}",
+    "{{Unique Selling Point 3}}",
+    "{{Unique Selling Point 4}}"
+  ],
+  "trustSignals": {
+    "trustedBy": ["{{Client Logo/Name 1}}", "{{Client Logo/Name 2}}"]
+  },
+  "testimonials": [
+    {
+      "quote": "{{Client Quote}}",
+      "client": "{{Client Name, Position}}",
+      "clientImage": "{{Image URL}}"
+    },
+    {
+      "quote": "{{Client Quote}}",
+      "client": "{{Client Name, Position}}",
+      "clientImage": "{{Image URL}}"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "{{FAQ 1}}",
+      "answer": "{{Answer 1}}"
+    },
+    {
+      "question": "{{FAQ 2}}",
+      "answer": "{{Answer 2}}"
+    },
+    {
+      "question": "{{FAQ 3}}",
+      "answer": "{{Answer 3}}"
+    },
+    {
+      "question": "{{FAQ 4}}",
+      "answer": "{{Answer 4}}"
+    }
+  ],
+  "finalCTA": {
+    "headline": "Ready to {{Benefit}} with {{Service Name}}?",
+    "button": "{{CTA Text}}"
+  }
+}

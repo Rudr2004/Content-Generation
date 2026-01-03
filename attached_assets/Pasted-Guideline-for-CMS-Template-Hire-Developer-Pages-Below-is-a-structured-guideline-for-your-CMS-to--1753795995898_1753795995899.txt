@@ -1,0 +1,101 @@
+Guideline for CMS Template: "Hire Developer" Pages
+Below is a structured guideline for your CMS to ensure all future "Hire [X] Developer" pages maintain consistency in formatting, flow, and professionalism. Only the content (skills, industries, technologies, testimonials, etc.) should change depending on the type of developer being featured.
+
+1. Hero Section
+Clear Headline: "Hire [Skill/Technology] Developers"
+
+Subheadline: Describe value proposition, trust markers, and industry reach.
+
+Key Stats & Trust Badges:
+
+Hire ratio, trial policy, NDA, timezone, Fortune 500 clients, hiring speed.
+
+Latest certifications and recognitions: "Certified 2024", "Top Company 2024"
+
+Call-to-Action (CTA): Prominent "Hire Developer" button.
+
+At-a-glance Info:
+
+Number of projects, years of experience, contracts delivered, total value secured, etc.
+
+2. Value Propositions & Risk-Free Offer
+Highlight risk-free trial, cost reduction, faster delivery, timezone alignment, certified experts.
+
+Bulleted format for clarity.
+
+3. Deep Expertise Section
+Headline: "Hire [Skill/Technology] Developers with Deep Expertise"
+
+Intro Paragraph: Focus on relevant protocols, languages, or frameworks.
+
+Capability List (list or bullet points):
+
+Development specifics (e.g., smart contracts, app backends, protocol integrations).
+
+Security, auditing, scalability, compliance, etc.
+
+4. Service/Expertise Details
+Sectioned blocks describing core specialties relevant to the technology or role:
+
+"[Technology/Skill] Development"
+
+"[Technology/Skill] Protocol Development"
+
+"Integration Services"
+
+"Security & Auditing"
+
+"Custom [Technologies/Features]" (e.g., tokenomics, performance tuning)
+
+Format: concise heading + 1–3 bullet points of what’s included.
+
+5. Hiring Models & Flexibility
+Headline: "Pick the Right Model to Hire [Skill/Technology] Developers"
+
+Options Table or Bullets:
+
+Contract/Contract-to-Hire
+
+Permanent (Full-time) Model
+
+Dedicated Teams
+
+Each should have a 1–2 sentence description emphasizing flexibility, focus, or continuity.
+
+6. "Ready to Hire?" Section
+CTA: Prompt to share project details for a quick match.
+
+Fast Match Guarantee: e.g., "Match in 48 hours"
+
+7. Company Stats & Credentials
+Number of projects, cumulative years in technology, audits conducted, industry trust.
+
+8. Testimonials/Success Stories
+2–3 client testimonials featuring:
+
+Name, role, company
+
+Specific positive outcomes (on-time delivery, platform stability, quality of developer communication, unique tech solved)
+
+Use a blockquote or highlighted style
+
+9. Final Engagement Section
+Encouraging Statement: "Ready to Transform Your Business?" or similar.
+
+Secondary CTA: Free consultation, discovery call, or project review.
+
+10. Contact & Office Details
+Office locations, full addresses, and contact numbers
+
+Email for business queries
+
+Social icons for LinkedIn, X (Twitter), etc.
+
+Additional Notes
+Consistent Branding: Use same branding, colors, and call-to-action styling on all pages.
+
+SEO Optimization: Page H1, meta title, and descriptions should all use the targeted technology/role.
+
+Variable Content Blocks: Plan CMS to allow content blocks to be swapped dynamically for each hire category without changing base structure.
+
+Automatic Badge & Stat Updates: Pull stats and badges from a central source to keep all hire pages current.

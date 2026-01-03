@@ -1,0 +1,54 @@
+Extend my existing React + Node.js admin panel available at the `/cms` route to include a complete role-based user management system using Replit DB.
+
+📍 The admin panel is already at `/cms`, so all admin access, routes, and UI must be handled under this path.
+
+👤 User Roles:
+1. **Super Admin**:
+   - Full access to `/cms` admin panel.
+   - Can create, update, delete Super Admins, User Admins, and Content Admins.
+
+2. **User Admin**:
+   - Has access to `/cms`.
+   - Can create regular users and Content Admins only.
+   - Cannot modify or create Super Admins.
+
+3. **Content Admin**:
+   - Can access `/cms`, with read-only or limited content-based access.
+   - Cannot manage users.
+
+🔐 Authentication:
+- All users must log in from a `/login` page.
+- Use JWT for authentication and role-based route protection.
+- Use `bcrypt` to hash passwords.
+- On successful login, store JWT in `localStorage` and use it in headers.
+- Add logout button in the `/cms` panel that clears the JWT and redirects to `/login`.
+
+👤 User Features:
+- A `/profile` section accessible only to logged-in users to:
+  - View profile info
+  - Update their password securely
+- Add a **"Forgot Password"** page where users can:
+  - Enter their email to get a reset link (sent via Nodemailer)
+  - Reset password using a secure token
+- Reset tokens and expiration should be stored in Replit DB.
+
+💾 Storage:
+- Use `@replit/database` for all storage.
+- Store users with fields: `id`, `email`, `passwordHash`, `role`, `createdAt`
+- Store password reset tokens with expiration.
+
+📦 Tech Stack:
+- **Frontend**: React + Tailwind CSS + React Router DOM + Axios
+- **Backend**: Node.js + Express.js
+- **Database**: Replit DB (`@replit/database`)
+- **Email**: Nodemailer with SMTP credentials
+
+⚙️ Features:
+- Role-based route protection on frontend and backend for `/cms`.
+- User list and management screens only available to appropriate roles.
+- Display role-specific options and UI in the CMS dashboard.
+- Logout button and JWT expiry handling.
+- Environment config with `.env` file (`JWT_SECRET`, `EMAIL_USER`, `EMAIL_PASS`)
+
+Generate all routes and components using clean structure and make sure the `/cms` route is the protected dashboard for all roles.
+

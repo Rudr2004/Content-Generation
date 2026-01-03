@@ -1,0 +1,103 @@
+{
+  "hero_section": {
+    "headline": "Hire Expert Blockchain Developers to Build Secure and Scalable Solutions",
+    "subheading": "Get top-tier Blockchain developers on-demand to accelerate your blockchain and decentralized application projects in the USA.",
+    "primary_cta": "Hire Now"
+  },
+  "intro_overview": "Hire experienced Blockchain developers in the USA to create robust, secure, and scalable blockchain applications using the latest technologies and industry best practices.",
+  "why_hire": [
+    "Extensive experience in blockchain development including smart contracts and decentralized applications",
+    "Strong focus on security with end-to-end encryption and secure coding standards",
+    "Expertise in multiple blockchain platforms like Ethereum, Hyperledger, and Solana",
+    "Deep understanding of cryptography, consensus algorithms, and distributed ledger technology",
+    "Flexible engagement models tailored to your project’s needs and timelines",
+    "Proven track record in delivering high-quality solutions on time and within budget",
+    "Seamless collaboration with your in-house team and transparent communication"
+  ],
+  "hiring_models": [
+    {
+      "model": "Contract Basis",
+      "description": "Hire Blockchain developers full-time on a contract basis with managed hiring and onboarding support.",
+      "best_for": "Projects requiring flexibility and short to medium-term involvement."
+    },
+    {
+      "model": "Permanent Hire",
+      "description": "Hire dedicated Blockchain developers permanently to build and maintain in-house blockchain solutions.",
+      "best_for": "Long-term projects and continuous product development."
+    },
+    {
+      "model": "Outsourced Recruitment",
+      "description": "Let us handle the recruitment process and deliver the best Blockchain talent suited to your needs.",
+      "best_for": "Businesses looking to streamline hiring and reduce recruitment overhead."
+    }
+  ],
+  "skills_expertise": {
+    "technical_skills": [
+      "Smart contract development and auditing",
+      "Blockchain architecture design and implementation",
+      "Cryptography and security best practices",
+      "Integration of blockchain with existing systems and APIs"
+    ],
+    "soft_skills": [
+      "Strong problem-solving and analytical skills",
+      "Effective communication and teamwork",
+      "Adaptability to changing blockchain technologies"
+    ]
+  },
+  "technology_stack": {
+    "languages": ["Solidity", "JavaScript", "Go"],
+    "frameworks_libraries": ["Truffle", "Hardhat", "Web3.js"],
+    "databases": ["IPFS", "BigchainDB"],
+    "tools_platforms": ["Ganache", "Metamask", "Infura", "Docker"]
+  },
+  "hiring_process": [
+    {
+      "step": "Requirement Gathering",
+      "description": "Understand your project requirements and blockchain goals."
+    },
+    {
+      "step": "Candidate Shortlisting",
+      "description": "Review profiles of pre-vetted Blockchain developers matching your criteria."
+    },
+    {
+      "step": "Interviews & Selection",
+      "description": "Conduct interviews and select developers who fit your technical and cultural needs."
+    },
+    {
+      "step": "Onboarding & Project Kickoff",
+      "description": "Seamless onboarding and project initiation with continuous support."
+    }
+  ],
+  "testimonials": [
+    {
+      "quote": "The Blockchain developers delivered secure and scalable smart contracts on time, exceeding our expectations.",
+      "client": "Lisa Turner, CTO at FinTech Innovations"
+    },
+    {
+      "quote": "Hiring through this platform was seamless, and the team demonstrated excellent blockchain expertise and communication.",
+      "client": "Raj Patel, Product Manager at Decentral Solutions"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "How quickly can I hire a Blockchain developer in the USA?",
+      "answer": "You can receive a shortlist of qualified Blockchain developers within 72 hours after sharing your requirements."
+    },
+    {
+      "question": "What blockchain platforms do your developers specialize in?",
+      "answer": "Our developers specialize in Ethereum, Hyperledger, Solana, Binance Smart Chain, and other major blockchain platforms."
+    },
+    {
+      "question": "What are the engagement models available?",
+      "answer": "We offer contract-based hiring, permanent hiring, and outsourced recruitment to suit various project needs."
+    },
+    {
+      "question": "How is the data and code security handled?",
+      "answer": "We follow strict NDA agreements, and our developers adhere to industry best practices for code security and data confidentiality."
+    }
+  ],
+  "final_cta": {
+    "headline": "Hire the Best Blockchain Developers for Your Next Project in the USA",
+    "button_text": "Get Started"
+  }
+}

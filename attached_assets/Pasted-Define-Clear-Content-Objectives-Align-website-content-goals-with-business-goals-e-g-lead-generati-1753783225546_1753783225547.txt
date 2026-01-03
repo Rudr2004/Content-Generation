@@ -1,0 +1,29 @@
+Define Clear Content Objectives
+Align website content goals with business goals (e.g., lead generation, brand positioning, educating prospects on AI and digital transformation).
+Use SMART criteria (Specific, Measurable, Achievable, Relevant, Time-bound) to guide content outcomes.
+Target Audience and Tone
+Identify and segment audience personas (e.g., CIOs, CTOs, enterprise decision-makers, tech professionals).
+Use a professional, authoritative tone emphasizing innovation, trustworthiness, and expertise in AI.
+Maintain a consistent brand voice across all pages.
+Content Structure and Types
+Use clear navigation and information hierarchy to organize content efficiently.
+Produce a variety of content formats: concise web page copy, FAQs, blogs and all other relevant links for  the website.
+Prioritize high-impact pages first: Home, About Us, Services (AI/automation/software development), Case Studies, Contact.
+SEO and Readability
+Include relevant AI, enterprise software, and digital transformation keywords naturally in the content.
+Use descriptive meta titles and meta descriptions for all pages.
+Write with short paragraphs (max 4 lines), use bullet/numbered lists, subheadings, and formatting (bold/italics) to enhance scan-ability.
+Content Quality and Messaging
+Avoid jargon overload but use key technical terms with clear explanations to demonstrate expertise.
+Highlight unique value propositions and business differentiators prominently.
+Incorporate social proof elements like testimonials, awards, and client logos.
+Use storytelling to showcase how solutions solve customer pain points.
+Autonomy Rules for CMS Content Generation
+Always validate content for factual accuracy and relevance before publication.
+Use dynamic templates for each page type to ensure consistent structure and tone.
+Prioritize latest industry trends and updates in AI for blog and thought leadership sections.
+Automate SEO metadata creation but allow manual overrides.
+Schedule routine content audits for freshness and accuracy.
+Usability and Accessibility
+Ensure content supports responsive design and is accessible per WCAG guidelines.
+Keep language simple and direct, with clear calls to action.

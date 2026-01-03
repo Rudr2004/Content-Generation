@@ -1,0 +1,54 @@
+I want to convert all of my static Service Pages into dynamic CMS-powered pages using a consistent layout and section structure.
+
+Each service page (e.g., Generative AI, Web Development, Mobile App, etc.) should follow the same modular format and be manageable inside the CMS by non-developers.
+
+🧩 Required CMS Structure:
+
+1. Each service page should be stored as a `ServicePage` document/type.
+2. Each `ServicePage` contains these ordered Sections:
+   - Hero Section
+   - Why Choose Us
+   - Services Overview
+   - Development Process
+   - Industries Served
+   - Business Benefits
+   - Case Studies
+   - Tech Stack
+   - Expertise Areas
+   - Engagement Models
+   - Partner Logos
+   - Contact Section
+
+3. Each Section must support:
+   - A unique identifier (`sectionKey` or `slug`)
+   - Title (`title`)
+   - Subtitle or description (`description`)
+   - Cards (array of icons + text for things like benefits, services, case studies, etc.)
+   - Optional image(s) or illustration(s) (`imageURL`, `altText`, `lazyLoad`)
+   - Optional CTAs (`ctaText`, `ctaURL`)
+   - Display order
+
+4. Use a nested structure for sections like:
+   - `servicesOverview.cards[]`
+   - `caseStudies.cards[]`
+   - `techStack.models[]`, `techStack.frameworks[]`, etc.
+
+5. Each `ServicePage` entry must include:
+   - `title` (used as H1 and in meta tags)
+   - `slug` (for dynamic routing)
+   - `metaTitle`, `metaDescription`, and optional `metaKeywords` for SEO
+   - `published` flag
+   - `lastUpdated` timestamp
+
+6. Content should be returned via API and displayed dynamically in React functional components.
+7. Tailwind CSS and Framer Motion will be used on the frontend.
+8. Section visibility should be toggleable (i.e., show/hide certain sections).
+9. Rich Text support where needed (for descriptions or long text)
+10. All images should support `altText`, `responsive` options, and `lazyLoading`.
+
+🎯 Goal:
+- Maintain a consistent and high-performing layout across all services.
+- All services must follow the same section structure for UX and SEO optimization.
+- Easy to add/edit new services through CMS without developer help.
+- Must support dynamic routing (e.g., `/services/generative-ai`, `/services/web-development`)
+ 

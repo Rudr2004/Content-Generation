@@ -1,0 +1,464 @@
+/* Service Pages CSS */
+
+/* Service Grid Layout */
+.service-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+@media (min-width: 768px) {
+  .service-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .service-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Service Cards */
+.service-card {
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  transition: all 0.3s ease;
+  overflow: hidden;
+  height: 100%;
+}
+
+.service-card:hover {
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+  border-color: #3b82f6;
+}
+
+.service-card-content {
+  padding: 1.5rem;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.service-card-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 0.75rem;
+  font-family: Georgia, serif;
+}
+
+.service-card-description {
+  color: #6b7280;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+  flex-grow: 1;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Service Buttons */
+.service-cta-button {
+  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 50%, #ec4899 100%);
+  color: white;
+  border: none;
+  border-radius: 9999px;
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  transition: all 0.3s ease;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.service-cta-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+}
+
+.service-outline-button {
+  border: 2px solid transparent;
+  background: white;
+  color: #3b82f6;
+  border-radius: 9999px;
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.service-outline-button:hover {
+  background: transparent;
+  border-image: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899) 1;
+  color: #3b82f6;
+}
+
+/* Service Loading */
+.service-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 4rem 0;
+}
+
+.service-loading-content {
+  text-align: center;
+}
+
+.service-loading-spinner {
+  width: 2rem;
+  height: 2rem;
+  margin: 0 auto 1rem;
+  animation: spin 1s linear infinite;
+  color: #3b82f6;
+}
+
+.service-loading-text {
+  color: #6b7280;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Service Stats */
+.service-stats {
+  padding: 4rem 0;
+  background: white;
+}
+
+.service-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+  max-width: 4xl;
+  margin: 0 auto;
+}
+
+.service-stats-item {
+  text-align: center;
+  padding: 2rem 1rem;
+}
+
+.service-stats-value {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+  font-family: Georgia, serif;
+}
+
+.service-stats-label {
+  color: #6b7280;
+  font-weight: 500;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Hero Section Styling */
+.service-hero {
+  min-height: 90vh;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  display: flex;
+  align-items: center;
+  padding-top: 5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.service-hero-content {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.service-hero-text {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.service-hero-title {
+  font-size: 3rem;
+  font-weight: bold;
+  color: #1f2937;
+  margin-bottom: 1.5rem;
+  font-family: Georgia, serif;
+  line-height: 1.1;
+}
+
+.service-hero-subtitle {
+  font-size: 1.25rem;
+  color: #6b7280;
+  margin-bottom: 2rem;
+  font-family: 'Poppins', sans-serif;
+  line-height: 1.6;
+}
+
+@media (min-width: 768px) {
+  .service-hero-title {
+    font-size: 4rem;
+  }
+  
+  .service-hero-subtitle {
+    font-size: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .service-hero-title {
+    font-size: 5rem;
+  }
+}
+
+/* Service Pages Responsive Styling */
+/* Ensuring consistent responsive design across all service pages */
+
+/* Base Service Page Layout */
+.service-page-container {
+  @apply min-h-screen bg-gray-50;
+}
+
+/* Hero Section Responsive */
+.service-hero {
+  @apply relative min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 pt-20 flex items-center overflow-hidden;
+}
+
+.service-hero-content {
+  @apply container mx-auto px-4 sm:px-6 lg:px-8 relative z-10;
+}
+
+.service-hero-text {
+  @apply text-center max-w-4xl mx-auto;
+}
+
+.service-hero-title {
+  @apply text-4xl md:text-6xl lg:text-7xl font-bold text-gray-900 mb-6;
+  font-family: Georgia, serif;
+}
+
+.service-hero-subtitle {
+  @apply text-xl md:text-2xl text-gray-600 mb-8 leading-relaxed;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Service Cards Responsive */
+.service-card {
+  @apply h-full border-0 shadow-lg hover:shadow-2xl transition-all duration-300 bg-white rounded-lg;
+}
+
+.service-card-content {
+  @apply p-4 sm:p-6 lg:p-8;
+}
+
+.service-card-title {
+  @apply text-lg sm:text-xl font-bold text-gray-900 mb-3 group-hover:text-blue-600 transition-colors duration-300;
+  font-family: 'Poppins', sans-serif;
+}
+
+.service-card-description {
+  @apply text-gray-600 text-sm sm:text-base mb-4 leading-relaxed line-clamp-3;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Service Grid Layout */
+.service-grid {
+  @apply grid gap-4 sm:gap-6 lg:gap-8;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+@screen sm {
+  .service-grid {
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  }
+}
+
+@screen lg {
+  .service-grid {
+    grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  }
+}
+
+/* Service Content Sections */
+.service-content {
+  @apply py-16 sm:py-20 bg-gray-50;
+}
+
+.service-content-container {
+  @apply container mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+.service-content-card {
+  @apply p-6 sm:p-8 border-0 shadow-lg bg-white rounded-lg;
+}
+
+.service-content-title {
+  @apply text-xl sm:text-2xl font-bold text-gray-900 mb-4;
+  font-family: Georgia, serif;
+}
+
+.service-content-text {
+  @apply text-gray-700 leading-relaxed;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Search and Filter Section */
+.service-search-section {
+  @apply mb-8 sm:mb-12;
+}
+
+.service-search-container {
+  @apply flex flex-col md:flex-row gap-4 max-w-2xl mx-auto;
+}
+
+.service-search-input {
+  @apply flex-1 h-10 sm:h-12 border-gray-300 focus:border-blue-500 bg-white rounded-lg;
+}
+
+.service-filter-select {
+  @apply w-full md:w-64 h-10 sm:h-12 border-gray-300 focus:border-blue-500 bg-white rounded-lg;
+}
+
+/* Stats Section */
+.service-stats {
+  @apply py-12 sm:py-16 bg-white;
+}
+
+.service-stats-grid {
+  @apply grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8;
+}
+
+.service-stats-item {
+  @apply text-center;
+}
+
+.service-stats-value {
+  @apply text-3xl sm:text-4xl font-bold text-gray-900 mb-2;
+  font-family: Georgia, serif;
+}
+
+.service-stats-label {
+  @apply text-gray-600;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Feature Lists */
+.service-feature-list {
+  @apply space-y-3 sm:space-y-4;
+}
+
+.service-feature-item {
+  @apply flex items-start gap-3;
+}
+
+.service-feature-icon {
+  @apply w-5 h-5 text-green-500 mt-0.5 flex-shrink-0;
+}
+
+.service-feature-text {
+  @apply text-gray-700 leading-relaxed;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Keywords Section */
+.service-keywords-section {
+  @apply py-12 sm:py-16 bg-blue-50;
+}
+
+.service-keywords-container {
+  @apply text-center container mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+.service-keywords-title {
+  @apply text-2xl sm:text-3xl font-bold text-gray-900 mb-6 sm:mb-8;
+  font-family: Georgia, serif;
+}
+
+.service-primary-keyword {
+  @apply bg-blue-500 text-white px-3 sm:px-4 py-2 text-sm sm:text-base font-medium rounded-full;
+}
+
+.service-secondary-keywords {
+  @apply flex flex-wrap gap-2 sm:gap-3 justify-center;
+}
+
+.service-secondary-keyword {
+  @apply bg-white border-blue-200 text-blue-700 px-2 sm:px-3 py-1 text-xs sm:text-sm rounded-full border;
+}
+
+/* Button Styles */
+.service-cta-button {
+  @apply bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 sm:px-8 py-2.5 sm:py-3 rounded-full font-semibold transition-all duration-300 shadow-lg hover:shadow-xl;
+}
+
+.service-outline-button {
+  @apply border-2 border-purple-600 text-purple-600 hover:bg-purple-600 hover:text-white px-6 sm:px-8 py-2.5 sm:py-3 rounded-full font-semibold transition-all duration-300;
+}
+
+/* Loading States */
+.service-loading {
+  @apply pt-20 flex items-center justify-center min-h-screen;
+}
+
+.service-loading-content {
+  @apply text-center;
+}
+
+.service-loading-spinner {
+  @apply w-12 h-12 animate-spin text-blue-600 mx-auto mb-4;
+}
+
+.service-loading-text {
+  @apply text-gray-600 text-lg;
+}
+
+/* Error States */
+.service-error {
+  @apply pt-20 flex items-center justify-center min-h-screen;
+}
+
+.service-error-content {
+  @apply text-center max-w-md mx-auto px-4;
+}
+
+.service-error-title {
+  @apply text-2xl sm:text-3xl font-bold text-gray-900 mb-4;
+}
+
+.service-error-text {
+  @apply text-gray-600 mb-6 sm:mb-8;
+}
+
+/* Mobile Optimizations */
+@media (max-width: 640px) {
+  .service-hero-title {
+    font-size: 2rem;
+    line-height: 1.2;
+  }
+  
+  .service-hero-subtitle {
+    font-size: 1.125rem;
+  }
+  
+  .service-card-content {
+    padding: 1rem;
+  }
+  
+  .service-content-card {
+    padding: 1rem;
+  }
+}
+
+/* Tablet and Desktop Optimizations */
+@media (min-width: 768px) {
+  .service-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .service-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

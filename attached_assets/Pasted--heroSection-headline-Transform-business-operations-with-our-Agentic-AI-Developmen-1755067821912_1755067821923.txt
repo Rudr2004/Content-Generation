@@ -1,0 +1,116 @@
+{
+  "heroSection": {
+    "headline": "Transform business operations with our Agentic AI Development",
+    "subheading": "Helping modern enterprises achieve scalable automation and growth through enterprise-grade autonomous agents",
+    "ctaButton": "Start Building Your Intelligent Future"
+  },
+  "introOverview": {
+    "paragraphs": [
+      "Redefine how your company works with agentic AI—autonomous, goal-driven solutions designed to move beyond conventional automation. Our agentic systems empower businesses with digital team members, driving measurable efficiency at scale.",
+      "Accelerate innovation, streamline complexity, and outperform competitors using tailored AI agents designed for real-world deployment and rapid ROI."
+    ]
+  },
+  "serviceOfferings": {
+    "title": "Our End-to-End Agentic AI Development Solutions",
+    "components": [
+      {
+        "name": "Agentic AI Consulting",
+        "description": "Strategic guidance to help organizations adopt autonomous agents, manage governance, and mitigate risk for smooth digital transformation."
+      },
+      {
+        "name": "Custom Agentic AI Development",
+        "description": "Industry-specific agentic systems uniquely built for your business domain: finance, healthcare, retail, customer service, and more."
+      },
+      {
+        "name": "Enterprise Agent Mesh Architecture",
+        "description": "Secure, scalable platforms enabling seamless agent-to-agent and agent-to-LLM integration for orchestrating complex workflows."
+      },
+      {
+        "name": "Agent Assurance & Guardrails",
+        "description": "Robust guardrails including real-time observability, access controls, and intent validation for trusted autonomy."
+      }
+    ]
+  },
+  "technologyTools": {
+    "coreTechnologies": [
+      "NLP & Machine Learning",
+      "Large Language Models"
+    ],
+    "platformsFrameworks": [
+      "Agent Frameworks",
+      "Enterprise Cloud Platforms"
+    ],
+    "integrationTools": [
+      "API Integrations",
+      "Analytics & Monitoring Suites"
+    ],
+    "deploymentEnvironments": [
+      "Hybrid/Cloud",
+      "On-premises"
+    ]
+  },
+  "process": [
+    {
+      "step": "Discovery & Strategy",
+      "description": "We align goals and assess scope to identify key opportunities for agentic AI in your business."
+    },
+    {
+      "step": "Planning & Estimation",
+      "description": "Clear milestones and rapid prototyping ensure clarity, speed, and measurable progress."
+    },
+    {
+      "step": "Design & Development",
+      "description": "We build, train, and evolve autonomous agents, tailored to your workflows and business logic."
+    },
+    {
+      "step": "Testing & Optimization",
+      "description": "Comprehensive validation, monitoring, and iterative optimization secure reliability and performance."
+    },
+    {
+      "step": "Deployment & Support",
+      "description": "Seamless rollout with CI/CD, ongoing support, and continuous improvement for maximum ROI."
+    }
+  ],
+  "whyChooseUs": [
+    "Rapid and low-risk deployment for enterprise-grade solutions",
+    "Proven integrations with existing systems and APIs",
+    "Flexible model and cloud options, tailored to your needs",
+    "Robust guardrails ensure security, compliance, and reliability"
+  ],
+  "trustSignals": {
+    "trustedBy": [
+      "Global Finance Group",
+      "Healthcare Innovators Inc"
+    ]
+  },
+  "testimonials": [
+    {
+      "quote": "Businesses report significant improvements in accuracy, speed, and customer satisfaction, proving agentic AI’s impact.",
+      "client": "Jane Doe, COO",
+      "clientImage": "placeholder"
+    },
+    {
+      "quote": "Agentic AI helped automate complex workflows, reducing costs and delivering faster services for our clients.",
+      "client": "Rahul Patel, IT Director",
+      "clientImage": "placeholder"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Is agentic AI right for my industry?",
+      "answer": "Yes, agentic AI delivers positive outcomes across finance, healthcare, retail, and more."
+    },
+    {
+      "question": "How quickly can agentic AI be deployed?",
+      "answer": "Initial pilots are launched in weeks and can scale up rapidly."
+    },
+    {
+      "question": "Does agentic AI integrate with our current systems?",
+      "answer": "Absolutely—agents connect seamlessly to your existing IT and APIs."
+    },
+    {
+      "question": "What about compliance and security?",
+      "answer": "We implement advanced guardrails and best practices for security and regulatory compliance."
+    }
+  ]
+}

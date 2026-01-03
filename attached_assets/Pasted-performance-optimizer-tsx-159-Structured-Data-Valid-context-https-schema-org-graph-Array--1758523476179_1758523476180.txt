@@ -1,0 +1,30 @@
+performance-optimizer.tsx:159 Structured Data Valid: {@context: 'https://schema.org', @graph: Array(5)}
+queryClient.ts:66  GET https://86c63c7d-61ae-45ef-8f17-8649c747240c-00-3faln58izl0sk.kirk.replit.dev/api/service-pages 500 (Internal Server Error)
+(anonymous) @ queryClient.ts:66
+fetchFn @ @tanstack_react-query.js?v=7931a94e:840
+run @ @tanstack_react-query.js?v=7931a94e:494
+start @ @tanstack_react-query.js?v=7931a94e:536
+fetch @ @tanstack_react-query.js?v=7931a94e:926
+executeFetch_fn @ @tanstack_react-query.js?v=7931a94e:2211
+onSubscribe @ @tanstack_react-query.js?v=7931a94e:1898
+subscribe @ @tanstack_react-query.js?v=7931a94e:24
+(anonymous) @ @tanstack_react-query.js?v=7931a94e:3022
+subscribeToStore @ chunk-RPCDYKBN.js?v=7931a94e:11984
+commitHookEffectListMount @ chunk-RPCDYKBN.js?v=7931a94e:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js?v=7931a94e:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js?v=7931a94e:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js?v=7931a94e:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js?v=7931a94e:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js?v=7931a94e:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js?v=7931a94e:19447
+commitRootImpl @ chunk-RPCDYKBN.js?v=7931a94e:19416
+commitRoot @ chunk-RPCDYKBN.js?v=7931a94e:19277
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=7931a94e:18895
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=7931a94e:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=7931a94e:18627
+seo-analytics.tsx:61 SEO Keyword Analysis: {page: 'Industry - Health Care', keywordDensity: {…}, totalWords: 101}
+use-page-indexing.ts:56 [SEO] Applied robots meta tag for /industry/health-care: index, follow
+/industry/health-care:1 The resource https://86c63c7d-61ae-45ef-8f17-8649c747240c-00-3faln58izl0sk.kirk.replit.dev/attached_assets/1_1752498834690.png was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.
+/industry/health-care:1 The resource https://fonts.googleapis.com/css2?family=Georgia:wght@400;700&family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.
+/industry/health-care:1 The resource https://86c63c7d-61ae-45ef-8f17-8649c747240c-00-3faln58izl0sk.kirk.replit.dev/attached_assets/1_1752498834690.png was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.
+/industry/health-care:1 The resource https://fonts.googleapis.com/css2?family=Georgia:wght@400;700&family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.

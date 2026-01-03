@@ -1,0 +1,72 @@
+Create structured content using OpenAI API for the **Hire Developer** CMS section.
+
+🎯 **Goal:**
+Generate content for a developer category (e.g., LLM Developers, Blockchain Developers, etc.) strictly in the format below. The content will be inserted into a live CMS and must follow the structure exactly, with **no additional sections and no omissions**.
+
+📐 **Required Sections (Strict Format):**
+
+---
+
+### 1. Hero Section
+- **Title:** `Hire [Developer Type]`  
+- **Description:** 2–3 lines describing how these developers provide value to businesses (e.g., cost efficiency, automation, scalability).
+- **CTA Button Text:** `Hire Developers`
+- **3 Stats (with headings):**  
+  - `[Number]+ Developers`  
+  - `24/7 Technical Support`  
+  - `[Percentage]% Client Retention Rate`
+
+---
+
+### 2. Key Skills and Qualifications
+- **Section Introduction Paragraph:** Describe the general skillset and capabilities of the developer type.
+- **6 Skills:** Each with:
+  - **Title**
+  - **1-line Description**
+
+Example Skills (for LLM):  
+- Natural Language Processing (NLP)  
+- Deep Learning Frameworks  
+- LLM Integration & APIs  
+- Enterprise Security  
+- Performance Optimization  
+- Data Engineering
+
+---
+
+### 3. What Our Developers Can Do for You
+- **Section Introduction Paragraph:** Highlight how these developers improve business performance.
+- **6 Services:** Each with:
+  - **Title**
+  - **2–3 line Description**
+
+Example Services:  
+- LLM Consultation  
+- LLM Integration  
+- Custom App Development  
+- LLM Development  
+- Fine-Tuning Models  
+- Embeddings and Plugins
+
+---
+
+### 4. Technology Stack
+- **Section Heading:** `Technology Stack`
+- **Description:** 1–2 line intro about using modern tools and technologies.
+- **Categories:**  
+  - Machine Learning  
+  - Backend  
+  - Database  
+  - DevOps  
+- **Technologies Used (6–8):**  
+  Examples (for LLM): Python, TensorFlow, PyTorch, OpenAI GPT-4, LangChain, Transformers
+
+---
+
+🧠 **Rules:**
+- Do not add or skip any sections.
+- Output must be properly structured and consistent with the above format.
+- Replace `[Developer Type]` dynamically as per the topic (e.g., LLM Developers, React Developers, etc.)
+
+📝 Example Topic to Generate: `"Hire LLM Developers"`
+

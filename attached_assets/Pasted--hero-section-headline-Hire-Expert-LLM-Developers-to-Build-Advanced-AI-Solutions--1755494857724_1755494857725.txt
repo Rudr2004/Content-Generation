@@ -1,0 +1,103 @@
+{
+  "hero_section": {
+    "headline": "Hire Expert LLM Developers to Build Advanced AI Solutions",
+    "subheading": "Get top-tier LLM developers on-demand to accelerate your AI and NLP projects.",
+    "primary_cta": "Hire Now"
+  },
+  "intro_overview": "Hire LLM developers from Supersourcing to harness the full potential of large language models with expertise in custom model training, fine-tuning, and AI solution development tailored to your business needs.",
+  "why_hire": [
+    "Deep expertise in developing sophisticated algorithms and custom large language models",
+    "Prioritize code quality with rigorous standards, reviews, and testing",
+    "Flexible, agile team adaptable to evolving project requirements",
+    "Seamless integration of large language models with existing systems",
+    "Reduced project risks with highly experienced, pre-vetted engineers",
+    "Rapid deployments ensuring timely delivery of AI solutions",
+    "Enhanced data security with strict adherence to NDAs and legal compliance"
+  ],
+  "hiring_models": [
+    {
+      "model": "Contract Basis",
+      "description": "Hire LLM developers to work full-time on a contract basis with managed hiring and post-hiring formalities.",
+      "best_for": "Projects requiring flexible, short-to-medium term engagements."
+    },
+    {
+      "model": "Permanent Hire",
+      "description": "Option to hire developers permanently after an initial contract period.",
+      "best_for": "Long-term, in-house roles for sustained AI development."
+    },
+    {
+      "model": "Outsourced Recruitment",
+      "description": "Outsource your recruitment process to Supersourcing to streamline hiring of the right LLM developers.",
+      "best_for": "Businesses looking to offload recruitment management."
+    }
+  ],
+  "skills_expertise": {
+    "technical_skills": [
+      "Large Language Model Development and Fine-Tuning",
+      "Natural Language Processing (NLP) and Reinforcement Learning",
+      "Data Collection, Annotation, and Preprocessing",
+      "Machine Translation, Sentiment Analysis, and Text Classification"
+    ],
+    "soft_skills": [
+      "Adaptability to evolving project requirements",
+      "Strong communication and collaboration",
+      "Problem-solving and analytical thinking"
+    ]
+  },
+  "technology_stack": {
+    "languages": ["Python", "Java", "C++"],
+    "frameworks_libraries": ["TensorFlow", "PyTorch", "Transformers (Hugging Face)"],
+    "databases": ["SQL databases", "NoSQL databases"],
+    "tools_platforms": ["Version Control", "Project Management Tools", "APIs", "Web Servers"]
+  },
+  "hiring_process": [
+    {
+      "step": "Exploratory Call",
+      "description": "Set up an exploratory call to deeply understand your needs and objectives."
+    },
+    {
+      "step": "Profile Matching",
+      "description": "Get access to deeply vetted LLM developer profiles that perfectly match your requirements."
+    },
+    {
+      "step": "Selection",
+      "description": "Interact and select the top vetted LLM developers that fit your project needs."
+    },
+    {
+      "step": "Onboarding & Kickoff",
+      "description": "Kick start your project immediately while Supersourcing handles onboarding formalities."
+    }
+  ],
+  "testimonials": [
+    {
+      "quote": "They have such a wide variety of qualified React engineers, and they responded to my request very quickly.",
+      "client": "Andile Ngcaba, Chairman at Convergence Partners Investments"
+    },
+    {
+      "quote": "We thought hiring 100+ engineers would be extremely hard, but Supersourcing delivered on time with experienced and communicative engineers. Post-sales support is amazing.",
+      "client": "Client from Supersourcing"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "How soon can I hire an LLM developer?",
+      "answer": "You can receive profiles of pre-vetted LLM developers within 72 hours after sharing your requirements."
+    },
+    {
+      "question": "What experience do your LLM developers have?",
+      "answer": "Our developers have extensive experience ranging from 4 to 8+ years specializing in NLP, model fine-tuning, sentiment analysis, and domain-specific AI solutions."
+    },
+    {
+      "question": "What are your hiring models?",
+      "answer": "We offer contract hires, permanent hires after a trial period, and recruitment outsourcing."
+    },
+    {
+      "question": "How do you ensure data security?",
+      "answer": "Our developers strictly adhere to NDA agreements and legal standards to maintain high data security and project integrity."
+    }
+  ],
+  "final_cta": {
+    "headline": "Hire the Best LLM Developers for Your Next AI Project",
+    "button_text": "Get Started"
+  }
+}

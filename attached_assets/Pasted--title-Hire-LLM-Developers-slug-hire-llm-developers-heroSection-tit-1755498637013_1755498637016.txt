@@ -1,0 +1,131 @@
+{
+  "title": "Hire LLM Developers",
+  "slug": "hire-llm-developers",
+  "heroSection": {
+    "title": "Hire LLM",
+    "heroSubtitle": "Leverage the expertise of our LLM developers to drive innovation and deliver enterprise-grade solutions that enhance business efficiency and capabilities.",
+    "heroDescription": "Our developers provide cost-efficient, scalable, and automated AI solutions tailored to meet your business needs, enhancing overall operational efficiency.",
+    "ctaText": "Hire Developers",
+    "stats": [
+      "250+ Developers",
+      "24/7 Technical Support",
+      "95% Client Retention Rate"
+    ]
+  },
+  "keySkillsSection": {
+    "whyHireTitle": "Key Skills and Qualifications of Our LLM Developers",
+    "whyHireDescription": "Our LLM developers possess extensive expertise in developing and deploying advanced AI solutions, leveraging the latest technologies to enhance business processes and drive innovation.",
+    "whyHirePoints": [
+      {
+        "icon": "Brain",
+        "title": "Core Technology",
+        "description": "Expertise in primary technology/framework"
+      },
+      {
+        "icon": "Code",
+        "title": "Programming Skills",
+        "description": "Advanced programming capabilities"
+      },
+      {
+        "icon": "Database",
+        "title": "Data Integration",
+        "description": "Database and integration expertise"
+      },
+      {
+        "icon": "Shield",
+        "title": "Security",
+        "description": "Security and compliance knowledge"
+      },
+      {
+        "icon": "Zap",
+        "title": "Performance",
+        "description": "Optimization and performance skills"
+      },
+      {
+        "icon": "Settings",
+        "title": "Architecture",
+        "description": "System design and architecture"
+      }
+    ]
+  },
+  "servicesSection": {
+    "servicesTitle": "What Our LLM Developers Can Do for You",
+    "servicesDescription": "Our LLM developers deliver impactful AI solutions tailored to your business, enhancing capabilities and driving growth through advanced technology integration.",
+    "servicesOffered": [
+      {
+        "icon": "MessageSquare",
+        "title": "LLM Consultation",
+        "description": "Expert guidance and strategy"
+      },
+      {
+        "icon": "Code",
+        "title": "LLM Integration",
+        "description": "Seamless system integration"
+      },
+      {
+        "icon": "Wrench",
+        "title": "Custom LLM Development",
+        "description": "Tailored solutions"
+      },
+      {
+        "icon": "Zap",
+        "title": "LLM Implementation",
+        "description": "Core development services"
+      },
+      {
+        "icon": "Settings",
+        "title": "Optimization Services",
+        "description": "Performance tuning"
+      },
+      {
+        "icon": "Globe",
+        "title": "Advanced Features",
+        "description": "Enhanced functionality"
+      }
+    ]
+  },
+  "technologyStack": {
+    "title": "Technology Stack",
+    "description": "Our technology stack features cutting-edge tools and platforms essential for developing robust and scalable LLM solutions tailored to enterprise needs.",
+    "categories": [
+      {
+        "name": "Core Technologies",
+        "technologies": [
+          "Python",
+          "Java",
+          "C++"
+        ]
+      },
+      {
+        "name": "Development Tools",
+        "technologies": [
+          "TensorFlow",
+          "PyTorch",
+          "Transformers"
+        ]
+      },
+      {
+        "name": "Infrastructure",
+        "technologies": [
+          "SQL databases",
+          "NoSQL databases"
+        ]
+      },
+      {
+        "name": "Specialized Tools",
+        "technologies": [
+          "Version Control",
+          "APIs",
+          "Web Servers"
+        ]
+      }
+    ]
+  },
+  "seoMetadata": {
+    "metaTitle": "Hire Top LLM Developers",
+    "metaDescription": "Hire expert LLM developers for advanced AI solutions. Enhance your business with cutting-edge technology.",
+    "primaryKeyword": "hire LLM developers",
+    "secondaryKeywords": "AI developers, NLP experts, LLM solutions",
+    "location": "USA & Canada"
+  }
+}

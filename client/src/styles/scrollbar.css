@@ -1,0 +1,107 @@
+/* Enhanced scrollbar styles for responsive navigation */
+.scrollbar-thin {
+  scrollbar-width: thin;
+}
+
+.scrollbar-thumb-gray-300 {
+  scrollbar-color: #d1d5db #f3f4f6;
+}
+
+.scrollbar-track-gray-100 {
+  scrollbar-color: #d1d5db #f3f4f6;
+}
+
+/* Webkit scrollbar styling for better cross-browser support */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: #f3f4f6;
+  border-radius: 3px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 3px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+/* Smooth scrolling for navigation */
+.smooth-scroll {
+  scroll-behavior: smooth;
+}
+
+/* Enhanced hover animations */
+.hover-scale {
+  transition: transform 0.2s ease-in-out;
+}
+
+.hover-scale:hover {
+  transform: scale(1.02);
+}
+
+/* Responsive navigation transitions */
+.nav-transition {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Page name tooltip animations */
+.tooltip-enter {
+  animation: tooltipEnter 0.2s ease-out forwards;
+}
+
+@keyframes tooltipEnter {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Three-layer hierarchy visual indicators */
+.hierarchy-level-1 {
+  border-left: 4px solid #3b82f6;
+}
+
+.hierarchy-level-2 {
+  border-left: 4px solid #8b5cf6;
+}
+
+.hierarchy-level-3 {
+  border-left: 4px solid #ec4899;
+}
+
+/* Enhanced mobile navigation */
+@media (max-width: 640px) {
+  .mobile-nav-compact {
+    max-height: 200px;
+    overflow-y: auto;
+  }
+  
+  .mobile-tab-nav {
+    font-size: 0.75rem;
+    padding: 0.5rem;
+  }
+}
+
+/* Responsive grid improvements */
+.service-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+@media (max-width: 768px) {
+  .service-grid {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+}

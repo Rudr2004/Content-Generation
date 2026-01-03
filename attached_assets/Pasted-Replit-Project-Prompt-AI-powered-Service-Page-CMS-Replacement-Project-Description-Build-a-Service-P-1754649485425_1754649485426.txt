@@ -1,0 +1,100 @@
+Replit Project Prompt: AI-powered Service Page CMS Replacement
+Project Description
+Build a Service Page CMS to replace the current CMS content generation workflow with these capabilities:
+
+Fixed JSON structure for service pages stored in a file, defining how all generated content should be formatted.
+
+Admin inputs:
+
+Service Name (mandatory)
+
+Reference URL (optional) — system scrapes and summarizes for context
+
+Raw data (optional) — admin’s own notes/details
+
+SEO Keywords (manual input + AI generated option)
+
+SEO parameters (meta title, description, alt tags)
+
+Category & Subcategory selection and management
+
+Use OpenAI API to generate JSON content strictly following the fixed structure and tone, based on service name + URL summary + raw data + SEO keywords.
+
+Provide a structured JSON editor in UI allowing admins to edit generated content but preserving the fixed structure.
+
+Support drafting, scheduling, and publishing of service pages.
+
+Reflect category/subcategory changes dynamically in the site menu.
+
+Ensure full backward compatibility so it replaces your existing service page CMS smoothly.
+
+Key Features
+Content generation API with prompt enforcing fixed structure and integration of URL data + admin data.
+
+Keyword generation API for SEO.
+
+Content editing UI with validation to keep structure.
+
+Draft, Schedule, Publish workflow.
+
+Category/subcategory CRUD and menu order update.
+
+Easy migration/import from old CMS content.
+
+Example OpenAI Prompt Template for Service Page Generation
+plaintext
+Copy
+Edit
+You are a professional content writer. Generate content strictly following this JSON structure:
+
+<PASTE YOUR FIXED SERVICE PAGE JSON STRUCTURE HERE>
+
+Service Name: {serviceName}
+
+Reference Content Summary: {scraped and summarized URL content or "N/A"}
+
+Admin Raw Data: {admin input or "N/A"}
+
+SEO Keywords: {comma separated keywords or "N/A"}
+
+SEO Meta Title: {meta title}
+
+SEO Meta Description: {meta description}
+
+Generate fresh, original content relevant to the service. Follow the exact JSON structure and tone strictly.
+Suggested Replit Project Stack
+Backend: Node.js + Express
+
+Database: MongoDB or PostgreSQL
+
+Frontend: React (with form + JSON editor)
+
+Scraping: node-fetch + cheerio
+
+Scheduling: node-cron
+
+OpenAI API integration using official Node.js SDK
+
+Next Steps
+Create or upload your fixed service page JSON structure file.
+
+Build backend routes for:
+
+Content generation (OpenAI call)
+
+Keyword generation
+
+Save/Edit/Delete service pages
+
+Category and subcategory management
+
+Draft/Schedule/Publish management
+
+Build frontend forms and JSON editor for structured content.
+
+Implement scraper to extract/summarize URL content for input context.
+
+Build scheduling logic to publish pages on time.
+
+Migrate existing service page data into the new CMS format if needed.
+

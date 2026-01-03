@@ -1,0 +1,160 @@
+{
+    "heroSection": {
+        "headline": "LLM Development Services - Transform Your Business with Custom AI Solutions",
+        "subheading": "Transform your business operations through intelligent, AI-powered language models designed specifically for your industry requirements.",
+        "ctaButton": "REQUEST CONSULTATION"
+    },
+    "introOverview": {
+        "paragraphs": [
+            "From ideation to deployment, we deliver end-to-end custom AI solutions that scale with your business growth"
+        ]
+    },
+    "serviceOfferings": {
+        "title": "Our Services",
+        "components": [
+            {
+                "name": "LLM Development Services",
+                "description": "Custom model architecture design and development tailored to your specific business requirements and domain expertise"
+            },
+            {
+                "name": "LLM Consulting Services",
+                "description": "Strategic guidance and roadmap development to maximize ROI from your AI investments with expert consultation"
+            },
+            {
+                "name": "Data Preparation & Annotation",
+                "description": "High-quality dataset creation, cleaning, and labeling services to ensure optimal model performance and accuracy"
+            },
+            {
+                "name": "LLM Fine-Tuning Services",
+                "description": "Advanced parameter optimization and model customization using cutting-edge techniques like QLoRA and Spectrum for superior results"
+            },
+            {
+                "name": "LLM App Development",
+                "description": "End-to-end application development integrating LLM capabilities into user-friendly, production-ready solutions"
+            },
+            {
+                "name": "LLM Model Integration",
+                "description": "Seamless integration of language models into existing business systems with minimal disruption and maximum efficiency"
+            },
+            {
+                "name": "LLMOps & Monitoring",
+                "description": "Continuous performance monitoring, automated retraining workflows, and enterprise-grade observability solutions"
+            }
+        ]
+    },
+    "technologyTools": {
+        "coreTechnologies": [
+            "Deep learning",
+            "transformer architectures",
+            "neural networks",
+            "gradient boosting",
+            "ensemble methods"
+        ],
+        "platformsFrameworks": [
+            "LangChain",
+            "LlamaIndex",
+            "Hugging Face Transformers",
+            "TensorFlow",
+            "PyTorch"
+        ],
+        "integrationTools": [
+            "Docker",
+            "Kubernetes",
+            "CI/CD pipelines",
+            "microservices architecture"
+        ],
+        "deploymentEnvironments": [
+            "AWS SageMaker",
+            "Google Cloud Vertex AI",
+            "Microsoft Azure AI",
+            "IBM Watson"
+        ]
+    },
+    "development process": {
+        "process": [
+            {
+                "step": "Discovery Call",
+                "description": "In-depth consultation to understand your business challenges, objectives, and technical requirements for strategic alignment"
+            },
+            {
+                "step": "Project Estimate",
+                "description": "Detailed technical assessment, resource planning, and transparent cost estimation with defined timelines and milestones"
+            },
+            {
+                "step": "Training",
+                "description": "Custom model training using your proprietary data with advanced techniques for optimal performance and accuracy"
+            },
+            {
+                "step": "Execution",
+                "description": "Agile development methodology with regular updates, collaborative feedback, and iterative improvements"
+            },
+            {
+                "step": "Evaluation & Deployment",
+                "description": "Rigorous testing, performance validation, and secure production deployment with comprehensive documentation"
+            },
+            {
+                "step": "Feedback & Iterations",
+                "description": "Continuous monitoring, user feedback integration, and model refinement for ongoing optimization"
+            }
+        ]
+    },
+    "whyChooseUs": {
+        "whyChooseUs": [
+            "Leverage cutting-edge technologies to unlock new possibilities for your business operations"
+        ]
+    },
+    "trustSignals": {
+        "trustedBy": [
+            "200+ Products Built",
+            "100+ Trusted Brands",
+            "120+ Global Partners",
+            "4+ Years Experience",
+            "80+ In-House Developers"
+        ]
+    },
+    "testimonials": {
+        "testimonials": [
+            {
+                "quote": "extract testimonials",
+                "client": "client name",
+                "clientImage": "placeholder"
+            }
+        ]
+    },
+    "faqs": {
+        "faqs": [
+            {
+                "question": "How long does custom LLM development typically take?",
+                "answer": "Most projects complete within 3-6 months depending on complexity and data requirements."
+            },
+            {
+                "question": "Can you integrate LLMs with our existing business systems?",
+                "answer": "Yes, we specialize in seamless integration with CRM, ERP, and other enterprise platforms."
+            },
+            {
+                "question": "What industries do you serve for LLM development?",
+                "answer": "We serve healthcare, finance, legal, manufacturing, retail, and technology sectors with specialized solutions."
+            },
+            {
+                "question": "How do you ensure data privacy and security?",
+                "answer": "We implement enterprise-grade security protocols with encryption, access controls, and compliance certifications."
+            },
+            {
+                "question": "Do you provide ongoing support after deployment?",
+                "answer": "Yes, we offer comprehensive maintenance, monitoring, and optimization services post-deployment."
+            },
+            {
+                "question": "What's the difference between fine-tuning and building from scratch?",
+                "answer": "Fine-tuning adapts existing models to your needs while building from scratch creates completely custom architectures."
+            },
+            {
+                "question": "Can you handle multilingual LLM requirements?",
+                "answer": "Absolutely, our solutions support over 100 languages with cultural context understanding."
+            }
+        ]
+    },
+    "finalCta": {
+        "headline": "Achieve More",
+        "button": "REQUEST CONSULTATION"
+    }
+}

@@ -1,0 +1,69 @@
+chunk-RPCDYKBN.js?v=140f5cd0:21551 Download the React DevTools for a better development experience: https://reactjs.org/link/react-devtools
+universal-service-display.tsx:101 Available sections in JSON: (10) ['heroSection', 'introOverview', 'serviceOfferings', 'technologyTools', 'development process', 'whyChooseUs', 'trustSignals', 'testimonials', 'faqs', 'finalCta']0: "heroSection"1: "introOverview"2: "serviceOfferings"3: "technologyTools"4: "development process"5: "whyChooseUs"6: "trustSignals"7: "testimonials"8: "faqs"9: "finalCta"length: 10[[Prototype]]: Array(0)
+universal-service-display.tsx:102 Process data: undefined
+universal-service-display.tsx:103 WhyChooseUs data: {whyChooseUs: Array(1)}
+universal-service-display.tsx:104 Testimonials data: {testimonials: Array(1)}
+universal-service-display.tsx:101 Available sections in JSON: (10) ['heroSection', 'introOverview', 'serviceOfferings', 'technologyTools', 'development process', 'whyChooseUs', 'trustSignals', 'testimonials', 'faqs', 'finalCta']
+universal-service-display.tsx:102 Process data: undefined
+universal-service-display.tsx:103 WhyChooseUs data: {whyChooseUs: Array(1)}
+universal-service-display.tsx:104 Testimonials data: {testimonials: Array(1)}
+universal-service-display.tsx:101 Available sections in JSON: (10) ['heroSection', 'introOverview', 'serviceOfferings', 'technologyTools', 'development process', 'whyChooseUs', 'trustSignals', 'testimonials', 'faqs', 'finalCta']0: "heroSection"1: "introOverview"2: "serviceOfferings"3: "technologyTools"4: "development process"5: "whyChooseUs"6: "trustSignals"7: "testimonials"8: "faqs"9: "finalCta"length: 10[[Prototype]]: Array(0)
+universal-service-display.tsx:102 Process data: undefined
+universal-service-display.tsx:103 WhyChooseUs data: {whyChooseUs: Array(1)}whyChooseUs: ['Leverage cutting-edge technologies to unlock new possibilities for your business operations'][[Prototype]]: Object
+universal-service-display.tsx:104 Testimonials data: {testimonials: Array(1)}testimonials: Array(1)0: {quote: 'extract testimonials', client: 'client name', clientImage: 'placeholder'}length: 1[[Prototype]]: Array(0)[[Prototype]]: Object
+queryClient.ts:49  GET https://17da6902-33c4-4d07-b0bf-c79796e66cd7-00-1qj0nhiyjokzg.janeway.replit.dev/api/service-pages 500 (Internal Server Error)
+(anonymous) @ queryClient.ts:49
+fetchFn @ @tanstack_react-query.js?v=140f5cd0:840
+run @ @tanstack_react-query.js?v=140f5cd0:494
+start @ @tanstack_react-query.js?v=140f5cd0:536
+fetch @ @tanstack_react-query.js?v=140f5cd0:926
+executeFetch_fn @ @tanstack_react-query.js?v=140f5cd0:2211
+onSubscribe @ @tanstack_react-query.js?v=140f5cd0:1898
+subscribe @ @tanstack_react-query.js?v=140f5cd0:24
+(anonymous) @ @tanstack_react-query.js?v=140f5cd0:3022
+subscribeToStore @ chunk-RPCDYKBN.js?v=140f5cd0:11984
+commitHookEffectListMount @ chunk-RPCDYKBN.js?v=140f5cd0:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js?v=140f5cd0:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js?v=140f5cd0:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js?v=140f5cd0:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js?v=140f5cd0:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js?v=140f5cd0:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js?v=140f5cd0:19447
+commitRootImpl @ chunk-RPCDYKBN.js?v=140f5cd0:19416
+commitRoot @ chunk-RPCDYKBN.js?v=140f5cd0:19277
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=140f5cd0:18895
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=140f5cd0:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=140f5cd0:18627
+setTimeout
+scheduleFn @ @tanstack_react-query.js?v=140f5cd0:555
+flush @ @tanstack_react-query.js?v=140f5cd0:569
+batch @ @tanstack_react-query.js?v=140f5cd0:587
+dispatch_fn @ @tanstack_react-query.js?v=140f5cd0:996
+setData @ @tanstack_react-query.js?v=140f5cd0:696
+onSuccess @ @tanstack_react-query.js?v=140f5cd0:897
+resolve @ @tanstack_react-query.js?v=140f5cd0:456
+Promise.then
+run @ @tanstack_react-query.js?v=140f5cd0:498
+start @ @tanstack_react-query.js?v=140f5cd0:536
+fetch @ @tanstack_react-query.js?v=140f5cd0:926
+executeFetch_fn @ @tanstack_react-query.js?v=140f5cd0:2211
+onSubscribe @ @tanstack_react-query.js?v=140f5cd0:1898
+subscribe @ @tanstack_react-query.js?v=140f5cd0:24
+(anonymous) @ @tanstack_react-query.js?v=140f5cd0:3022
+subscribeToStore @ chunk-RPCDYKBN.js?v=140f5cd0:11984
+commitHookEffectListMount @ chunk-RPCDYKBN.js?v=140f5cd0:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js?v=140f5cd0:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js?v=140f5cd0:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js?v=140f5cd0:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js?v=140f5cd0:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js?v=140f5cd0:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js?v=140f5cd0:19447
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=140f5cd0:18868
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=140f5cd0:9119
+commitRootImpl @ chunk-RPCDYKBN.js?v=140f5cd0:19432
+commitRoot @ chunk-RPCDYKBN.js?v=140f5cd0:19277
+finishConcurrentRender @ chunk-RPCDYKBN.js?v=140f5cd0:18805
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js?v=140f5cd0:18718
+workLoop @ chunk-RPCDYKBN.js?v=140f5cd0:197
+flushWork @ chunk-RPCDYKBN.js?v=140f5cd0:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js?v=140f5cd0:384

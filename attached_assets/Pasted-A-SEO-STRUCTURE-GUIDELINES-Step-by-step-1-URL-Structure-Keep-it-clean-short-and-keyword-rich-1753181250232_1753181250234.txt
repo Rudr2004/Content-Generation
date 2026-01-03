@@ -1,0 +1,133 @@
+A. SEO STRUCTURE GUIDELINES (Step-by-step)
+1. URL Structure
+Keep it clean, short, and keyword-rich
+
+Use hyphens (not underscores)
+
+Use lowercase
+
+Add canonical tags if needed
+
+Example:
+/services/custom-software-development
+/services/toronto-custom-software-development
+
+2. Meta Tags
+Title Tag (Max 60 characters):
+Start with target keyword, end with brand name
+Example:
+"Custom Software Development in USA & Canada | GreenAppleX"
+
+Meta Description (155–160 characters):
+Include primary keyword + value proposition + light urgency
+Example:
+"Get scalable custom software solutions tailored for businesses in USA & Canada. Delivered with speed, security & agility."
+
+3. Header Hierarchy (H1–H6)
+H1: Use only once, include main keyword
+
+H2: Use for main sections (e.g., Why Choose Us, Our Process)
+
+H3–H6: Use for nested sections, FAQs, or feature details
+
+4. Keyword Strategy
+Target medium-difficulty, commercial-intent keywords
+
+Use long-tail & LSI keywords naturally
+
+Add local variations where relevant
+Example: "New York fintech app development"
+
+5. On-Page SEO Elements
+Internal Linking: To blogs, other service pages, contact/about pages
+
+External Linking: 1–2 links to authoritative sources (if necessary)
+
+Alt Text: Include descriptive, keyword-rich alt tags for images
+
+Schema Markup: Use LocalBusiness, Service, and FAQ schema (JSON-LD)
+
+Mobile Optimization: Fully responsive design
+
+Loading Speed: Use image compression (WebP), lazy loading, CDN
+
+6. Calls-to-Action (CTAs)
+Use action-oriented, location-based CTAs
+
+Include keyword if possible
+
+Example:
+"Book Your Free Software Consultation in Toronto"
+
+✅ B. CONTENT STRUCTURE GUIDELINE
+Model the structure after high-performing sites like Bacancy and SoluLab, customized to your brand voice.
+
+🧩 Section-wise Structure for a Service Page
+1. Hero Section
+H1 Headline with target keyword
+Example: “Custom Software Development Services in USA & Canada”
+
+Subheadline (1-liner benefit statement)
+
+CTA Button: “Get Free Consultation”
+
+2. Why Choose [Your Company]?
+Brief intro paragraph
+
+3–6 bullet points with USPs
+Example: Fast delivery, Agile model, 24/7 Support, Local team
+
+3. What We Offer / Our Services
+Use a grid or tabbed layout
+
+Each offering should have:
+
+Name
+
+40–50 word description
+
+Icon or image
+
+Link to detailed service page
+
+4. Industries We Serve
+Highlight key sectors (e.g., FinTech, HealthTech, EdTech)
+
+Add local angles if possible
+Example: “Helping Toronto’s healthcare startups build HIPAA-compliant apps”
+
+5. Our Process
+Visual or numbered format
+
+Steps: Discovery → UI/UX → Development → QA → Launch → Support
+
+6. Case Studies / Success Stories
+Link to blog or case study page
+
+Mini preview with:
+
+Project name
+
+Location
+
+Challenge → Solution → Result (with metrics)
+
+7. Client Testimonials
+2–3 short quotes
+
+Include: Name, Company, City/State
+
+Use logos or client photos if available
+
+8. Tech Stack / Tools We Use
+Grid of technology logos (React, Node.js, MongoDB, AWS, etc.)
+
+Short paragraph on keeping up with modern trends in US/Canada
+
+9. Frequently Asked Questions (FAQ)
+Add 4–6 FAQs with relevant long-tail/local keywords
+Example: “How much does custom software development cost in California?”
+
+Implement FAQ Schema (JSON-LD)
+
+Remove old guidelines for content geneate in Service Management in CMS and follow this guideline from now

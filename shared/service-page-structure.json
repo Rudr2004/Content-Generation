@@ -1,0 +1,100 @@
+{
+  "servicePageStructure": {
+    "sections": [
+      {
+        "id": "hero_section",
+        "name": "Hero Section",
+        "required": true,
+        "fields": {
+          "headline": "Primary benefit or transformation with our {{Service Name}}",
+          "subheading": "Helping {{Target Audience}} achieve {{Key Result}} through {{Short Service Pitch}}",
+          "ctaButton": "Primary Call to Action text"
+        }
+      },
+      {
+        "id": "intro_overview", 
+        "name": "Introduction & Overview",
+        "required": true,
+        "fields": {
+          "paragraphs": "array of 2-3 paragraph strings explaining the service value"
+        }
+      },
+      {
+        "id": "service_offerings",
+        "name": "Service Offerings & Components",
+        "required": true,
+        "fields": {
+          "title": "Our End-to-End {{Service Name}} Solutions",
+          "components": "array of objects with {name, description} - 3-4 core service components"
+        }
+      },
+      {
+        "id": "technology_tools",
+        "name": "Technology & Tools",
+        "required": true,
+        "fields": {
+          "Core Technologies": "array of main technologies used",
+          "Platforms Frameworks": "array of frameworks and platforms", 
+          "Integration Tools": "array of integration tools",
+          "Deployment Environments": "array of deployment environments"
+        }
+      },
+      {
+        "id": "process_methodology",
+        "name": "Process & Methodology", 
+        "required": true,
+        "fields": {
+          "process": "array of 5 objects with {step, description} covering full delivery process"
+        }
+      },
+      {
+        "id": "why_choose_us",
+        "name": "Why Choose Us",
+        "required": true,
+        "fields": {
+          "whyChooseUs": "array of 4 unique selling points that differentiate the service"
+        }
+      },
+      {
+        "id": "trust_signals",
+        "name": "Trust Signals & Social Proof",
+        "required": true,
+        "fields": {
+          "trustedBy": "array of 4-6 client company names or industry types"
+        }
+      },
+      {
+        "id": "testimonials",
+        "name": "Client Testimonials",
+        "required": true,
+        "fields": {
+          "testimonials": "array of 2-3 objects with {quote, client, clientImage} - realistic but fictional testimonials"
+        }
+      },
+      {
+        "id": "faqs",
+        "name": "Frequently Asked Questions",
+        "required": true,
+        "fields": {
+          "faqs": "array of 4-5 objects with {question, answer} covering common service inquiries"
+        }
+      },
+      {
+        "id": "final_cta",
+        "name": "Final Call-to-Action",
+        "required": true,
+        "fields": {
+          "headline": "Ready to {{Benefit}} with {{Service Name}}?",
+          "button": "Strong CTA text encouraging contact"
+        }
+      }
+    ],
+    "contentGuidelines": {
+      "tone": "Professional, results-oriented, client-focused",
+      "target": "USA/Canada business decision makers", 
+      "approach": "Benefits-first, evidence-backed, conversion-optimized",
+      "wordCount": "2000-2500 words total across all sections",
+      "formatting": "Scannable content with clear value propositions"
+    }
+  }
+}

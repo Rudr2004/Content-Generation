@@ -1,0 +1,58 @@
+I want to redesign the service navigation bar of my website. Currently, on large screens, it follows the 3-layer hierarchy: Category → Sub-category → Service Page. But on mobile and tablet screens, it collapses and doesn't maintain this structure properly.
+
+📌 Requirements:
+1. **Responsive Design**:
+   - Ensure the 3-layer structure is maintained across all devices (desktop, tablet, mobile).
+   - The menu should adapt to screen sizes using Tailwind CSS or modern responsive practices.
+
+2. **Three-Layer Structure**:
+   - Level 1: **Category**
+   - Level 2: **Sub-category**
+   - Level 3: **Service Pages**
+
+3. **Behavior**:
+   - On **mobile**, display in an accordion or stacked collapsible format.
+   - On **tablet**, show a side-drawer or expandable vertical layout.
+   - On **desktop**, show horizontal mega-menu layout with three columns (like a CMS or enterprise dashboard).
+   - All additions/updates/deletions of categories, subcategories, or pages must update the menu dynamically.
+
+4. **UI Design**:
+   - Use modern styles: clean typography, spacing, icons for each category/sub-category.
+   - Smooth animations for expanding/collapsing layers (especially on mobile).
+   - Highlight current/active selection.
+
+5. **Data Driven**:
+   - The menu should be rendered dynamically from a nested JSON structure like:
+     ```js
+     [
+       {
+         category: "Web Development",
+         subcategories: [
+           {
+             name: "Frontend Development",
+             pages: ["React Development", "Vue.js Development"]
+           },
+           {
+             name: "Backend Development",
+             pages: ["Node.js", "Django"]
+           }
+         ]
+       }
+     ]
+     ```
+
+6. **Optional Enhancements**:
+   - Search/filter inside the navigation.
+   - Icons with each category and sub-category (if available in JSON).
+
+🛠️ Tech Stack:
+- HTML + React
+- Tailwind CSS
+- Functional components (React)
+- Optional: Framer Motion for transitions
+
+⚠️ Important:
+Make sure mobile and tab devices do not flatten the structure. Maintain all 3 layers in a scrollable or collapsible view — not as a flat list. 
+
+Please write fully working code (React + Tailwind CSS) for this modern, responsive, 3-layer service menu.
+

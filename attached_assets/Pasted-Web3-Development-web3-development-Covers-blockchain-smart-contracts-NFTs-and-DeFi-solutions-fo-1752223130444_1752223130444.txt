@@ -1,0 +1,62 @@
+Web3 Development: /web3-development
+Covers blockchain, smart contracts, NFTs, and DeFi solutions for decentralized applications. Relevant for fintech in New York and startups in Toronto.
+Generative AI Solutions: /generative-ai-solutions
+Includes AI-driven content creation, predictive analytics, and chatbots using TensorFlow, PyTorch, and GANs. Targets retail in California and finance in Chicago.
+Mobile App Development: /mobile-app-development
+Focuses on iOS, Android, and cross-platform apps using React Native, Flutter, and Xamarin. Relevant for e-commerce in Toronto and healthcare in Boston.
+Custom Software Development: /custom-software-development
+Offers bespoke CRM, ERP, and industry-specific solutions using .NET, Java, and Python. Targets enterprises in Texas and logistics in Atlanta.
+Digital Transformation Consulting: /digital-transformation-consulting
+Includes IoT, cloud computing, and blockchain for business modernization. Relevant for retail in Phoenix and government in Ottawa.
+Frontend Development: /frontend-development
+Covers user-friendly interfaces using React, Angular, Vue.js, and JavaScript. Targets startups in Seattle and media in Los Angeles.
+Backend Development: /backend-development
+Focuses on scalable systems using Node.js, Python, PHP, and .NET. Relevant for enterprises in New York and manufacturing in Ontario.
+DevOps Services: /devops-services
+Includes CI/CD pipelines, Docker, Kubernetes, and cloud platforms like AWS and Azure. Targets tech firms in San Francisco and logistics in Texas.
+Blockchain Development: /blockchain-development
+Covers Ethereum, Hyperledger, Solana, and smart contract development for DeFi and NFTs. Relevant for fintech in New York and real estate in Denver.
+AI Development: /ai-development
+Includes machine learning, deep learning, NLP, and computer vision for automation and analytics. Targets healthcare in Boston and retail in Toronto.
+Data Science Services: /data-science-services
+Covers data analytics, big data (Hadoop, Spark), and visualization (Tableau, Power BI). Relevant for finance in Chicago and government in Washington.
+Automation Testing: /automation-testing
+Includes test automation using Selenium, Appium, and JMeter for quality assurance. Targets software firms in Austin and e-commerce in Atlanta.
+RPA (Robotic Process Automation): /rpa-services
+Covers UiPath, Automation Anywhere, and Blue Prism for process automation. Relevant for insurance in New York and manufacturing in Ontario.
+IoT Development: /iot-development
+Includes MQTT, AWS IoT, and Azure IoT for smart devices in retail and healthcare. Targets retail in Phoenix and logistics in Texas.
+AR/VR Development: /ar-vr-development
+Covers Unity and Unreal Engine for gaming and virtual experiences. Relevant for gaming in Montreal and retail in Vancouver.
+E-commerce Development: /ecommerce-development
+Includes platforms like Magento, Shopify, and WooCommerce for online stores. Targets retail in Toronto and Atlanta.
+Game Development: /game-development
+Covers mobile and AR/VR games using Unity and Unreal Engine. Relevant for gaming in Montreal and entertainment in Los Angeles.
+Cloud Computing Services: /cloud-computing-services
+Includes AWS, Azure, and Google Cloud for scalable infrastructure. Targets startups in Seattle and enterprises in New York.
+API Development: /api-development
+Covers REST, GraphQL, and gRPC for seamless integrations. Relevant for fintech in Chicago and e-commerce in Toronto.
+CRM Development: /crm-development
+Includes Salesforce, HubSpot, and Zoho for customer relationship management. Targets retail in Phoenix and finance in Boston.
+ERP Development: /erp-development
+Covers SAP, Oracle NetSuite, and Odoo for enterprise resource planning. Relevant for manufacturing in Ontario and logistics in Texas.
+CMS Development: /cms-development
+Includes WordPress, Drupal, and Sitecore for content management. Targets media in Los Angeles and education in Austin.
+Cybersecurity Services: /cybersecurity-services
+Covers secure coding and threat management for data protection. Relevant for healthcare in Boston and finance in New York.
+Big Data Development: /big-data-development
+Includes Hadoop, Spark, and data warehousing (Snowflake, Redshift). Targets finance in Chicago and government in Ottawa.
+Low-Code Development: /low-code-development
+Covers platforms like OutSystems and Mendix for rapid development. Relevant for startups in Raleigh and enterprises in Toronto.
+Embedded Systems Development: /embedded-systems-development
+Includes C, C++, and firmware for IoT and automotive solutions. Targets automotive in Ontario and energy in Alberta.
+Web Development: /web-development
+Covers full-stack development for custom web apps using PHP, .NET, and JavaScript. Targets startups in Seattle and retail in Atlanta.
+UI/UX Design: /ui-ux-design
+Focuses on user-centric design for web and mobile apps. Relevant for e-commerce in Toronto and startups in San Francisco.
+IT Consulting: /it-consulting
+Includes strategic consulting for technology adoption and digital transformation. Targets enterprises in New York and government in Ottawa.
+SaaS Development: /saas-development
+Covers scalable SaaS platforms for various industries. Relevant for startups in Austin and retail in Vancouver.
+Total Services Pages: 30
+

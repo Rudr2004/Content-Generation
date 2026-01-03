@@ -1,0 +1,64 @@
+I want you to design and generate the front-end UI (using React + Tailwind or similar) plus describe the backend data flow (Node/Express or your preferred stack) to achieve the following features in a blog management system:
+
+---
+
+### 📝 Core Features
+
+1️⃣ **All Posts Section**
+- Display all posts in **three-column tiles (cards)** layout.
+- Each post card shows: Title, Status (Published / Draft / Scheduled), short excerpt.
+- Add a **filter bar at the top** to filter posts by:
+  - All
+  - Published
+  - Draft
+  - Scheduled
+
+2️⃣ **Scheduled Posts Section**
+- A separate section (can be a tab or sidebar option) listing all posts that are scheduled.
+- For each scheduled post, display:
+  - Title
+  - Scheduled publish date and time
+  - Buttons to **Edit**, **Delete**, and **Edit Date/Time**
+- Allow editing the scheduled date/time via a small modal or inline picker.
+
+3️⃣ **In All Posts**
+- For posts in **Draft**, add two action buttons:
+  - `Publish Now` 
+  - `Schedule`
+- Clicking `Schedule` opens a date & time picker modal, then a confirm button to set the schedule.
+
+---
+
+### ⚙️ In the AI SEO Generator
+- Currently has Draft and Publish.
+- Add a third option: `Schedule`.
+- When user clicks `Schedule`, prompt them to:
+  - Select date & time using a date-time picker.
+  - Click `Confirm` to save the post with status `Scheduled` and store the scheduled publish datetime.
+
+---
+
+### 💾 Backend Data Model
+Add or update your blog schema to include:
+- `status`: Published, Draft, Scheduled
+- `scheduledDate`: DateTime (null if not scheduled)
+
+Ensure the backend cron or scheduler checks for scheduled posts and automatically publishes them when their datetime is reached.
+
+---
+
+### 🎨 UI / UX Details
+- Use a **three-column responsive grid** for displaying post tiles.
+- On each post tile, show:
+  - Title
+  - Status badge (colored for Draft, Published, Scheduled)
+  - If Scheduled, also show the scheduled publish datetime.
+
+---
+
+### ✅ Output requirements
+Generate the code and UI in:
+- React + Tailwind CSS components
+- Include modals or popovers for scheduling
+- Show data flow examples or dummy JSON
+- Include backend routes or cron suggestion for handling scheduling (in Node.js)

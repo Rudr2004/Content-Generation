@@ -1,0 +1,36 @@
+User-agent: *
+Allow: /
+Allow: /attached_assets/1_1752498834690.png
+
+# Priority pages for crawling
+Allow: /services
+Allow: /about
+Allow: /portfolio
+Allow: /insights
+Allow: /contact
+Allow: /blog
+
+# Disallow development files
+Disallow: /src/
+Disallow: /*.tsx
+Disallow: /*.ts
+Disallow: /node_modules/
+
+# Sitemaps
+Sitemap: https://greenapplex.com/sitemap.xml
+
+# Crawl-delay for respectful crawling
+Crawl-delay: 1
+
+# Allow all search engines to index
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+#Allow attached_assets
+Allow: /
