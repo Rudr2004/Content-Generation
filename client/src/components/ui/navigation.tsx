@@ -1170,7 +1170,7 @@ export function Navigation() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.3, duration: 0.6 }}
                   >
-                    Let's discuss your project and explore how GreenAppleX can help you achieve your technology goals.
+                    Let's discuss your project and explore how {siteName} can help you achieve your technology goals.
                   </motion.p>
                 </div>
 

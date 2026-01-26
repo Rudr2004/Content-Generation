@@ -24,6 +24,7 @@ import { SEODashboard } from "@/components/seo-dashboard";
 import { SiteSettingsForm } from "@/components/site-settings-form";
 import { SEOConfigurationForm } from "@/components/seo-configuration-form";
 import { useSiteSettings } from "@/contexts/SiteSettingsContext";
+import { COMPANY_INFO } from "@/lib/constants";
 
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -449,7 +450,7 @@ export default function AdminPanel() {
             <div className="flex items-center space-x-3">
               <img
                 src={logoImg}
-                alt="GreenAppleX"
+                alt={settings?.siteName || COMPANY_INFO.name}
                 className="h-8 w-8 rounded"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
@@ -675,15 +676,15 @@ export default function AdminPanel() {
             <div className="flex items-center space-x-2">
               <img
                 src={logoImg}
-                alt="GreenAppleX"
+                alt={settings?.siteName || COMPANY_INFO.name}
                 className="h-5 w-5 rounded"
               />
               <span className="bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
-                {settings?.siteName || "GreenAppleX"}
+                {settings?.siteName || COMPANY_INFO.name}
               </span>
             </div>
             <span className="text-gray-500 text-sm ml-2">
-              © 2025 {settings?.siteName || "GreenAppleX"}. All rights reserved. | Blog Content
+              © 2025 {settings?.siteName || COMPANY_INFO.name}. All rights reserved. | Blog Content
               Management System
             </span>
           </div>

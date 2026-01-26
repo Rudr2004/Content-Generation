@@ -9,6 +9,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Eye, EyeOff, Lock, Mail, LogOut } from 'lucide-react';
 import logoImg from '@assets/Logo A_1752582606982.jpg';
 import { useSiteSettings } from "@/contexts/SiteSettingsContext";
+import { COMPANY_INFO } from "@/lib/constants";
 
 export default function LoginPage() {
   const { settings } = useSiteSettings();
@@ -76,7 +77,7 @@ export default function LoginPage() {
           <div className="flex justify-center">
             <img
               src={logoImg}
-              alt={settings?.siteName || "GreenAppleX"}
+              alt={settings?.siteName || COMPANY_INFO.name}
               className="h-16 w-auto"
               onError={(e) => {
                 const target = e.target as HTMLImageElement;

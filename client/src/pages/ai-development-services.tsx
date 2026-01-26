@@ -76,7 +76,7 @@ export default function AIDevelopmentServices() {
         </div>
       </section>
 
-      {/* Why Choose GreenAppleX Section */}
+      {/* Why Choose {siteName} Section */}
       <section className="py-20 bg-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
@@ -87,7 +87,7 @@ export default function AIDevelopmentServices() {
           >
             <motion.div variants={fadeInUp} className="text-center mb-16">
               <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6 heading-georgia">
-                Why Choose GreenAppleX for AI Development?
+                Why Choose {siteName} for AI Development?
               </h2>
               <p className="text-xl text-gray-600 max-w-3xl mx-auto text-poppins">
                 We combine cutting-edge AI expertise with proven development practices to deliver solutions that transform your business.

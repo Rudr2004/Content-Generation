@@ -178,7 +178,7 @@ export default function BlogCMS() {
               <div className="flex items-center">
                 <img
                   src={logoImg}
-                  alt="GreenAppleX Logo"
+                  alt={`${siteName} Logo`}
                   className="h-8 w-auto"
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;

@@ -1,13 +1,13 @@
 import { ArrowRight, CheckCircle2, Award, Users, Globe2, Rocket } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
-import { STATS } from "@/lib/constants";
+import { STATS, COMPANY_INFO } from "@/lib/constants";
 import { HeroAnimatedButton } from "@/components/ui/hero-animated-button";
 import { useSiteSettings } from "@/contexts/SiteSettingsContext";
 
 export function AboutSection() {
   const { settings } = useSiteSettings();
-  const siteName = settings?.siteName || "GreenAppleX"; // Assuming "GreenAppleX" is the default if COMPANY_INFO.name was not explicitly imported
+  const siteName = settings?.siteName || COMPANY_INFO.name;
 
   return (
     <section id="about" className="py-24 bg-gray-50">

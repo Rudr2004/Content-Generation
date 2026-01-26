@@ -8,10 +8,13 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { ArrowLeft, Mail } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import logoImg from '@assets/Logo A_1752582606982.jpg';
+import { useSiteSettings } from "@/contexts/SiteSettingsContext";
+import { COMPANY_INFO } from "@/lib/constants";
 
 export default function ForgotPasswordPage() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
+  const { settings } = useSiteSettings();
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [sent, setSent] = useState(false);
@@ -57,7 +60,7 @@ export default function ForgotPasswordPage() {
             <div className="flex justify-center">
               <img
                 src={logoImg}
-                alt="GreenAppleX"
+                alt={settings?.siteName || COMPANY_INFO.name}
                 className="h-16 w-auto"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
@@ -102,7 +105,7 @@ export default function ForgotPasswordPage() {
           <div className="flex justify-center">
             <img
               src={logoImg}
-              alt="GreenAppleX"
+              alt={settings?.siteName || COMPANY_INFO.name}
               className="h-16 w-auto"
               onError={(e) => {
                 const target = e.target as HTMLImageElement;
