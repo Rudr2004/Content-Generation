@@ -136,7 +136,7 @@ export const createConfirmationEmail = (submission: InsertContactSubmission): Em
         </p>
         
         <div style="background: white; padding: 15px; border-radius: 5px; margin: 15px 0; border: 1px solid #d1d5db;">
-          <p style="margin: 5px 0; color: #475569;">📧 <strong>Email:</strong> sales@greenapplex.com</p>
+          <p style="margin: 5px 0; color: #475569;">📧 <strong>Email:</strong></p>
           <p style="margin: 5px 0; color: #475569;">📞 <strong>Phone:</strong> +1 (424) 404-9371</p>
           <p style="margin: 5px 0; color: #475569;">📍 <strong>Address:</strong> 12200 W. Olympic Blvd. Ste. 140, Los Angeles, CA 90064</p>
         </div>
@@ -173,7 +173,7 @@ What happens next?
 
 
 If you have any urgent questions, please contact us:
-Email: sales@greenapplex.com
+Email:
 Phone: +1 (424) 404-9371
 Address: 12200 W. Olympic Blvd. Ste. 140, Los Angeles, CA 90064
 
@@ -188,7 +188,7 @@ export async function sendEmail(template: EmailTemplate): Promise<boolean> {
   try {
     // Verify connection configuration
     await transporter.verify();
-    
+
     // Send email
     const info = await transporter.sendMail({
       from: `"GreenAppleX" <${EMAIL_CONFIG.auth.user}>`,
@@ -211,11 +211,11 @@ export async function sendContactNotification(submission: InsertContactSubmissio
   confirmationSent: boolean;
 }> {
   const notificationEmail = createNotificationEmail(submission);
-  
-  // Send notification email to sales@greenapplex.com
+
+  // Send notification email to
   const notificationSent = await sendEmail(notificationEmail);
 
-  // Send thank you email to user from sales@greenapplex.com
+  // Send thank you email to user from
   const confirmationEmail = createConfirmationEmail(submission);
   const confirmationSent = await sendEmail(confirmationEmail);
 

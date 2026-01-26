@@ -64,7 +64,7 @@ COMPANY INFO:
 - Employees: 200+
 - Location: Los Angeles, CA (12200 W. Olympic Blvd. Ste. 140, Los Angeles, CA 90064)
 - Phone: +1 (424) 404-9371
-- Email: sales@greenapplex.com
+- Email:
 - Website: www.greenapplex.com
 
 CLIENTS: Bank of America, Mercedes-Benz, Goldman Sachs, Georgia Tech, Zebpay

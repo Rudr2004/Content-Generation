@@ -131,24 +131,61 @@ export default function AiServicePages() {
   const generateContentMutation = useMutation({
     mutationFn: (data: { serviceName: string; referenceUrl?: string; rawData?: string }) =>
       apiRequest("POST", "/api/ai-service-pages/generate-content", data),
-    onSuccess: (generatedContent: any) => {
-      // Update form with generated content
-      setFormData(prev => ({
-        ...prev,
-        ...generatedContent,
-        // Keep the manually entered data
-        serviceName: prev.serviceName,
-        referenceUrl: prev.referenceUrl,
-        rawData: prev.rawData,
-      }));
-      setIsGenerating(false);
-      toast({ title: "Content generated successfully!" });
+    onSuccess: (response: any) => {
+      try {
+        // Validate that we received generated data
+        if (!response.success || !response.generatedData) {
+          throw new Error(response.message || 'Content generation failed - no data received');
+        }
+
+        const generatedData = response.generatedData;
+
+        // Validate that structured content exists
+        if (!generatedData.structuredContent) {
+          throw new Error('Generated content is missing structured content');
+        }
+
+        // Parse and validate structured content
+        let structuredContent;
+        try {
+          structuredContent = JSON.parse(generatedData.structuredContent);
+        } catch (e) {
+          throw new Error('Failed to parse generated content - invalid JSON structure');
+        }
+
+        // Validate that essential content sections exist
+        if (!structuredContent.heroSection || !structuredContent.heroSection.headline) {
+          throw new Error('Generated content is missing required sections');
+        }
+
+        // Update form with generated content
+        setFormData(prev => ({
+          ...prev,
+          title: generatedData.title || prev.title,
+          // Keep the manually entered data
+          serviceName: prev.serviceName,
+          referenceUrl: prev.referenceUrl,
+          rawData: prev.rawData,
+        }));
+        setIsGenerating(false);
+        toast({ 
+          title: "Content generated successfully!",
+          description: "Review the generated content and save when ready."
+        });
+      } catch (error: any) {
+        setIsGenerating(false);
+        toast({
+          title: "Content Generation Failed",
+          description: error.message || "Failed to validate generated content. Please try again.",
+          variant: "destructive",
+        });
+      }
     },
     onError: (error: any) => {
       setIsGenerating(false);
       toast({
         title: "Error generating content",
-        description: error.message,
+        description: error.message || "Failed to generate content. Please check your reference URL/data and try again.",
         variant: "destructive",
       });
     },
@@ -170,13 +207,14 @@ export default function AiServicePages() {
 
   const handleEdit = (page: AiServicePage) => {
     setEditingPage(page);
+    const pageData = page as any;
     setFormData({
       title: page.title,
-      serviceName: page.serviceName,
-      referenceUrl: page.referenceUrl || "",
-      rawData: page.rawData || "",
-      categoryId: page.categoryId,
-      subcategoryId: page.subcategoryId,
+      serviceName: pageData.serviceName || "",
+      referenceUrl: pageData.referenceUrl || "",
+      rawData: pageData.rawData || "",
+      categoryId: pageData.categoryId || null,
+      subcategoryId: pageData.subcategoryId || null,
       status: page.status as 'draft' | 'published'
     });
     setShowForm(true);
@@ -207,6 +245,16 @@ export default function AiServicePages() {
       return;
     }
 
+    // Validate that at least one reference is provided
+    if (!formData.referenceUrl?.trim() && !formData.rawData?.trim()) {
+      toast({
+        title: "Reference Required",
+        description: "Please provide either a Reference URL or Additional Notes/Data to generate AI content.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsGenerating(true);
     generateContentMutation.mutate({
       serviceName: formData.serviceName,
@@ -216,9 +264,10 @@ export default function AiServicePages() {
   };
 
   const filteredPages = pages.filter(page => {
+    const pageData = page as any;
     const matchesSearch = !searchTerm || 
       page.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      page.serviceName.toLowerCase().includes(searchTerm.toLowerCase());
+      (pageData.serviceName && pageData.serviceName.toLowerCase().includes(searchTerm.toLowerCase()));
     const matchesStatus = statusFilter === "all" || page.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
@@ -251,7 +300,7 @@ export default function AiServicePages() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <Label className="text-sm font-medium text-gray-700">Service Name</Label>
-                <p className="text-gray-900">{viewingPage.serviceName}</p>
+                <p className="text-gray-900">{(viewingPage as any).serviceName || 'N/A'}</p>
               </div>
               <div>
                 <Label className="text-sm font-medium text-gray-700">Status</Label>
@@ -259,24 +308,24 @@ export default function AiServicePages() {
                   {viewingPage.status}
                 </Badge>
               </div>
-              {viewingPage.referenceUrl && (
+              {(viewingPage as any).referenceUrl && (
                 <div className="md:col-span-2">
                   <Label className="text-sm font-medium text-gray-700">Reference URL</Label>
                   <a 
-                    href={viewingPage.referenceUrl} 
+                    href={(viewingPage as any).referenceUrl} 
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="text-blue-600 hover:text-blue-800 flex items-center gap-1"
                   >
                     <LinkIcon className="h-4 w-4" />
-                    {viewingPage.referenceUrl}
+                    {(viewingPage as any).referenceUrl}
                   </a>
                 </div>
               )}
-              {viewingPage.rawData && (
+              {(viewingPage as any).rawData && (
                 <div className="md:col-span-2">
                   <Label className="text-sm font-medium text-gray-700">Raw Data</Label>
-                  <p className="text-gray-900 whitespace-pre-wrap">{viewingPage.rawData}</p>
+                  <p className="text-gray-900 whitespace-pre-wrap">{(viewingPage as any).rawData}</p>
                 </div>
               )}
             </div>
@@ -558,16 +607,16 @@ export default function AiServicePages() {
                         {page.status}
                       </Badge>
                     </div>
-                    <p className="text-gray-600 mb-2">Service: {page.serviceName}</p>
+                    <p className="text-gray-600 mb-2">Service: {(page as any).serviceName || 'N/A'}</p>
                     
                     <div className="flex flex-wrap gap-2 text-sm text-gray-500">
-                      {page.referenceUrl && (
+                      {(page as any).referenceUrl && (
                         <span className="flex items-center gap-1">
                           <LinkIcon className="h-3 w-3" />
                           Has reference URL
                         </span>
                       )}
-                      {page.primaryKeyword && (
+                      {(page as any).primaryKeyword && (
                         <span className="flex items-center gap-1">
                           <Tag className="h-3 w-3" />
                           SEO optimized

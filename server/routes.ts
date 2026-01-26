@@ -5295,7 +5295,19 @@ CRITICAL INSTRUCTIONS:
   // AI Service Page Content Generation
   app.post("/api/ai-service-pages/generate-content", authenticateToken, authorizeRole(["super_admin", "user_admin", "service_editor"]), async (req, res) => {
     try {
-      const { serviceName, referenceUrl, referenceContent, rawData } = req.body;
+      const { serviceName, referenceUrl, referenceContent, rawData, category, subCategory } = req.body;
+
+      // Debug logging
+      console.log("Received request body:", {
+        serviceName,
+        hasReferenceUrl: !!referenceUrl,
+        referenceUrlLength: referenceUrl ? String(referenceUrl).length : 0,
+        hasReferenceContent: !!referenceContent,
+        referenceContentLength: referenceContent ? String(referenceContent).length : 0,
+        hasRawData: !!rawData,
+        category,
+        subCategory
+      });
 
       if (!serviceName) {
         return res.status(400).json({ success: false, message: "Service name is required" });
@@ -5305,36 +5317,83 @@ CRITICAL INSTRUCTIONS:
         return res.status(400).json({ success: false, message: "OpenAI API key is not configured" });
       }
 
+      // Normalize and validate reference inputs
+      const normalizedReferenceUrl = referenceUrl ? String(referenceUrl).trim() : '';
+      const normalizedReferenceContent = referenceContent ? String(referenceContent).trim() : '';
+      const normalizedRawData = rawData ? String(rawData).trim() : '';
+
+      // Check if we have any reference material
+      const hasReferenceUrl = normalizedReferenceUrl.length > 0;
+      const hasReferenceContent = normalizedReferenceContent.length > 0;
+      const hasRawData = normalizedRawData.length > 0;
+
+      console.log("Normalized values:", {
+        hasReferenceUrl,
+        referenceUrlLength: normalizedReferenceUrl.length,
+        hasReferenceContent,
+        referenceContentLength: normalizedReferenceContent.length,
+        hasRawData,
+        rawDataLength: normalizedRawData.length
+      });
+
+      if (!hasReferenceUrl && !hasReferenceContent && !hasRawData) {
+        console.error("No reference material provided");
+        return res.status(400).json({ 
+          success: false, 
+          message: "Please provide either a Reference URL or Reference Content to generate AI content" 
+        });
+      }
+
       // Step 1: Process reference URL if provided
       let urlContent = '';
-      if (referenceUrl) {
+      if (hasReferenceUrl) {
         try {
-          urlContent = await scrapeAndSummarizeUrl(referenceUrl);
+          urlContent = await scrapeAndSummarizeUrl(normalizedReferenceUrl);
+          if (!urlContent || urlContent.trim().length === 0) {
+            console.warn("Reference URL processed but returned empty content");
+          }
         } catch (error) {
-          console.warn("Failed to process reference URL:", error);
+          console.error("Failed to process reference URL:", error);
+          // Don't fail completely if URL scraping fails, but log the error
+          urlContent = '';
         }
       }
 
       // Step 2: Use new reference-based content generation if reference content is provided
       let content;
-      if (referenceContent) {
+      if (hasReferenceContent) {
         console.log("Using reference content for AI generation");
-        content = await generateServiceContentFromReference(
-          serviceName,
-          "AI & Data Services", // Default category
-          referenceContent
-        );
-      } else {
-        // Fallback to original method for backward compatibility
-        console.log("Using original method - no reference content provided");
-        const seoKeywords = await generateSeoKeywords(serviceName, urlContent || rawData);
-        content = await generateServicePageContent(
-          serviceName,
-          urlContent || undefined,
-          referenceUrl || undefined,
-          rawData || undefined,
-          [seoKeywords.primaryKeyword, ...seoKeywords.secondaryKeywords]
-        );
+        try {
+          content = await generateServiceContentFromReference(
+            serviceName,
+            "AI & Data Services", // Default category
+            normalizedReferenceContent
+          );
+        } catch (error: any) {
+          console.error("Error generating content from reference:", error);
+          throw new Error(`Failed to generate content from reference: ${error.message || 'Unknown error'}`);
+        }
+      } else if (hasReferenceUrl || urlContent || hasRawData) {
+        // Use original method when we have URL content or raw data
+        console.log("Using original method with reference URL or raw data");
+        try {
+          const seoKeywords = await generateSeoKeywords(serviceName, urlContent || normalizedRawData);
+          content = await generateServicePageContent(
+            serviceName,
+            urlContent || undefined,
+            normalizedReferenceUrl || undefined,
+            normalizedRawData || undefined,
+            [seoKeywords.primaryKeyword, ...seoKeywords.secondaryKeywords]
+          );
+        } catch (error: any) {
+          console.error("Error generating content from URL/data:", error);
+          throw new Error(`Failed to generate content: ${error.message || 'Unknown error'}`);
+        }
+      }
+
+      // Validate that content was generated successfully
+      if (!content || !content.heroSection || !content.heroSection.headline) {
+        throw new Error("Content generation failed - missing required sections");
       }
 
       // Step 4: Generate SEO meta information

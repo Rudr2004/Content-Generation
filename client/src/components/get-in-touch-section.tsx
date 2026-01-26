@@ -50,7 +50,7 @@ export function GetInTouchSection() {
                 Email Us
               </h3>
               <p className="text-gray-600 text-poppins">
-                sales@greenapplex.com
+
               </p>
             </div>
           </div>

@@ -141,7 +141,7 @@ function ServiceFormComponent({ service, onSuccess, onCancel }: ServiceFormProps
   const [isGeneratingAI, setIsGeneratingAI] = useState(false);
   const [generatingField, setGeneratingField] = useState<string>("");
   const [selectedCaseStudyCategories, setSelectedCaseStudyCategories] = useState<string[]>([]);
-  const [availableCaseStudies, setAvailableCaseStudies] = useState<{[category: string]: Array<{id: number; title: string}>}>({});
+  const [availableCaseStudies, setAvailableCaseStudies] = useState<{ [category: string]: Array<{ id: number; title: string }> }>({});
 
   const form = useForm<ServiceFormData>({
     resolver: zodResolver(serviceFormSchema),
@@ -161,7 +161,7 @@ function ServiceFormComponent({ service, onSuccess, onCancel }: ServiceFormProps
       status: "active",
     },
   });
-  
+
   // AI Content Generation Functions
   const generateAIContent = async (serviceName: string, category: string, subCategory: string) => {
     if (!serviceName) {
@@ -175,48 +175,154 @@ function ServiceFormComponent({ service, onSuccess, onCancel }: ServiceFormProps
 
     setIsGeneratingAI(true);
     setGeneratingField("all");
-    
+
     try {
       const authToken = localStorage.getItem('authToken');
-      const referenceUrl = form.watch('referenceUrl');
-      const referenceContent = form.watch('referenceContent');
-      
+
+      // ALWAYS read from DOM first as the most reliable source, then fallback to form state
+      // This ensures we get the actual current value even if form state is stale
+      const textareaElement = document.getElementById('referenceContent') as HTMLTextAreaElement;
+      const inputElement = document.getElementById('referenceUrl') as HTMLInputElement;
+
+      // Get values from DOM (most reliable)
+      let referenceContentValue = textareaElement?.value || '';
+      let referenceUrlValue = inputElement?.value || '';
+
+      // Fallback to form state if DOM is empty
+      if (!referenceContentValue || referenceContentValue.trim().length === 0) {
+        referenceContentValue = form.watch('referenceContent') || form.getValues('referenceContent') || '';
+      }
+
+      if (!referenceUrlValue || referenceUrlValue.trim().length === 0) {
+        referenceUrlValue = form.watch('referenceUrl') || form.getValues('referenceUrl') || '';
+      }
+
+      // Update form state with DOM values to keep them in sync
+      if (textareaElement?.value) {
+        form.setValue('referenceContent', textareaElement.value, { shouldDirty: false });
+      }
+      if (inputElement?.value) {
+        form.setValue('referenceUrl', inputElement.value, { shouldDirty: false });
+      }
+
+      const referenceUrl = String(referenceUrlValue || '').trim();
+      const referenceContent = String(referenceContentValue || '').trim();
+
+      // Debug logging - comprehensive check
+      console.log('=== Reference Content Debug ===');
+      console.log('DOM textarea element exists:', !!textareaElement);
+      console.log('DOM textarea value length:', textareaElement?.value?.length || 0);
+      console.log('DOM textarea value preview:', textareaElement?.value?.substring(0, 100) || 'N/A');
+      console.log('Form watch referenceContent:', form.watch('referenceContent')?.substring(0, 100) || 'N/A');
+      console.log('Form getValues referenceContent:', form.getValues('referenceContent')?.substring(0, 100) || 'N/A');
+      console.log('Final referenceContent length:', referenceContent.length);
+      console.log('Final referenceContent preview:', referenceContent.substring(0, 200));
+      console.log('Final referenceUrl length:', referenceUrl.length);
+      console.log('=== End Debug ===');
+
+      // Validate that at least one reference is provided (check for non-empty strings)
+      const hasReferenceUrl = referenceUrl.length > 0;
+      const hasReferenceContent = referenceContent.length > 0;
+
+      if (!hasReferenceUrl && !hasReferenceContent) {
+        toast({
+          title: "Reference Required",
+          description: "Please provide either a Reference URL or Reference Content to generate AI content.",
+          variant: "destructive",
+        });
+        setIsGeneratingAI(false);
+        setGeneratingField("");
+        return;
+      }
+
+      // Build request body
+      const requestBody: any = {
+        serviceName: serviceName,
+        category: category,
+        subCategory: subCategory,
+      };
+
+      if (hasReferenceUrl) {
+        requestBody.referenceUrl = referenceUrl;
+      }
+
+      if (hasReferenceContent) {
+        requestBody.referenceContent = referenceContent;
+      }
+
+      console.log('Sending request with:', {
+        serviceName: requestBody.serviceName,
+        category: requestBody.category,
+        subCategory: requestBody.subCategory,
+        hasReferenceUrl: !!requestBody.referenceUrl,
+        referenceUrlLength: requestBody.referenceUrl?.length || 0,
+        hasReferenceContent: !!requestBody.referenceContent,
+        referenceContentLength: requestBody.referenceContent?.length || 0,
+        referenceContentPreview: requestBody.referenceContent ?
+          requestBody.referenceContent.substring(0, 200) + '...' : 'N/A'
+      });
+
+      // Log the full request body for debugging (truncate long content)
+      const requestBodyForLog = { ...requestBody };
+      if (requestBodyForLog.referenceContent && requestBodyForLog.referenceContent.length > 500) {
+        requestBodyForLog.referenceContent = requestBodyForLog.referenceContent.substring(0, 500) + '...[truncated]';
+      }
+      console.log('Full request body:', requestBodyForLog);
+
       const response = await fetch('/api/ai-service-pages/generate-content', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${authToken}`,
         },
-        body: JSON.stringify({
-          serviceName: serviceName,
-          category: category,
-          subCategory: subCategory,
-          referenceUrl: referenceUrl || undefined,
-          referenceContent: referenceContent || undefined,
-        }),
+        body: JSON.stringify(requestBody),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to generate AI content');
+        let errorMessage = 'Failed to generate AI content';
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.message || errorData.error || errorMessage;
+          console.error('API Error Response:', errorData);
+        } catch (e) {
+          console.error('Failed to parse error response:', e);
+        }
+        throw new Error(errorMessage);
       }
 
       const result = await response.json();
+
+      // Validate that we received generated data
+      if (!result.success || !result.generatedData) {
+        throw new Error(result.message || 'Content generation failed - no data received');
+      }
+
       const generatedData = result.generatedData;
+
+      // Validate that structured content exists
+      if (!generatedData.structuredContent) {
+        throw new Error('Generated content is missing structured content');
+      }
 
       // Parse structured content from the new format
       let structuredContent;
       try {
-        structuredContent = JSON.parse(generatedData.structuredContent || '{}');
+        structuredContent = JSON.parse(generatedData.structuredContent);
       } catch (e) {
-        console.warn('Failed to parse structured content, using fallback');
-        structuredContent = {};
+        console.error('Failed to parse structured content:', e);
+        throw new Error('Failed to parse generated content - invalid JSON structure');
+      }
+
+      // Validate that essential content sections exist
+      if (!structuredContent.heroSection || !structuredContent.heroSection.headline) {
+        throw new Error('Generated content is missing required sections');
       }
 
       // Auto-populate form with AI generated content from new structure
-      form.setValue('title', structuredContent.heroSection?.headline || generatedData.title);
-      form.setValue('primaryKeyword', generatedData.primaryKeyword);
-      form.setValue('secondaryKeywords', generatedData.secondaryKeywords);
-      
+      form.setValue('title', structuredContent.heroSection?.headline || generatedData.title || serviceName);
+      form.setValue('primaryKeyword', generatedData.primaryKeyword || '');
+      form.setValue('secondaryKeywords', generatedData.secondaryKeywords || '');
+
       // Store the structured JSON content directly instead of converting to markdown
       form.setValue('content', JSON.stringify(structuredContent, null, 2));
 
@@ -233,16 +339,15 @@ function ServiceFormComponent({ service, onSuccess, onCancel }: ServiceFormProps
         }
       }
 
-
       toast({
         title: "Success",
         description: "AI content generated successfully! Review and save the service.",
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('AI content generation error:', error);
       toast({
-        title: "Error",
-        description: "Failed to generate AI content. Please try again.",
+        title: "Generation Failed",
+        description: error.message || "Failed to generate AI content. Please check your reference URL/content and try again.",
         variant: "destructive",
       });
     } finally {
@@ -254,7 +359,7 @@ function ServiceFormComponent({ service, onSuccess, onCancel }: ServiceFormProps
   const generateSpecificField = async (field: string) => {
     const serviceName = form.getValues('title') || form.getValues('pageName');
     const category = form.getValues('category');
-    
+
     if (!serviceName) {
       toast({
         title: "Error",
@@ -266,7 +371,7 @@ function ServiceFormComponent({ service, onSuccess, onCancel }: ServiceFormProps
 
     setIsGeneratingAI(true);
     setGeneratingField(field);
-    
+
     try {
       // Generate specific field content using OpenAI
       const authToken = localStorage.getItem('authToken');
@@ -288,7 +393,7 @@ function ServiceFormComponent({ service, onSuccess, onCancel }: ServiceFormProps
       }
 
       const result = await response.json();
-      
+
       // Update specific field based on the field type
       switch (field) {
         case 'keywords':
@@ -343,8 +448,8 @@ function ServiceFormComponent({ service, onSuccess, onCancel }: ServiceFormProps
 
   // Fetch case studies for selected categories
   const fetchCaseStudiesForCategories = async (categories: string[]) => {
-    const newAvailableCaseStudies: {[category: string]: Array<{id: number; title: string}>} = {};
-    
+    const newAvailableCaseStudies: { [category: string]: Array<{ id: number; title: string }> } = {};
+
     for (const category of categories) {
       try {
         const response = await fetch(`/api/case-study-pages/category/${encodeURIComponent(category)}`);
@@ -360,7 +465,7 @@ function ServiceFormComponent({ service, onSuccess, onCancel }: ServiceFormProps
         newAvailableCaseStudies[category] = [];
       }
     }
-    
+
     setAvailableCaseStudies(newAvailableCaseStudies);
   };
 
@@ -393,7 +498,7 @@ function ServiceFormComponent({ service, onSuccess, onCancel }: ServiceFormProps
 
       // Set the selected category to filter subcategories
       setSelectedCategory(service.category || "");
-      
+
       // Update selected case study categories state
       const existingCategories = safeJsonParse((service as any).caseStudyCategories, []);
       setSelectedCaseStudyCategories(existingCategories);
@@ -580,7 +685,7 @@ function ServiceFormComponent({ service, onSuccess, onCancel }: ServiceFormProps
         try {
           const category = categories.find(cat => cat.name === data.category);
           const subcategory = subcategories.find(sub => sub.name === data.subCategory);
-          
+
           if (category && subcategory) {
             await fetch(`/api/services/${result.service.id}/testimonials/generate`, {
               method: 'POST',
@@ -711,7 +816,7 @@ function ServiceFormComponent({ service, onSuccess, onCancel }: ServiceFormProps
                 const serviceName = form.watch('title') || form.watch('pageName');
                 const category = form.watch('category');
                 const subCategory = form.watch('subCategory');
-                
+
                 if (!serviceName) {
                   toast({
                     title: "Missing Information",
@@ -720,7 +825,7 @@ function ServiceFormComponent({ service, onSuccess, onCancel }: ServiceFormProps
                   });
                   return;
                 }
-                
+
                 generateAIContent(serviceName, category, subCategory);
               }}
               disabled={isGeneratingAI}
@@ -770,7 +875,7 @@ function ServiceFormComponent({ service, onSuccess, onCancel }: ServiceFormProps
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <Label htmlFor="category" className="text-base font-semibold">Category *</Label>
-            <Select 
+            <Select
               value={form.watch("category") || ""}
               onValueChange={(value) => {
                 setSelectedCategory(value);
@@ -795,7 +900,7 @@ function ServiceFormComponent({ service, onSuccess, onCancel }: ServiceFormProps
 
           <div>
             <Label htmlFor="subCategory" className="text-base font-semibold">Subcategory *</Label>
-            <Select 
+            <Select
               value={form.watch("subCategory") || ""}
               onValueChange={(value) => form.setValue("subCategory", value)}>
               <SelectTrigger>
@@ -913,7 +1018,7 @@ function ServiceFormComponent({ service, onSuccess, onCancel }: ServiceFormProps
           <p className="text-sm text-blue-600 mb-4">
             Provide a reference URL or content for AI to analyze and generate structured service content based on your specifications.
           </p>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Add URL Field */}
             <div>
@@ -938,7 +1043,8 @@ function ServiceFormComponent({ service, onSuccess, onCancel }: ServiceFormProps
               <Label htmlFor="referenceContent" className="text-base font-semibold">Reference Content</Label>
               <Textarea
                 id="referenceContent"
-                {...form.register("referenceContent")}
+                value={form.watch('referenceContent') || ''}
+                onChange={(e) => form.setValue('referenceContent', e.target.value, { shouldDirty: true })}
                 placeholder="Paste content here for AI to analyze and structure according to service format..."
                 className="text-base min-h-[100px]"
                 rows={4}
@@ -951,7 +1057,7 @@ function ServiceFormComponent({ service, onSuccess, onCancel }: ServiceFormProps
               )}
             </div>
           </div>
-          
+
           <div className="bg-blue-100 p-3 rounded text-sm text-blue-700">
             <strong>How it works:</strong> When you click "Generate Complete AI Service", the AI will analyze the URL or content you provide and create a comprehensive service page following the proper structure, including hero section, services overview, technology stack, process steps, testimonials, FAQs, and more.
           </div>
@@ -961,7 +1067,7 @@ function ServiceFormComponent({ service, onSuccess, onCancel }: ServiceFormProps
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <Label className="text-base font-semibold">SEO Keywords *</Label>
-            <Button
+            {/* <Button
               type="button"
               variant="outline"
               size="sm"
@@ -971,7 +1077,7 @@ function ServiceFormComponent({ service, onSuccess, onCancel }: ServiceFormProps
             >
               <span className="text-lg">🔍</span>
               {generatingField === 'keywords' ? 'Generating...' : 'Generate Keywords'}
-            </Button>
+            </Button> */}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1005,7 +1111,7 @@ function ServiceFormComponent({ service, onSuccess, onCancel }: ServiceFormProps
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <Label htmlFor="content" className="text-base font-semibold">Content *</Label>
-            <Button
+            {/* <Button
               type="button"
               variant="outline"
               size="sm"
@@ -1015,7 +1121,7 @@ function ServiceFormComponent({ service, onSuccess, onCancel }: ServiceFormProps
             >
               <span className="text-lg">📝</span>
               {generatingField === 'content' ? 'Generating...' : 'Generate Content'}
-            </Button>
+            </Button> */}
           </div>
           <RichTextEditor
             value={form.watch("content") || ''}
@@ -1139,8 +1245,20 @@ export default function EnhancedServiceManagement() {
   // Filter services based on selection
   const filteredServices = services.filter(service => {
     if (!selectedCategory) return true;
-    if (selectedSubcategory) return service.subcategoryId === selectedSubcategory;
-    return service.categoryId === selectedCategory;
+
+    // Find the selected category by ID to get its name
+    const category = categories.find(cat => cat.id === selectedCategory);
+    if (!category) return false;
+
+    // If subcategory is selected, compare subcategory names
+    if (selectedSubcategory) {
+      const subcategory = subcategories.find(sub => sub.id === selectedSubcategory);
+      if (!subcategory) return false;
+      return service.subCategory === subcategory.name;
+    }
+
+    // Otherwise, compare category names
+    return service.category === category.name;
   });
 
   const handleDeleteService = useMutation({
@@ -1353,11 +1471,13 @@ export default function EnhancedServiceManagement() {
                 <>
                   {/* Show Services with Page Names */}
                   {services
-                    .filter(service =>
-                      service.subcategoryId === selectedSubcategory &&
-                      service.pageName &&
-                      service.status === 'active'
-                    )
+                    .filter(service => {
+                      if (!selectedSubcategory) return false;
+                      const subcategory = subcategories.find(sub => sub.id === selectedSubcategory);
+                      return subcategory && service.subCategory === subcategory.name &&
+                        service.pageName &&
+                        service.status === 'active';
+                    })
                     .map((service) => (
                       <div
                         key={`service-${service.id}`}
@@ -1407,11 +1527,13 @@ export default function EnhancedServiceManagement() {
                     ))
                   }
 
-                  {services.filter(service =>
-                    service.subcategoryId === selectedSubcategory &&
-                    service.pageName &&
-                    service.status === 'active'
-                  ).length === 0 && pages.filter(page => page.subcategoryId === selectedSubcategory).length === 0 && (
+                  {services.filter(service => {
+                    if (!selectedSubcategory) return false;
+                    const subcategory = subcategories.find(sub => sub.id === selectedSubcategory);
+                    return subcategory && service.subCategory === subcategory.name &&
+                      service.pageName &&
+                      service.status === 'active';
+                  }).length === 0 && pages.filter(page => page.subcategoryId === selectedSubcategory).length === 0 && (
                       <div className="text-xs text-gray-500 p-2">
                         No services or pages in this subcategory yet
                       </div>
@@ -1487,7 +1609,7 @@ export default function EnhancedServiceManagement() {
                         </div>
 
                         <p className="text-xs text-gray-600 line-clamp-2">
-                          {service.description}
+                          {service.excerpt || service.content?.substring(0, 100) || 'No description available'}
                         </p>
 
                         <div className="text-xs text-gray-500 space-y-1">
@@ -1515,7 +1637,7 @@ export default function EnhancedServiceManagement() {
 
                         <div className="flex items-center justify-between pt-2 border-t border-gray-100">
                           <span className="text-sm font-semibold text-green-600">
-                            {service.price}
+                            {service.startingPrice || 'Contact for pricing'}
                           </span>
                           <div className="flex items-center space-x-1">
                             <Button
