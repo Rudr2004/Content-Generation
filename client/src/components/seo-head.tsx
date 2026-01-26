@@ -1,5 +1,7 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { COMPANY_INFO } from '@/lib/constants';
+import { useSiteSettings } from '@/contexts/SiteSettingsContext';
+import { generateDynamicKeywords } from '@/lib/seo';
 
 interface SEOHeadProps {
   title: string;
@@ -22,12 +24,19 @@ export function SEOHead({
   ogImage,
   structuredData
 }: SEOHeadProps) {
+  const { settings } = useSiteSettings();
+  const siteName = settings?.siteName || COMPANY_INFO.name;
+
+  const dynamicKeywords = useMemo(() => {
+    return generateDynamicKeywords(keywords, settings?.targetRegions || undefined, settings?.industryFocus || undefined);
+  }, [keywords, settings?.targetRegions, settings?.industryFocus]);
+
   useEffect(() => {
     // Set document title
     document.title = title;
 
     // Helper function to set or update meta tags
-    const setMetaTag = (name: string, content: string, property?: string) => {
+    const setMetaTag = (name: string, content: string, property?: boolean) => {
       const selector = property ? `meta[property="${name}"]` : `meta[name="${name}"]`;
       let meta = document.querySelector(selector) as HTMLMetaElement;
 
@@ -44,10 +53,11 @@ export function SEOHead({
       meta.setAttribute('content', content);
     };
 
+
     // Set basic meta tags
     setMetaTag('description', description);
-    setMetaTag('keywords', Array.isArray(keywords) ? keywords.join(', ') : '');
-    setMetaTag('author', COMPANY_INFO.name);
+    setMetaTag('keywords', Array.isArray(dynamicKeywords) ? dynamicKeywords.join(', ') : '');
+    setMetaTag('author', siteName);
     setMetaTag('robots', 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1');
 
     // Set viewport meta tag
@@ -61,12 +71,12 @@ export function SEOHead({
     setMetaTag('og:title', ogTitle || title, true);
     setMetaTag('og:description', ogDescription || description, true);
     setMetaTag('og:url', canonicalUrl || window.location.href, true);
-    setMetaTag('og:site_name', COMPANY_INFO.name, true);
+    setMetaTag('og:site_name', siteName, true);
     setMetaTag('og:locale', 'en_US', true);
 
     if (ogImage) {
       setMetaTag('og:image', ogImage, true);
-      setMetaTag('og:image:alt', `${COMPANY_INFO.name} - ${title}`, true);
+      setMetaTag('og:image:alt', `${siteName} - ${title}`, true);
       setMetaTag('og:image:width', '1200', true);
       setMetaTag('og:image:height', '630', true);
     }
@@ -80,7 +90,7 @@ export function SEOHead({
 
     if (ogImage) {
       setMetaTag('twitter:image', ogImage);
-      setMetaTag('twitter:image:alt', `${COMPANY_INFO.name} - ${title}`);
+      setMetaTag('twitter:image:alt', `${siteName} - ${title}`);
     }
 
     // Set canonical URL
@@ -110,12 +120,12 @@ export function SEOHead({
     setMetaTag('msapplication-TileColor', '#22c55e');
     setMetaTag('apple-mobile-web-app-capable', 'yes');
     setMetaTag('apple-mobile-web-app-status-bar-style', 'default');
-    setMetaTag('apple-mobile-web-app-title', COMPANY_INFO.name);
+    setMetaTag('apple-mobile-web-app-title', siteName);
 
     // Set HTML attributes
     document.documentElement.setAttribute('lang', 'en');
 
-  }, [title, description, keywords, canonicalUrl, ogTitle, ogDescription, ogImage, structuredData]);
+  }, [title, description, dynamicKeywords, canonicalUrl, ogTitle, ogDescription, ogImage, structuredData, siteName]);
 
   return null;
 }

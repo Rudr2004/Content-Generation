@@ -1,8 +1,11 @@
+```javascript
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Plus, BarChart3, FileText, Clock, Grid3X3, Settings, Globe } from "lucide-react";
+import { useSiteSettings } from "@/contexts/SiteSettingsContext";
+import { COMPANY_INFO } from "@/lib/constants";
 import { BlogForm } from "@/components/blog-form";
 import { BlogList } from "@/components/blog-list";
 import { BlogDashboard } from "@/components/blog-dashboard";
@@ -20,6 +23,8 @@ export default function BlogCMS() {
   const [showForm, setShowForm] = useState(false);
   const [editingPost, setEditingPost] = useState<any>(null);
   const { toast } = useToast();
+  const { settings } = useSiteSettings();
+  const siteName = settings?.siteName || COMPANY_INFO.name;
   const queryClient = useQueryClient();
 
   const { data: posts = [], refetch } = useQuery({
@@ -66,7 +71,7 @@ export default function BlogCMS() {
 
   const deleteMutation = useMutation({
     mutationFn: async (id: number) => {
-      const response = await apiRequest("DELETE", `/api/blog/${id}`);
+      const response = await apiRequest("DELETE", `/ api / blog / ${ id } `);
       return response.json();
     },
     onSuccess: () => {
@@ -89,7 +94,7 @@ export default function BlogCMS() {
 
   const publishMutation = useMutation({
     mutationFn: async (id: number) => {
-      const response = await apiRequest("PUT", `/api/blog/${id}`, {
+      const response = await apiRequest("PUT", `/ api / blog / ${ id } `, {
         status: "published",
       });
       return response.json();
@@ -114,7 +119,7 @@ export default function BlogCMS() {
 
   const scheduleMutation = useMutation({
     mutationFn: async ({ id, scheduledDate }: { id: number; scheduledDate: Date }) => {
-      const response = await apiRequest("PUT", `/api/blog/${id}`, {
+      const response = await apiRequest("PUT", `/ api / blog / ${ id } `, {
         status: "scheduled",
         scheduledAt: scheduledDate.toISOString(),
       });
@@ -159,9 +164,9 @@ export default function BlogCMS() {
   return (
     <>
       <SEOHead
-        title="Blog CMS | GreenAppleX"
-        description="Manage blog content and track performance with GreenAppleX Blog CMS"
-        keywords={["Blog CMS", "Content Management", "GreenAppleX", "Admin Panel"]}
+        title={`Blog CMS | ${ siteName } `}
+        description={`Manage blog content and track performance with ${ siteName } Blog CMS`}
+        keywords={["Blog CMS", "Content Management", siteName, "Admin Panel"]}
         canonicalUrl="https://www.greenapplex.com/cms"
       />
 
@@ -181,10 +186,10 @@ export default function BlogCMS() {
                     const parent = target.parentElement;
                     if (parent) {
                       parent.innerHTML = `
-                        <div class="w-8 h-8 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded flex items-center justify-center text-white font-bold text-xs">
-                          GA
-                        </div>
-                      `;
+  < div class="w-8 h-8 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded flex items-center justify-center text-white font-bold text-xs" >
+    GA
+                        </div >
+  `;
                     }
                   }}
                 />
@@ -312,16 +317,17 @@ export default function BlogCMS() {
               <div className="flex items-center justify-center space-x-2 mb-4">
                 <img
                   src={logoImg}
-                  alt="GreenAppleX Logo"
-                  className="h-8 w-auto"
+                  alt={`${ siteName } Logo`}
+                  className="h-5 w-5 rounded"
                 />
-                <span className="text-2xl font-normal bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent transition-all duration-300 heading-georgia">
-                  GreenAppleX
+                <span className="bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+                  {siteName}
                 </span>
               </div>
-              <p className="text-gray-600 text-sm text-poppins">
-                © 2025 GreenAppleX. All rights reserved. | Blog Content Management System
-              </p>
+              <span className="text-gray-500 text-sm ml-2">
+                © 2025 {siteName}. All rights reserved. | Blog Content
+                Management System
+              </span>
             </div>
           </div>
         </footer>

@@ -1,6 +1,11 @@
 import { MapPin, Phone, Mail, Linkedin, Twitter } from "lucide-react";
+import { useSiteSettings } from "@/contexts/SiteSettingsContext";
+import { COMPANY_INFO } from "@/lib/constants";
 
 export function GetInTouchSection() {
+  const { settings } = useSiteSettings();
+  const siteName = settings?.siteName || COMPANY_INFO.name;
+
   return (
     <div className="bg-white py-16 px-4">
       <div className="max-w-3xl mx-auto">
@@ -67,7 +72,7 @@ export function GetInTouchSection() {
               className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors"
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="Visit GreenAppleX LinkedIn Profile"
+              aria-label={`Visit ${siteName} LinkedIn Profile`}
               data-testid="link-linkedin"
             >
               <Linkedin className="w-6 h-6 text-gray-600" />
@@ -77,7 +82,7 @@ export function GetInTouchSection() {
               className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200 transition-colors"
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="Visit GreenAppleX Twitter Profile"
+              aria-label={`Visit ${siteName} Twitter Profile`}
               data-testid="link-twitter"
             >
               <Twitter className="w-6 h-6 text-gray-600" />

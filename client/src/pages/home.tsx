@@ -1,6 +1,8 @@
 import { Navigation } from "@/components/ui/navigation";
 import { Hero } from "@/components/ui/hero";
 import { Footer } from "@/components/ui/footer";
+import { useSiteSettings } from "@/contexts/SiteSettingsContext";
+import { COMPANY_INFO } from "@/lib/constants";
 import { TrustedPartners } from "@/components/trusted-partners";
 import { InteractiveServiceTabs } from "@/components/interactive-service-tabs";
 import { AboutSection } from "@/components/about-section";
@@ -22,6 +24,9 @@ import { getOrganizationStructuredData, getWebsiteStructuredData, getServiceStru
 
 export default function Home() {
   const seoData = SEO_PAGES.home;
+  const { settings } = useSiteSettings();
+  const siteName = settings?.siteName || COMPANY_INFO.name;
+
 
   const combinedStructuredData = {
     "@context": "https://schema.org",
@@ -41,8 +46,8 @@ export default function Home() {
         description={seoData.description}
         keywords={seoData.keywords}
         canonicalUrl={seoData.canonicalUrl}
-        ogTitle={seoData.ogTitle}
-        ogDescription={seoData.ogDescription}
+        ogTitle={seoData.ogTitle?.replace("GreenAppleX", siteName)}
+        ogDescription={seoData.ogDescription?.replace("GreenAppleX", siteName)}
         ogImage="https://greenapplex.com/attached_assets/1_1752498834690.png"
         structuredData={combinedStructuredData}
       />

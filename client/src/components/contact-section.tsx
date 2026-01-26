@@ -14,8 +14,11 @@ import { apiRequest } from "@/lib/queryClient";
 import { insertContactSubmissionSchema } from "@shared/schema";
 import { COMPANY_INFO, SERVICES } from "@/lib/constants";
 import { motion, AnimatePresence } from "framer-motion";
+import { useSiteSettings } from "@/contexts/SiteSettingsContext";
 
 export function ContactSection() {
+  const { settings } = useSiteSettings();
+  const siteName = settings?.siteName || COMPANY_INFO.name;
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [isVisible, setIsVisible] = useState(true); // Always visible now since it's on the page
@@ -227,9 +230,9 @@ export function ContactSection() {
                           </FormControl>
                           <SelectContent className="bg-white border-gray-200">
                             {SERVICES.map((service) => (
-                              <SelectItem 
-                                key={service.title} 
-                                value={service.title} 
+                              <SelectItem
+                                key={service.title}
+                                value={service.title}
                                 className="hover:bg-gray-50 hover:ring-2 hover:ring-blue-200 focus:bg-blue-50 focus:ring-2 focus:ring-blue-300 transition-all duration-200 cursor-pointer"
                               >
                                 {service.title}

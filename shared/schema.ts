@@ -238,11 +238,11 @@ export const services = pgTable("services", {
   technologies: text("technologies").array(),
   techStackDomains: text("tech_stack_domains").array(), // New: Selected technology domains
   aiTechnologies: text("ai_technologies").array(), // AI-generated technologies
-  
+
   // AI Content Generation Fields
   referenceUrl: text("reference_url"), // URL for AI to analyze and scrape content
   referenceContent: text("reference_content"), // Manual content input for AI analysis
-  
+
   metaTitle: text("meta_title"),
   metaDescription: text("meta_description"),
   primaryKeyword: text("primary_keyword"),
@@ -489,21 +489,21 @@ export const centralLinkRegistry = pgTable("central_link_registry", {
   status: text("status").notNull().default("active"), // active, inactive, redirect, broken
   isTracked: boolean("is_tracked").default(true).notNull(), // Whether to track this link
   priority: integer("priority").default(0).notNull(), // Priority for conflict resolution
-  
+
   // Analytics and tracking
   clickCount: integer("click_count").default(0).notNull(),
   lastAccessed: timestamp("last_accessed"),
   lastValidated: timestamp("last_validated"),
   validationStatus: text("validation_status").default("pending").notNull(), // valid, invalid, pending, error
-  
+
   // Versioning and history
   version: integer("version").default(1).notNull(),
   previousVersionId: integer("previous_version_id"), // For version history
-  
+
   // Metadata
   tags: text("tags").array(), // Tags for categorization and filtering
   metadata: text("metadata"), // JSON metadata for additional properties
-  
+
   createdBy: text("created_by"),
   updatedBy: text("updated_by"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
@@ -524,21 +524,21 @@ export const linkUsageMapping = pgTable("link_usage_mapping", {
   contextBefore: text("context_before"), // Text before the link for context
   contextAfter: text("context_after"), // Text after the link for context
   position: integer("position").default(0), // Position of link in content (if multiple)
-  
+
   // Usage tracking
   usageType: text("usage_type").default("content").notNull(), // content, navigation, footer, header
   isActive: boolean("is_active").default(true).notNull(),
   lastSynced: timestamp("last_synced"),
   syncStatus: text("sync_status").default("synced").notNull(), // synced, pending, failed
-  
+
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 }, (table) => ({
   // Unique constraint to prevent duplicate mappings
   uniqueContentLink: unique("unique_content_link").on(
-    table.linkId, 
-    table.contentType, 
-    table.contentId, 
+    table.linkId,
+    table.contentType,
+    table.contentId,
     table.fieldName,
     table.position
   ),
@@ -553,7 +553,7 @@ export const linkRedirects = pgTable("link_redirects", {
   reason: text("reason"), // Reason for redirect (url-change, consolidation, etc.)
   isActive: boolean("is_active").default(true).notNull(),
   expiresAt: timestamp("expires_at"), // Optional expiry for temporary redirects
-  
+
   createdBy: text("created_by"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 }, (table) => ({
@@ -572,11 +572,11 @@ export const linkValidation = pgTable("link_validation", {
   errorMessage: text("error_message"),
   redirectChain: text("redirect_chain"), // JSON array of redirect URLs
   finalUrl: text("final_url"), // Final URL after following redirects
-  
+
   // Validation metadata
   validatedBy: text("validated_by").default("system"), // system, user, manual
   validationMethod: text("validation_method").default("http").notNull(), // http, ping, manual
-  
+
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -642,6 +642,28 @@ export type InsertLinkRedirects = z.infer<typeof insertLinkRedirectsSchema>;
 export type LinkValidation = typeof linkValidation.$inferSelect;
 export type InsertLinkValidation = z.infer<typeof insertLinkValidationSchema>;
 
+// Site Settings Schema - Global application configuration
+export const siteSettings = pgTable("site_settings", {
+  id: serial("id").primaryKey(),
+  siteName: text("site_name").default("GreenAppleX").notNull(),
+  theme: text("theme").default("light").notNull(), // light, dark, system
+  primaryColor: text("primary_color").default("blue"), // optional: for improved theming
+  logoUrl: text("logo_url"), // optional: if they want to change logo too
+  targetRegions: text("target_regions").default("USA, Canada"), // Comma separated list of regions
+  industryFocus: text("industry_focus").default("Technology, AI"), // Comma separated list of industries
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const insertSiteSettingsSchema = createInsertSchema(siteSettings).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type SiteSettings = typeof siteSettings.$inferSelect;
+export type InsertSiteSettings = z.infer<typeof insertSiteSettingsSchema>;
+
 // Service Detail Pages Schema - Comprehensive CMS Structure
 export const serviceDetailPages = pgTable("service_detail_pages", {
   id: serial("id").primaryKey(),
@@ -650,7 +672,7 @@ export const serviceDetailPages = pgTable("service_detail_pages", {
   metaTitle: text("meta_title"),
   metaDescription: text("meta_description"),
   metaKeywords: text("meta_keywords"),
-  
+
   // Hero Section
   heroTitle: text("hero_title"),
   heroDescription: text("hero_description"),
@@ -658,57 +680,57 @@ export const serviceDetailPages = pgTable("service_detail_pages", {
   heroImageAlt: text("hero_image_alt"),
   heroCtaText: text("hero_cta_text"),
   heroCtaUrl: text("hero_cta_url"),
-  
+
   // Why Choose Us Section
   whyChooseUsTitle: text("why_choose_us_title").default("Why Choose Us"),
   whyChooseUsDescription: text("why_choose_us_description"),
   whyChooseUsCards: text("why_choose_us_cards"), // JSON array of {title, description, icon}
-  
+
   // Services Overview Section
   servicesOverviewTitle: text("services_overview_title").default("Our Services"),
   servicesOverviewDescription: text("services_overview_description"),
   servicesOverviewCards: text("services_overview_cards"), // JSON array of service cards
-  
+
   // Development Process Section
   developmentProcessTitle: text("development_process_title").default("Our Development Process"),
   developmentProcessDescription: text("development_process_description"),
   developmentProcessSteps: text("development_process_steps"), // JSON array of process steps
-  
+
   // Industries Served Section
   industriesServedTitle: text("industries_served_title").default("Industries We Serve"),
   industriesServedDescription: text("industries_served_description"),
   industriesServedList: text("industries_served_list"), // JSON array of industries
-  
+
   // Business Benefits Section
   businessBenefitsTitle: text("business_benefits_title").default("Business Benefits"),
   businessBenefitsDescription: text("business_benefits_description"),
   businessBenefitsCards: text("business_benefits_cards"), // JSON array of benefit cards
-  
+
   // Case Studies Section
   caseStudiesTitle: text("case_studies_title").default("Case Studies"),
   caseStudiesDescription: text("case_studies_description"),
   caseStudiesCards: text("case_studies_cards"), // JSON array of case study cards
-  
+
   // Tech Stack Section
   techStackTitle: text("tech_stack_title").default("Technology Stack"),
   techStackDescription: text("tech_stack_description"),
   techStackCategories: text("tech_stack_categories"), // JSON object with categories and technologies
-  
+
   // Expertise Areas Section
   expertiseAreasTitle: text("expertise_areas_title").default("Our Expertise Areas"),
   expertiseAreasDescription: text("expertise_areas_description"),
   expertiseAreasList: text("expertise_areas_list"), // JSON array of expertise areas
-  
+
   // Engagement Models Section
   engagementModelsTitle: text("engagement_models_title").default("Engagement Models"),
   engagementModelsDescription: text("engagement_models_description"),
   engagementModelsCards: text("engagement_models_cards"), // JSON array of engagement model cards
-  
+
   // Partner Logos Section
   partnerLogosTitle: text("partner_logos_title").default("Trusted by Industry Leaders"),
   partnerLogosDescription: text("partner_logos_description"),
   partnerLogos: text("partner_logos"), // JSON array of {name, logoUrl, altText}
-  
+
   // Section Visibility Controls
   showWhyChooseUs: boolean("show_why_choose_us").default(true),
   showServicesOverview: boolean("show_services_overview").default(true),
@@ -720,7 +742,7 @@ export const serviceDetailPages = pgTable("service_detail_pages", {
   showExpertiseAreas: boolean("show_expertise_areas").default(true),
   showEngagementModels: boolean("show_engagement_models").default(true),
   showPartnerLogos: boolean("show_partner_logos").default(true),
-  
+
   published: boolean("published").default(false).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
@@ -739,12 +761,12 @@ export const industryPages = pgTable("industry_pages", {
   id: serial("id").primaryKey(),
   title: text("title").notNull(),
   slug: text("slug").notNull().unique(),
-  
+
   // Page Meta
   metaTitle: text("meta_title"),
   metaDescription: text("meta_description"),
   metaKeywords: text("meta_keywords"), // JSON array of keywords
-  
+
   // Hero Section
   heroHeadline: text("hero_headline"),
   heroSubheading: text("hero_subheading"),
@@ -753,38 +775,38 @@ export const industryPages = pgTable("industry_pages", {
   heroBackgroundImageS3Key: text("hero_background_image_s3_key"),
   heroCtaText: text("hero_cta_text"),
   heroCtaLink: text("hero_cta_link"),
-  
+
   // Overview Section
   overviewTitle: text("overview_title").default("Industry Overview"),
   overviewContent: text("overview_content"), // JSON array of paragraphs
   industryStatistics: text("industry_statistics"), // JSON array of {statistic, description}
-  
+
   // Industries Detail Section
   industriesDetailTitle: text("industries_detail_title").default("Our Industry Solutions"),
   industries: text("industries"), // JSON array following the provided structure
-  
+
   // Technology Stack Section
   technologyStackTitle: text("technology_stack_title").default("Technologies We Use"),
   keyTechnologies: text("key_technologies"), // JSON array
   platforms: text("platforms"), // JSON array
   tools: text("tools"), // JSON array
-  
+
   // Engagement Process Section
   engagementProcessTitle: text("engagement_process_title").default("How We Work"),
   engagementSteps: text("engagement_steps"), // JSON array of process steps
-  
+
   // Unique Value Propositions Section
   uniqueValuePropositionsTitle: text("unique_value_propositions_title"),
   uniqueValuePropositionsPoints: text("unique_value_propositions_points"), // JSON array
-  
+
   // Testimonials Section
   testimonialsTitle: text("testimonials_title").default("What Our Clients Say"),
   testimonialsEntries: text("testimonials_entries"), // JSON array of testimonials
-  
+
   // FAQs Section
   faqsTitle: text("faqs_title").default("Frequently Asked Questions"),
   faqsItems: text("faqs_items"), // JSON array of {question, answer}
-  
+
   // Call to Action Section
   ctaHeadline: text("cta_headline"),
   ctaSubtext: text("cta_subtext"),
@@ -792,7 +814,7 @@ export const industryPages = pgTable("industry_pages", {
   ctaPrimaryButtonLink: text("cta_primary_button_link"),
   ctaSecondaryButtonText: text("cta_secondary_button_text"),
   ctaSecondaryButtonLink: text("cta_secondary_button_link"),
-  
+
   // Section Visibility Controls
   showOverview: boolean("show_overview").default(true),
   showIndustriesDetail: boolean("show_industries_detail").default(true),
@@ -802,14 +824,14 @@ export const industryPages = pgTable("industry_pages", {
   showTestimonials: boolean("show_testimonials").default(true),
   showFaqs: boolean("show_faqs").default(true),
   showCta: boolean("show_cta").default(true),
-  
+
   // SEO and Content Fields
   primaryKeyword: text("primary_keyword"),
   secondaryKeywords: text("secondary_keywords"),
   referenceContent: text("reference_content"), // Content used for AI generation
   content: text("content"), // Additional content or notes
   generatedContent: text("generated_content"), // Summary of AI-generated content for admin review
-  
+
   // Page Settings
   featured: boolean("featured").default(false),
   status: text("status").default("active").notNull(), // active, inactive  
@@ -894,13 +916,13 @@ export const hirePages = pgTable("hire_pages", {
   title: text("title").notNull(), // e.g., "Hire Blockchain Developers"
   slug: text("slug").notNull().unique(), // e.g., "hire-blockchain-developers"
   developerType: text("developer_type"), // e.g., "Blockchain", "AI", "Mobile" - now optional
-  
+
   // SEO Meta Information
   metaTitle: text("meta_title"),
   metaDescription: text("meta_description"),
   metaKeywords: text("meta_keywords"),
   canonicalUrl: text("canonical_url"),
-  
+
   // Hero Section
   heroTitle: text("hero_title"), // H1: "Hire [Developer Type] Developers in USA & Canada"
   heroSubtitle: text("hero_subtitle"), // Pain-point solving line or credibility hook
@@ -910,12 +932,12 @@ export const hirePages = pgTable("hire_pages", {
   heroCtaText: text("hero_cta_text").default("Hire Developers"),
   heroCtaUrl: text("hero_cta_url").default("#contact"),
   trustBadges: text("trust_badges"), // JSON array of badges/certifications
-  
+
   // Value & Trust Section ("Why Hire From GreenAppleX")
   whyHireTitle: text("why_hire_title"), // Will be populated by AI with specific developer type
   whyHireDescription: text("why_hire_description"),
   whyHirePoints: text("why_hire_points"), // JSON array of trust points
-  
+
   // Metrics + Social Proof Block
   metricsTitle: text("metrics_title").default("Key Highlights"),
   projectsDelivered: text("projects_delivered"), // e.g., "100+ Blockchain Projects"
@@ -923,50 +945,50 @@ export const hirePages = pgTable("hire_pages", {
   revenueSecured: text("revenue_secured"), // e.g., "$50M+ Secured"
   industryRecognition: text("industry_recognition"), // e.g., "Top Web3 Company 2024"
   clientLogos: text("client_logos"), // JSON array of client logos
-  
+
   // Services / Expertise Offered
   servicesTitle: text("services_title"), // "Our [Developer Type] Services"
   servicesDescription: text("services_description"),
   servicesOffered: text("services_offered"), // JSON array of services with descriptions
-  
+
   // Hiring Models Section
   hiringModelsTitle: text("hiring_models_title").default("Flexible Hiring Models"),
   hiringModelsDescription: text("hiring_models_description"),
   hiringModels: text("hiring_models"), // JSON array of models (Contract, Permanent, Dedicated Teams)
-  
+
   // Testimonials & Success Stories
   testimonialsTitle: text("testimonials_title").default("Trusted by Global Founders"),
   testimonialsDescription: text("testimonials_description"),
   testimonials: text("testimonials"), // JSON array of client testimonials
-  
+
   // FAQ Section
   faqTitle: text("faq_title").default("Frequently Asked Questions"),
   faqs: text("faqs"), // JSON array of FAQ items
-  
+
   // Final CTA Section
   finalCtaTitle: text("final_cta_title"), // "Ready to Hire [Developer Type] Experts?"
   finalCtaDescription: text("final_cta_description"),
   finalCtaText: text("final_cta_text").default("Get Started Today"),
   finalCtaUrl: text("final_cta_url").default("#contact"),
-  
+
   // Additional SEO and Technical Fields
   primaryKeyword: text("primary_keyword"), // Main SEO keyword
   secondaryKeywords: text("secondary_keywords"), // Supporting keywords
   targetLocations: text("target_locations"), // JSON array (USA, Canada, specific cities)
   coreSkills: text("core_skills"), // JSON array of core technologies/skills
-  
+
   // Technology Stack Section  
   technologyStack: text("technology_stack"), // JSON object with description and categories
   aiTechnologies: text("ai_technologies"), // AI-generated technology recommendations for display on user side
-  
+
   // AI Reference Content Generation
   referenceContent: text("reference_content"), // Reference content for AI generation
   content: text("content"), // Generated structured content (JSON)
-  
+
   // Case Study Integration (same as Service CMS)
   caseStudyCategories: text("case_study_categories"), // JSON array of selected category names
   selectedCaseStudies: text("selected_case_studies"), // JSON array of selected case study IDs
-  
+
   // Status and Management
   status: text("status").default("draft").notNull(), // draft, published, archived
   featured: boolean("featured").default(false),
@@ -1018,50 +1040,50 @@ export const caseStudyPages = pgTable("case_study_pages", {
   id: serial("id").primaryKey(),
   title: text("title").notNull(),
   slug: text("slug").notNull().unique(),
-  
+
   // SEO Meta Information
   metaTitle: text("meta_title"),
   metaDescription: text("meta_description"),
   metaKeywords: text("meta_keywords"),
   canonicalUrl: text("canonical_url"),
-  
+
   // Client Information
   clientName: text("client_name"),
   clientIndustry: text("client_industry"),
   clientLocation: text("client_location"),
-  
+
   // Project Overview
   projectDuration: text("project_duration"),
   problemStatement: text("problem_statement"),
   objectives: text("objectives"), // JSON array
-  
+
   // Challenges
   challenges: text("challenges"), // JSON array
-  
+
   // Solution Details
   solutionStrategy: text("solution_strategy"),
   featuresCapabilities: text("features_capabilities"), // JSON array
   userExperienceDesign: text("user_experience_design"),
   technologiesUsed: text("technologies_used"), // JSON array
-  
+
   // Implementation Process
   implementationProcess: text("implementation_process"), // JSON array of phases
-  
+
   // Results and Impact
   quantitativeMetrics: text("quantitative_metrics"), // JSON object
   qualitativeBenefits: text("qualitative_benefits"), // JSON array
   businessOutcomes: text("business_outcomes"),
-  
+
   // Client Testimonial
   clientTestimonial: text("client_testimonial"),
-  
+
   // Future and Conclusion
   futureScopeEnhancements: text("future_scope_enhancements"),
   conclusion: text("conclusion"),
-  
+
   // Reference Content for AI Generation
   referenceContent: text("reference_content"),
-  
+
   // Category and Management
   category: text("category"),
   tags: text("tags"),
@@ -1202,18 +1224,18 @@ export const individualCaseStudySchema = z.object({
   location: z.string(), // Country/Location
   industry: z.string(), // Industry or domain (Education, Medtech, SaaS)
   summary: z.string(), // Brief summary describing problem solved/value delivered
-  
+
   // Key Details
   technologies: z.array(z.string()), // Technology or methodology used
   challenges: z.string(), // Challenges faced
   solutions: z.string(), // Solutions implemented
   outcomes: z.string(), // Measured benefits or outcomes
   innovations: z.string().optional(), // Unique innovations or features
-  
+
   // Visual Elements
   imageUrl: z.string().optional(),
   imageAlt: z.string().optional(),
-  
+
   // Additional Info
   projectDuration: z.string().optional(),
   teamSize: z.string().optional(),

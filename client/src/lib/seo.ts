@@ -12,7 +12,7 @@ export interface SEOMetadata {
 // Primary target keywords based on 2025 trending B2B AI keywords
 export const PRIMARY_KEYWORDS = [
   "AI development services",
-  "enterprise AI solutions", 
+  "enterprise AI solutions",
   "custom software development",
   "generative AI development",
   "machine learning consulting",
@@ -27,7 +27,7 @@ export const PRIMARY_KEYWORDS = [
 export const LONG_TAIL_KEYWORDS = [
   "AI development services for enterprises",
   "custom AI software development company",
-  "enterprise AI solution development", 
+  "enterprise AI solution development",
   "bespoke AI application development",
   "machine learning consulting services",
   "AI-powered business automation",
@@ -40,7 +40,7 @@ export const LONG_TAIL_KEYWORDS = [
 // Industry-specific keywords for targeting
 export const INDUSTRY_KEYWORDS = [
   "AI development for healthcare",
-  "fintech AI development", 
+  "fintech AI development",
   "retail AI solutions",
   "manufacturing AI automation",
   "logistics AI development",
@@ -50,32 +50,29 @@ export const INDUSTRY_KEYWORDS = [
 ];
 
 // Location-based keywords for local SEO
+// Location-based keywords for local SEO - Base templates to be localized
 export const LOCATION_KEYWORDS = [
-  "Custom software development USA",
-  "generative AI development company USA",
-  "hire mobile app developers USA",
-  "React Native app development Canada",
-  "Top mobile app developers USA",
-  "web3 development company USA",
-  "AI and Web3 solutions Canada",
-  "AI and blockchain solutions Canada",
-  "Blockchain development firm Canada",
-  "Digital transformation consulting Canada",
-  "Enterprise AI services USA",
-  "Generative AI development USA",
-  "Hire AI developers USA",
-  "Web3 development company Canada",
-  "Web3 development services Canada",
-  "affordable Web3 development Canada",
-  "best custom software development USA",
-  "blockchain dapp development USA",
-  "blockchain development firm USA",
-  "digital transformation consulting Canada",
-  "enterprise AI services USA",
-  "enterprise web3 solutions USA",
-  "hire web3 developers USA",
-  "web3 consulting firm USA",
-  "web3 development services USA"
+  "Custom software development",
+  "generative AI development company",
+  "hire mobile app developers",
+  "Top mobile app developers",
+  "web3 development company",
+  "AI and Web3 solutions",
+  "AI and blockchain solutions",
+  "Blockchain development firm",
+  "Digital transformation consulting",
+  "Enterprise AI services",
+  "Generative AI development",
+  "Hire AI developers",
+  "Web3 development company",
+  "Web3 development services",
+  "affordable Web3 development",
+  "best custom software development",
+  "blockchain dapp development",
+  "blockchain development firm",
+  "enterprise web3 solutions",
+  "hire web3 developers",
+  "web3 consulting firm"
 ];
 
 // Page-specific SEO metadata
@@ -84,47 +81,47 @@ export const SEO_PAGES: Record<string, SEOMetadata> = {
     title: "GreenAppleX - AI & Web3 Development Company USA",
     description: "Top AI & Web3 development company USA. Hire expert developers for AI, blockchain, and mobile apps. 500+ projects delivered.",
     keywords: [
-      "Custom software development USA",
-      "generative AI development company USA",
-      "hire mobile app developers USA",
-      "Web3 development company USA",
-      "AI and Web3 solutions Canada",
-      "Enterprise AI services USA",
-      "blockchain development firm USA",
-      "digital transformation consulting Canada",
-      "hire AI developers USA",
-      "web3 development services USA",
-      "React Native app development Canada",
-      "Top mobile app developers USA"
+      "Custom software development",
+      "generative AI development company",
+      "hire mobile app developers",
+      "Web3 development company",
+      "AI and Web3 solutions",
+      "Enterprise AI services",
+      "blockchain development firm",
+      "digital transformation consulting",
+      "hire AI developers",
+      "web3 development services",
+      "React Native app development",
+      "Top mobile app developers"
     ],
     ogTitle: "GreenAppleX - AI & Web3 Development Company USA",
     ogDescription: "Leading AI development company USA delivering Web3 solutions. Hire top developers for AI, mobile apps, and blockchain. 500+ projects delivered.",
     canonicalUrl: "https://greenapplex.com/"
   },
-  
+
   services: {
     title: "AI Development Services USA | Web3 & Custom Software",
     description: "Enterprise AI services USA, Web3 development Canada. Hire AI developers, blockchain specialists, mobile app developers. Affordable solutions.",
     keywords: [
-      "Enterprise AI services USA",
-      "Web3 development services Canada",
-      "custom software development USA",
-      "generative AI development USA",
-      "hire AI developers USA",
-      "blockchain development firm Canada",
-      "digital transformation consulting Canada",
-      "affordable Web3 development Canada",
-      "hire mobile app developers USA",
-      "blockchain dapp development USA",
-      "web3 consulting firm USA",
-      "enterprise web3 solutions USA",
-      "best custom software development USA"
+      "Enterprise AI services",
+      "Web3 development services",
+      "custom software development",
+      "generative AI development",
+      "hire AI developers",
+      "blockchain development firm",
+      "digital transformation consulting",
+      "affordable Web3 development",
+      "hire mobile app developers",
+      "blockchain dapp development",
+      "web3 consulting firm",
+      "enterprise web3 solutions",
+      "best custom software development"
     ],
     ogTitle: "AI Development Services USA | Web3 & Enterprise Solutions",
     ogDescription: "Enterprise AI services USA, Web3 development Canada. Hire AI developers, blockchain specialists, mobile app developers. Expert solutions.",
     canonicalUrl: "https://greenapplex.com/services"
   },
-  
+
   about: {
     title: "About GreenAppleX - Leading AI Development Company",
     description: "Premier AI development company with 8+ years experience. 200+ expert developers, 500+ projects in AI, Web3, mobile, and enterprise solutions.",
@@ -139,9 +136,9 @@ export const SEO_PAGES: Record<string, SEOMetadata> = {
     ],
     canonicalUrl: "https://greenapplex.com/about"
   },
-  
+
   portfolio: {
-    title: "AI Development Portfolio - Enterprise Projects", 
+    title: "AI Development Portfolio - Enterprise Projects",
     description: "Explore our portfolio of successful AI projects, Web3 solutions, mobile apps, and digital transformation. 500+ completed projects.",
     keywords: [
       "AI development portfolio",
@@ -155,7 +152,7 @@ export const SEO_PAGES: Record<string, SEOMetadata> = {
     ],
     canonicalUrl: "https://greenapplex.com/portfolio"
   },
-  
+
   insights: {
     title: "AI Insights & Tech Trends | InfranautX",
     description: "Latest AI development insights, enterprise trends, generative AI, Web3, and software best practices from InfranautX.",
@@ -169,7 +166,7 @@ export const SEO_PAGES: Record<string, SEOMetadata> = {
     ],
     canonicalUrl: "https://greenapplex.com/insights"
   },
-  
+
   blog: {
     title: "AutoGen vs LangGraph: AI Agent Framework Comparison",
     description: "Comprehensive comparison of AutoGen vs LangGraph for multi-agent AI development. Expert analysis of features and real-world applications.",
@@ -183,7 +180,7 @@ export const SEO_PAGES: Record<string, SEOMetadata> = {
     ],
     canonicalUrl: "https://greenapplex.com/blog"
   },
-  
+
   contact: {
     title: "Contact Green Apple | Free AI Consultation",
     description: "Contact Green Apple for enterprise AI development and custom software. Get a free consultation and project quote. 24/7 support.",
@@ -202,7 +199,7 @@ export const SEO_PAGES: Record<string, SEOMetadata> = {
     description: "Hire pre-vetted AI, mobile app, Web3, and full-stack developers. Flexible engagement models, 30-day risk-free trial, NDA protection.",
     keywords: [
       "hire developers",
-      "hire AI developers", 
+      "hire AI developers",
       "hire mobile app developers",
       "hire Web3 developers",
       "dedicated development team",
@@ -211,7 +208,7 @@ export const SEO_PAGES: Record<string, SEOMetadata> = {
     ],
     canonicalUrl: "https://greenapplex.com/hire-developers"
   },
-  
+
   "privacy-policy": {
     title: "Privacy Policy | GreenAppleX - Data Security",
     description: "GreenAppleX Privacy Policy: Learn about our data security measures, NDA agreements, and commitment to protecting client confidentiality.",
@@ -229,7 +226,7 @@ export const SEO_PAGES: Record<string, SEOMetadata> = {
     ogDescription: "Learn about GreenAppleX's commitment to data security, confidentiality agreements, and privacy protection measures for all client projects.",
     canonicalUrl: "https://greenapplex.com/privacy-policy"
   },
-  
+
   "case-studies": {
     title: "AI Development Case Studies & Success Stories",
     description: "Explore GreenAppleX's AI development case studies. Real-world AI projects for education, healthcare, fintech, and enterprise clients.",
@@ -251,13 +248,13 @@ export const SEO_PAGES: Record<string, SEOMetadata> = {
     ogDescription: "Discover how GreenAppleX delivered successful AI solutions for education, healthcare, fintech, and enterprise clients with measurable results.",
     canonicalUrl: "https://greenapplex.com/case-studies"
   },
-  
+
   "ai-services": {
     title: "Custom Generative AI Development Services USA",
     description: "Custom generative AI development services USA. Expert AI consulting, model development, chatbot building, enterprise AI integration.",
     keywords: [
       "custom generative AI development",
-      "AI development services USA",
+      "AI development services",
       "generative AI consulting",
       "custom AI model development",
       "AI chatbot development",
@@ -280,6 +277,46 @@ export function generateMetaKeywords(keywords: string[]): string {
   return keywords.join(", ");
 }
 
+/**
+ * Generates dynamic SEO keywords by combining base keywords with target regions and industries.
+ * @param baseKeywords Array of base keywords (e.g., "AI Development", "Custom Software")
+ * @param targetRegions Comma-separated string of regions (e.g., "USA, Canada, UK")
+ * @param industryFocus Comma-separated string of industries (e.g., "Healthcare, Finance")
+ * @returns Combined and deduplicated array of localized keywords
+ */
+export function generateDynamicKeywords(
+  baseKeywords: string[],
+  targetRegions: string | undefined,
+  industryFocus?: string
+): string[] {
+  const regions = targetRegions ? targetRegions.split(',').map(r => r.trim()).filter(Boolean) : [];
+
+  // If no regions configured, returns base keywords to avoid empty bias
+  if (regions.length === 0) return baseKeywords;
+
+  const localizedKeywords: string[] = [];
+
+  // Add base keywords first
+  localizedKeywords.push(...baseKeywords);
+
+  // Generate localized versions for high-value keywords
+  // We don't want to explode the count too much, so we limit to primary base keywords usually, 
+  // but here we will try to localize the passed list.
+  baseKeywords.forEach(keyword => {
+    regions.forEach(region => {
+      // Avoid redundancy like "Custom Software Development USA USA" if keyword already contains it
+      const cleanRegion = region.replace(/[^a-zA-Z0-9 ]/g, ''); // Simple cleanup
+      if (!keyword.toLowerCase().includes(cleanRegion.toLowerCase())) {
+        localizedKeywords.push(`${keyword} ${region}`);
+        localizedKeywords.push(`${keyword} in ${region}`);
+      }
+    });
+  });
+
+  // Unique and limit count to avoid stuffing
+  return Array.from(new Set(localizedKeywords)).slice(0, 40); // Limit to reasonable meta tag length approx
+}
+
 // Generate optimized title with keyword placement
 export function optimizeTitle(baseTitle: string, primaryKeyword: string): string {
   if (baseTitle.toLowerCase().includes(primaryKeyword.toLowerCase())) {
@@ -291,18 +328,18 @@ export function optimizeTitle(baseTitle: string, primaryKeyword: string): string
 // Generate SEO-optimized description
 export function optimizeDescription(description: string, keywords: string[]): string {
   let optimized = description;
-  
+
   // Ensure primary keyword is in first 160 characters
   const primaryKeyword = keywords[0];
   if (!optimized.toLowerCase().includes(primaryKeyword.toLowerCase())) {
     optimized = `${primaryKeyword} - ${optimized}`;
   }
-  
+
   // Truncate to optimal length
   if (optimized.length > 155) {
     optimized = optimized.substring(0, 152) + "...";
   }
-  
+
   return optimized;
 }
 
@@ -310,22 +347,22 @@ export function optimizeDescription(description: string, keywords: string[]): st
 export function updateSEOMetadata(pageKey: string): void {
   const seo = SEO_PAGES[pageKey];
   if (!seo) return;
-  
+
   // Update title
   document.title = seo.title;
-  
+
   // Update meta description
   const metaDesc = document.querySelector('meta[name="description"]');
   if (metaDesc) {
     metaDesc.setAttribute('content', seo.description);
   }
-  
+
   // Update meta keywords
   const metaKeywords = document.querySelector('meta[name="keywords"]');
   if (metaKeywords) {
     metaKeywords.setAttribute('content', generateMetaKeywords(seo.keywords));
   }
-  
+
   // Update canonical URL
   let canonical = document.querySelector('link[rel="canonical"]');
   if (!canonical) {
@@ -334,29 +371,29 @@ export function updateSEOMetadata(pageKey: string): void {
     document.head.appendChild(canonical);
   }
   canonical.setAttribute('href', seo.canonicalUrl || window.location.href);
-  
+
   // Update Open Graph tags
   const ogTitle = document.querySelector('meta[property="og:title"]');
   if (ogTitle) {
     ogTitle.setAttribute('content', seo.ogTitle || seo.title);
   }
-  
+
   const ogDesc = document.querySelector('meta[property="og:description"]');
   if (ogDesc) {
     ogDesc.setAttribute('content', seo.ogDescription || seo.description);
   }
-  
+
   const ogUrl = document.querySelector('meta[property="og:url"]');
   if (ogUrl) {
     ogUrl.setAttribute('content', seo.canonicalUrl || window.location.href);
   }
-  
+
   // Update Twitter tags
   const twitterTitle = document.querySelector('meta[property="twitter:title"]');
   if (twitterTitle) {
     twitterTitle.setAttribute('content', seo.ogTitle || seo.title);
   }
-  
+
   const twitterDesc = document.querySelector('meta[property="twitter:description"]');
   if (twitterDesc) {
     twitterDesc.setAttribute('content', seo.ogDescription || seo.description);
@@ -379,7 +416,7 @@ export const STRUCTURED_DATA = {
     "areaServed": "North America",
     "serviceType": "Technology Services"
   }),
-  
+
   // Blog article structured data
   article: (title: string, description: string, publishDate: string, author: string) => ({
     "@context": "https://schema.org",
@@ -401,9 +438,9 @@ export const STRUCTURED_DATA = {
     "datePublished": publishDate,
     "dateModified": publishDate
   }),
-  
+
   // FAQ structured data
-  faq: (questions: Array<{question: string, answer: string}>) => ({
+  faq: (questions: Array<{ question: string, answer: string }>) => ({
     "@context": "https://schema.org",
     "@type": "FAQPage",
     "mainEntity": questions.map(q => ({
@@ -468,7 +505,7 @@ export function generateSEOReport(): { score: number; recommendations: string[] 
       imagesWithAlt++;
     }
   });
-  
+
   if (images.length === imagesWithAlt) {
     score += 15;
   } else {
@@ -528,7 +565,7 @@ export const SEO_PERFORMANCE = {
       }
     });
   },
-  
+
   // Add proper heading hierarchy
   optimizeHeadings: () => {
     const headings = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
@@ -548,16 +585,16 @@ export function optimizeKeywordDensity(content: string, targetKeywords: string[]
   let optimized = content;
   const wordCount = content.split(/\s+/).length;
   const targetDensity = 0.015; // 1.5% keyword density
-  
+
   targetKeywords.forEach(keyword => {
     const currentCount = (content.toLowerCase().match(new RegExp(keyword.toLowerCase(), 'g')) || []).length;
     const targetCount = Math.round(wordCount * targetDensity);
-    
+
     // If keyword density is too low, suggest natural placement opportunities
     if (currentCount < targetCount) {
       console.log(`Consider adding "${keyword}" ${targetCount - currentCount} more times naturally in content`);
     }
   });
-  
+
   return optimized;
 }

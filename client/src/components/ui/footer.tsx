@@ -3,8 +3,12 @@ import { Apple, Twitter, Linkedin } from "lucide-react";
 import { COMPANY_INFO } from "@/lib/constants";
 import { motion } from "framer-motion";
 import logoImg from "@assets/Logo A_1752582606982.jpg";
+import { useSiteSettings } from "@/contexts/SiteSettingsContext";
 
 export function Footer() {
+  const { settings } = useSiteSettings();
+  const siteName = settings?.siteName || COMPANY_INFO.name;
+
   return (
     <footer className="bg-white border-t border-gray-200 py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -17,24 +21,24 @@ export function Footer() {
               </div>
 
               <div>
-                <span className="text-2xl font-normal bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent transition-all duration-300 heading-georgia">{COMPANY_INFO.name}</span>
+                <span className="text-2xl font-normal bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent transition-all duration-300 heading-georgia">{settings?.siteName || COMPANY_INFO.name}</span>
                 <p className="text-xs text-gray-500 font-medium">{COMPANY_INFO.tagline}</p>
               </div>
             </div>
             <p className="text-gray-600 mb-6 leading-relaxed">{COMPANY_INFO.description}</p>
             <div className="flex space-x-4">
-              <a 
-                href={COMPANY_INFO.social.linkedin} 
+              <a
+                href={COMPANY_INFO.social.linkedin}
                 className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center text-gray-600 hover:bg-green-apple hover:text-white transition-colors"
-                aria-label="Visit GreenAppleX LinkedIn Company Page"
+                aria-label={`Visit ${siteName} LinkedIn Company Page`}
                 data-testid="link-footer-linkedin"
               >
                 <Linkedin className="h-5 w-5" />
               </a>
-              <a 
-                href={COMPANY_INFO.social.twitter} 
+              <a
+                href={COMPANY_INFO.social.twitter}
                 className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center text-gray-600 hover:bg-green-apple hover:text-white transition-colors"
-                aria-label="Visit GreenAppleX Twitter Profile"
+                aria-label={`Visit ${siteName} Twitter Profile`}
                 data-testid="link-footer-twitter"
               >
                 <Twitter className="h-5 w-5" />
@@ -185,7 +189,7 @@ export function Footer() {
 
         <div className="border-t border-gray-200 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-gray-600 text-sm">
-            © 2025 {COMPANY_INFO.name} - {COMPANY_INFO.tagline}. All rights reserved.
+            © 2025 {settings?.siteName || COMPANY_INFO.name} - {COMPANY_INFO.tagline}. All rights reserved.
           </p>
           <div className="flex space-x-8 mt-4 md:mt-0">
             <div className="relative overflow-hidden rounded-md">

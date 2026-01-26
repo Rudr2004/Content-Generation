@@ -3,8 +3,13 @@ import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { AnimatedButton } from "@/components/ui/animated-button";
 import { HeroAnimatedButton } from "@/components/ui/hero-animated-button";
+import { useSiteSettings } from "@/contexts/SiteSettingsContext";
+import { COMPANY_INFO } from "@/lib/constants";
 
 export function Hero() {
+  const { settings } = useSiteSettings();
+  const siteName = settings?.siteName || COMPANY_INFO.name;
+
   return (
     <section className="pt-24 pb-20 bg-white relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-br from-blue-50/30 via-white to-green-50/20"></div>
@@ -17,11 +22,11 @@ export function Hero() {
           <h1 className="text-4xl lg:text-7xl font-bold mb-8 leading-tight text-gray-900 max-w-5xl mx-auto heading-georgia">
             Build Your Future with{" "}
             <span className="bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
-              GreenAppleX
+              {siteName}
             </span>
           </h1>
           <p className="text-xl lg:text-2xl text-gray-600 mb-12 leading-relaxed max-w-4xl mx-auto font-light text-poppins">
-            GreenAppleX delivers transformative solutions in generative AI, Web3, mobile apps, custom software, and digital transformation, empowering startups and enterprises to lead their industries.
+            {siteName} delivers transformative solutions in generative AI, Web3, mobile apps, custom software, and digital transformation, empowering startups and enterprises to lead their industries.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-6 justify-center mb-16">

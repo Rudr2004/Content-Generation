@@ -4,8 +4,13 @@ import { Footer } from "@/components/ui/footer";
 import { Shield, Lock, Server, Building2, Users, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
+import { useSiteSettings } from "@/contexts/SiteSettingsContext";
+import { COMPANY_INFO } from "@/lib/constants";
 
 export function PrivacyPolicy() {
+  const { settings } = useSiteSettings();
+  const siteName = settings?.siteName || COMPANY_INFO.name;
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Navigation />
@@ -36,7 +41,7 @@ export function PrivacyPolicy() {
                     To avoid any issues regarding security of data and project's implementation, we offer robust and scalable agreements with clients. We believe that "Disciplined work gives the extension to the relationship". We are always ready to sign Non-Disclosure Agreements (NDA) to enhance the work quality and neglect security issues regarding any form of project materials.
                   </p>
                   <p className="text-gray-700 leading-relaxed mb-4">
-                    At GreenAppleX, confidentiality of your project and security of your data is of utmost importance. We have competent measures in place that ensure the security of your data in our development center.
+                    At {siteName}, confidentiality of your project and security of your data is of utmost importance. We have competent measures in place that ensure the security of your data in our development center.
                   </p>
                   <p className="text-gray-700 leading-relaxed">
                     Not only your data security is a critical element for maintaining the long-term relationship with you, your data is what your business is based on and by taking care of your business, we take care of our business too.
@@ -169,7 +174,7 @@ export function PrivacyPolicy() {
                 <div className="text-center">
                   <h2 className="text-2xl font-bold text-gray-900 mb-4 heading-georgia">Questions?</h2>
                   <p className="text-gray-700 mb-6 text-poppins">
-                    If you have any questions about this privacy policy or GreenAppleX treatment of your personal information,
+                    If you have any questions about this privacy policy or {siteName} treatment of your personal information,
                   </p>
                   <div className="flex items-center justify-center space-x-2 text-lg font-semibold text-blue-600">
                     <Link to="/contact" className="hover:text-blue-800 transition-colors">

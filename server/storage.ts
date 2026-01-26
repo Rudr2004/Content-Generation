@@ -29,6 +29,7 @@ import { LinkRedirectModel } from "./models/linkRedirect";
 import { LinkValidationModel } from "./models/linkValidation";
 import { RobotsTxtSettingModel } from "./models/robotsTxtSetting";
 import { TechnologyModel } from "./models/technology";
+import { SiteSettingModel } from "./models/siteSetting";
 
 // ===================== TypeScript Interfaces =====================
 export interface User {
@@ -144,6 +145,15 @@ export interface CaseStudyCategory {
   name: string;
   status: "draft" | "published";
   createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface SiteSettings {
+  id: string;
+  siteName: string;
+  theme: string;
+  primaryColor?: string;
+  logoUrl?: string;
   updatedAt: Date;
 }
 
@@ -2759,5 +2769,33 @@ export const storage = {
     } else {
       await TechnologyModel.deleteOne({ _id: id }).exec();
     }
+  },
+
+  // ===================== Site Settings =====================
+  getSiteSettings: async () => {
+    await connectMongo();
+    // Use findOne to get the single configuration document. 
+    // If it doesn't exist, create default.
+    let doc = await SiteSettingModel.findOne().lean().exec();
+    if (!doc) {
+      doc = await SiteSettingModel.create({
+        siteName: "GreenAppleX",
+        theme: "light",
+      });
+      doc = doc.toObject();
+    }
+    return { ...doc, id: (doc as any)._id.toString() } as unknown as SiteSettings;
+  },
+
+  updateSiteSettings: async (updates: Partial<SiteSettings>) => {
+    await connectMongo();
+    // Maintain a single document approach
+    let doc = await SiteSettingModel.findOneAndUpdate(
+      {}, // matches any document (we assume only one exists)
+      { ...updates, updatedAt: new Date() },
+      { new: true, upsert: true } // upsert: true creates it if not found
+    ).lean().exec();
+
+    return { ...doc, id: (doc as any)._id.toString() } as unknown as SiteSettings;
   },
 };

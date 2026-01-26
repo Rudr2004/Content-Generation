@@ -4,6 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { ArrowRight, Calendar, Building2, Target, CheckCircle, Lightbulb, Rocket, Star, Quote } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useSiteSettings } from "@/contexts/SiteSettingsContext";
+import { COMPANY_INFO } from "@/lib/constants";
 
 interface CaseStudyData {
   id: number;
@@ -26,9 +28,12 @@ interface SimplifiedCaseStudyDisplayProps {
 }
 
 export function SimplifiedCaseStudyDisplay({ caseStudy }: SimplifiedCaseStudyDisplayProps) {
+  const { settings } = useSiteSettings();
+  const siteName = settings?.siteName || COMPANY_INFO.name;
+
   // Extract content from the formatted problemStatement field
   const content = caseStudy.problemStatement || '';
-  
+
   // Try to parse as JSON first, then fall back to text parsing
   const parseJSONContent = (content: string) => {
     try {
@@ -49,7 +54,7 @@ export function SimplifiedCaseStudyDisplay({ caseStudy }: SimplifiedCaseStudyDis
       return null;
     }
   };
-  
+
   // Enhanced parsing for AI-generated content
   const parseContentSections = (content: string) => {
     // First try to parse as JSON
@@ -57,25 +62,25 @@ export function SimplifiedCaseStudyDisplay({ caseStudy }: SimplifiedCaseStudyDis
     if (jsonData) {
       return jsonData;
     }
-    
+
     // Fall back to text parsing
     const sections: any = {};
     const lines = content.split('\n');
     let currentSection = '';
     let currentContent = '';
-    
+
     for (const line of lines) {
       const trimmedLine = line.trim();
-      
+
       // Check for section headers
       if (trimmedLine.includes(':') && (
-        trimmedLine.startsWith('Title:') || 
-        trimmedLine.startsWith('Client Information:') || 
-        trimmedLine.startsWith('Project Overview:') || 
-        trimmedLine.startsWith('Challenges:') || 
-        trimmedLine.startsWith('Solution:') || 
-        trimmedLine.startsWith('Results & Impact:') || 
-        trimmedLine.startsWith('Client Testimonial:') || 
+        trimmedLine.startsWith('Title:') ||
+        trimmedLine.startsWith('Client Information:') ||
+        trimmedLine.startsWith('Project Overview:') ||
+        trimmedLine.startsWith('Challenges:') ||
+        trimmedLine.startsWith('Solution:') ||
+        trimmedLine.startsWith('Results & Impact:') ||
+        trimmedLine.startsWith('Client Testimonial:') ||
         trimmedLine.startsWith('Conclusion:') ||
         // Additional common section patterns
         trimmedLine.match(/^[A-Z][^:]*:/) // Any capitalized word followed by colon
@@ -84,14 +89,14 @@ export function SimplifiedCaseStudyDisplay({ caseStudy }: SimplifiedCaseStudyDis
         if (currentSection && currentContent) {
           sections[currentSection] = currentContent.trim();
         }
-        
+
         // Start new section
         currentSection = trimmedLine.split(':')[0].toLowerCase()
           .replace(/\s+/g, '_')
           .replace('&', 'and')
           .replace(/[^\w]/g, '');
         currentContent = trimmedLine.split(':').slice(1).join(':').trim();
-        
+
         // If there's content after the colon, add it
         if (currentContent) {
           currentContent += '\n';
@@ -101,17 +106,17 @@ export function SimplifiedCaseStudyDisplay({ caseStudy }: SimplifiedCaseStudyDis
         currentContent += trimmedLine + '\n';
       }
     }
-    
+
     // Save the last section
     if (currentSection && currentContent) {
       sections[currentSection] = currentContent.trim();
     }
-    
+
     return sections;
   };
-  
+
   const parsedData = parseContentSections(content);
-  
+
   // Create comprehensive fallback content if sections are minimal
   const fallbackContent = {
     title: caseStudy.title,
@@ -128,7 +133,7 @@ export function SimplifiedCaseStudyDisplay({ caseStudy }: SimplifiedCaseStudyDis
     challenges: [
       "Legacy system limitations and technical debt",
       "Scalability and performance requirements",
-      "Integration complexity with existing infrastructure", 
+      "Integration complexity with existing infrastructure",
       "User experience and adoption challenges",
       "Security and compliance requirements"
     ],
@@ -157,19 +162,19 @@ export function SimplifiedCaseStudyDisplay({ caseStudy }: SimplifiedCaseStudyDis
       ],
       business_outcomes: "Strong ROI within the first year of implementation"
     },
-    client_testimonial: `Working with GreenAppleX has been transformative for our business. Their expertise in ${caseStudy.category} and commitment to delivering results exceeded our expectations. The solution has significantly improved our operations and positioned us for future growth.`,
+    client_testimonial: `Working with ${siteName} has been transformative for our business. Their expertise in ${caseStudy.category} and commitment to delivering results exceeded our expectations. The solution has significantly improved our operations and positioned us for future growth.`,
     conclusion: `This project demonstrates our expertise in ${caseStudy.category} and our ability to deliver innovative technology solutions that drive real business value. Through careful planning, expert implementation, and ongoing support, we helped our client achieve their digital transformation goals and establish a foundation for continued success.`
   };
-  
+
   // Merge parsed data with fallback content, handling both flat and nested structures
   const displayData = parsedData && Object.keys(parsedData).length > 0 ? parsedData : fallbackContent;
-  
+
   const extractSummary = () => {
     if (sections.project_overview) {
       return sections.project_overview.substring(0, 200) + '...';
     }
-    return caseStudy.problemStatement?.substring(0, 200) + '...' || 
-           'A comprehensive case study showcasing innovative solutions and measurable results.';
+    return caseStudy.problemStatement?.substring(0, 200) + '...' ||
+      'A comprehensive case study showcasing innovative solutions and measurable results.';
   };
 
   return (
@@ -207,7 +212,7 @@ export function SimplifiedCaseStudyDisplay({ caseStudy }: SimplifiedCaseStudyDis
       {/* Main Content */}
       <div className="max-w-6xl mx-auto px-4 py-16">
         <div className="space-y-12">
-          
+
           {/* Project Overview */}
           {(displaySections.project_overview || displaySections.title) && (
             <motion.div
@@ -438,7 +443,7 @@ export function SimplifiedCaseStudyDisplay({ caseStudy }: SimplifiedCaseStudyDis
                 <p className="text-blue-100 mb-6 max-w-2xl mx-auto">
                   Let's discuss how we can help you achieve similar results with a customized solution for your business.
                 </p>
-                <button 
+                <button
                   onClick={() => window.location.href = '/contact'}
                   className="inline-flex items-center px-8 py-3 bg-white text-blue-600 font-semibold rounded-lg hover:bg-gray-100 transition-colors"
                 >

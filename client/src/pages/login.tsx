@@ -8,8 +8,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Eye, EyeOff, Lock, Mail, LogOut } from 'lucide-react';
 import logoImg from '@assets/Logo A_1752582606982.jpg';
+import { useSiteSettings } from "@/contexts/SiteSettingsContext";
 
 export default function LoginPage() {
+  const { settings } = useSiteSettings();
   const { login, logout, loading, user } = useAuth();
   const [, setLocation] = useLocation();
   const [formData, setFormData] = useState({
@@ -74,7 +76,7 @@ export default function LoginPage() {
           <div className="flex justify-center">
             <img
               src={logoImg}
-              alt="GreenAppleX"
+              alt={settings?.siteName || "GreenAppleX"}
               className="h-16 w-auto"
               onError={(e) => {
                 const target = e.target as HTMLImageElement;
@@ -106,7 +108,7 @@ export default function LoginPage() {
                 </AlertDescription>
               </Alert>
             )}
-            
+
             {showAccessDenied && (
               <div className="text-center">
                 <Button
@@ -129,7 +131,7 @@ export default function LoginPage() {
                 <AlertDescription>{error}</AlertDescription>
               </Alert>
             )}
-            
+
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <div className="relative">

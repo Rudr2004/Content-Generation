@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import path from "path";
 import { storage, type HirePage, type BlogPost, type User } from "./storage";
-import { insertContactSubmissionSchema, insertBlogPostSchema, insertUserSchema, loginSchema, forgotPasswordSchema, resetPasswordSchema, changePasswordSchema, insertAuthorSchema, insertServiceSchema, insertServiceTestimonialSchema, insertServiceCategorySchema, insertServiceSubcategorySchema, insertServicePageSchema, insertServiceDetailPageSchema, insertHirePageSchema, insertCaseStudyPageSchema, insertCaseStudyCategorySchema, insertTechnologySchema, insertAiServicePageSchema, insertIndustryPageSchema, insertSeoSettingsSchema, insertSeoKeywordsSchema, insertSeoAnalyticsSchema, insertSeoPageDataSchema, insertRobotsTxtSettingsSchema, insertPageIndexingStatusSchema, insertCentralLinkRegistrySchema, insertLinkUsageMappingSchema, insertLinkRedirectsSchema, insertLinkValidationSchema } from "@shared/schema";
+import { insertContactSubmissionSchema, insertBlogPostSchema, insertUserSchema, loginSchema, forgotPasswordSchema, resetPasswordSchema, changePasswordSchema, insertAuthorSchema, insertServiceSchema, insertServiceTestimonialSchema, insertServiceCategorySchema, insertServiceSubcategorySchema, insertServicePageSchema, insertServiceDetailPageSchema, insertHirePageSchema, insertCaseStudyPageSchema, insertCaseStudyCategorySchema, insertTechnologySchema, insertAiServicePageSchema, insertIndustryPageSchema, insertSeoSettingsSchema, insertSeoKeywordsSchema, insertSeoAnalyticsSchema, insertSeoPageDataSchema, insertRobotsTxtSettingsSchema, insertPageIndexingStatusSchema, insertCentralLinkRegistrySchema, insertLinkUsageMappingSchema, insertLinkRedirectsSchema, insertLinkValidationSchema, insertSiteSettingsSchema } from "@shared/schema";
 import { z } from "zod";
 import { sendContactNotification } from "./email";
 import bcrypt from "bcryptjs";
@@ -5338,9 +5338,9 @@ CRITICAL INSTRUCTIONS:
 
       if (!hasReferenceUrl && !hasReferenceContent && !hasRawData) {
         console.error("No reference material provided");
-        return res.status(400).json({ 
-          success: false, 
-          message: "Please provide either a Reference URL or Reference Content to generate AI content" 
+        return res.status(400).json({
+          success: false,
+          message: "Please provide either a Reference URL or Reference Content to generate AI content"
         });
       }
 
@@ -7046,6 +7046,38 @@ CRITICAL INSTRUCTIONS:
     } catch (error: any) {
       console.error("Error validating links:", error);
       res.status(500).json({ success: false, message: "Failed to validate links" });
+    }
+  });
+
+
+  // Site Settings Routes
+  app.get("/api/site-settings", async (req, res) => {
+    try {
+      const settings = await storage.getSiteSettings();
+      res.json(settings);
+    } catch (error) {
+      console.error("Failed to get site settings:", error);
+      res.status(500).json({ success: false, message: "Failed to retrieve site settings" });
+    }
+  });
+
+  app.post("/api/site-settings", authenticateToken, authorizeRole(['super_admin', 'user_admin']), async (req, res) => {
+    try {
+      const updates = insertSiteSettingsSchema.parse(req.body);
+      const settings = await storage.updateSiteSettings(updates);
+      // Clean up the response
+      const cleanSettings = {
+        ...settings,
+        id: settings.id,
+      };
+      res.json({ success: true, settings: cleanSettings });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        res.status(400).json({ success: false, message: "Invalid settings data", errors: error.errors });
+      } else {
+        console.error("Failed to update site settings:", error);
+        res.status(500).json({ success: false, message: "Failed to update site settings" });
+      }
     }
   });
 

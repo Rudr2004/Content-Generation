@@ -36,6 +36,7 @@ import {
 } from "@/components/ui/select";
 import { GetInTouchSection } from "../get-in-touch-section";
 import DynamicServicesMenu from "@/components/dynamic-services-menu";
+import { useSiteSettings } from "@/contexts/SiteSettingsContext";
 
 interface ServiceCategory {
   id: number;
@@ -484,6 +485,8 @@ function ModalContactForm() {
 }
 
 export function Navigation() {
+  const { settings } = useSiteSettings();
+  const siteName = settings?.siteName || COMPANY_INFO.name;
   const [location] = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
@@ -646,10 +649,10 @@ export function Navigation() {
         href: `/service-pages/${page.slug}`,
         type: 'page' as const
       })),
-      ...services.filter(service => 
-        (service.subCategory === subcategory.name || service.subCategory === subcategory.slug) && 
-        service.status === 'active' && 
-        service.pageName && 
+      ...services.filter(service =>
+        (service.subCategory === subcategory.name || service.subCategory === subcategory.slug) &&
+        service.status === 'active' &&
+        service.pageName &&
         isValidSlug(service.slug)
       ).map(service => ({
         label: service.pageName || service.title,
@@ -711,7 +714,7 @@ export function Navigation() {
             >
               <motion.img
                 src={logoImg}
-                alt="GreenAppleX Logo - AI Development & Enterprise Software Solutions Company"
+                alt={`${siteName} Logo - AI Development & Enterprise Software Solutions Company`}
                 className="w-full h-full object-contain"
                 loading="eager"
                 style={{ maxWidth: '100%', height: 'auto' }}
@@ -744,7 +747,7 @@ export function Navigation() {
               }}
               transition={{ duration: 0.3, ease: "easeInOut" }}
             >
-              <span className="text-lg sm:text-xl lg:text-2xl font-normal bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent transition-all duration-300 heading-georgia">{COMPANY_INFO.name}</span>
+              <span className="text-lg sm:text-xl lg:text-2xl font-normal bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent transition-all duration-300 heading-georgia">{siteName}</span>
             </motion.div>
           </Link>
 

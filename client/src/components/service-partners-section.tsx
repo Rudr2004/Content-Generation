@@ -9,6 +9,8 @@ import goldmanSachsAltLogo from "@assets/6_1753792402611.jpg";
 import alacrityLogo from "@assets/7_1753792402611.png";
 import mightyJaxxLogo from "@assets/8_1753792402611.png";
 import docTraceLogo from "@assets/9_1753792402611.png";
+import { useSiteSettings } from "@/contexts/SiteSettingsContext";
+import { COMPANY_INFO } from "@/lib/constants";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 60 },
@@ -17,6 +19,8 @@ const fadeInUp = {
 };
 
 export function ServicePartnersSection() {
+  const { settings } = useSiteSettings();
+  const siteName = settings?.siteName || COMPANY_INFO.name;
   const partners = [
     {
       name: "ZebPay",
@@ -65,10 +69,10 @@ export function ServicePartnersSection() {
               Trusted by Global Brands
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto text-poppins">
-              Join leading companies that trust GreenAppleX for their digital transformation journey.
+              Join leading companies that trust {siteName} for their digital transformation journey.
             </p>
           </motion.div>
-          
+
           <motion.div variants={fadeInUp} className="relative overflow-hidden">
             <div className="flex animate-scroll-left space-x-8 sm:space-x-12 hover:pause-scroll">
               {partners.concat(partners).map((partner, index) => (

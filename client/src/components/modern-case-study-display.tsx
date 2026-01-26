@@ -7,6 +7,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { HomeContactSection } from './home-contact-section';
 import { getProfileImageByGender, getGenderFromName } from '@/lib/profile-images';
 import { parseMarkdownToHtml } from '@/lib/markdown-utils';
+import { useSiteSettings } from "@/contexts/SiteSettingsContext";
+import { COMPANY_INFO } from "@/lib/constants";
 
 interface CaseStudyData {
   id: number;
@@ -29,6 +31,8 @@ interface ModernCaseStudyDisplayProps {
 }
 
 export function ModernCaseStudyDisplay({ caseStudy }: ModernCaseStudyDisplayProps) {
+  const { settings } = useSiteSettings();
+  const siteName = settings?.siteName || COMPANY_INFO.name;
   const [activeSection, setActiveSection] = useState<string | null>(null);
 
   // Parse JSON content or use fallback
@@ -117,7 +121,7 @@ export function ModernCaseStudyDisplay({ caseStudy }: ModernCaseStudyDisplayProp
       ],
       business_outcomes: "Achieved 200% ROI within 18 months and positioned for future growth"
     },
-    client_testimonial: `The transformation has been remarkable. GreenAppleX delivered beyond our expectations, and the new system has revolutionized how we operate. Our team is more productive, and our customers are happier than ever.`,
+    client_testimonial: `The transformation has been remarkable. ${siteName} delivered beyond our expectations, and the new system has revolutionized how we operate. Our team is more productive, and our customers are happier than ever.`,
     conclusion: `This project showcases the power of strategic technology transformation. By combining innovative ${caseStudy.category} solutions with expert implementation, we helped our client achieve sustainable growth and competitive advantage.`
   };
 
@@ -844,7 +848,7 @@ export function ModernCaseStudyDisplay({ caseStudy }: ModernCaseStudyDisplayProp
                       <div className="relative p-12 text-center">
                         <Quote className="h-16 w-16 text-blue-500 mx-auto mb-8 opacity-30" />
 
-                        <blockquote 
+                        <blockquote
                           className="text-2xl text-gray-800 leading-relaxed mb-8 font-medium max-w-4xl mx-auto"
                           dangerouslySetInnerHTML={{
                             __html: '"' + parseMarkdownToHtml(displayData.client_testimonial || '') + '"'
@@ -937,7 +941,7 @@ export function ModernCaseStudyDisplay({ caseStudy }: ModernCaseStudyDisplayProp
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="p-8">
-                    <p 
+                    <p
                       className="text-gray-700 leading-relaxed text-lg"
                       dangerouslySetInnerHTML={{
                         __html: parseMarkdownToHtml(displayData.conclusion || '')

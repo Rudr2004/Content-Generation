@@ -39,6 +39,8 @@ import { ProtectedRoute } from "@/components/protected-route";
 import { useScrollRestoration } from "@/hooks/use-scroll-restoration";
 import { AIChatbot } from "@/components/ai-chatbot";
 import { SeoMetaProvider } from "@/components/seo/seo-meta-provider";
+import { ThemeProvider } from "@/components/theme-provider";
+import { SiteSettingsProvider } from "@/contexts/SiteSettingsContext";
 
 
 function SEOOptimizedRoute({ path, component: Component, seoKey }: { path?: string; component: any; seoKey?: string }) {
@@ -175,14 +177,18 @@ function Router() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Router />
-          <ScrollToTop />
-          <AIChatbot />
-        </TooltipProvider>
-      </AuthProvider>
+      <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+        <SiteSettingsProvider>
+          <AuthProvider>
+            <TooltipProvider>
+              <Toaster />
+              <Router />
+              <ScrollToTop />
+              <AIChatbot />
+            </TooltipProvider>
+          </AuthProvider>
+        </SiteSettingsProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }

@@ -21,6 +21,9 @@ import { HireDeveloperManagement } from "@/components/hire-developer-management"
 import { IndustryManagement } from "@/components/industry-management";
 import AiServicePages from "@/pages/admin/AiServicePages";
 import { SEODashboard } from "@/components/seo-dashboard";
+import { SiteSettingsForm } from "@/components/site-settings-form";
+import { SEOConfigurationForm } from "@/components/seo-configuration-form";
+import { useSiteSettings } from "@/contexts/SiteSettingsContext";
 
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -63,7 +66,9 @@ export default function AdminPanel() {
   const [showSEOGenerator, setShowSEOGenerator] = useState(false);
   const [showKeywordGenerator, setShowKeywordGenerator] = useState(false);
   const { toast } = useToast();
+
   const queryClient = useQueryClient();
+  const { settings } = useSiteSettings();
 
   const { data: posts = [], refetch: refetchPosts } = useQuery({
     queryKey: ["/api/blog"],
@@ -450,17 +455,17 @@ export default function AdminPanel() {
                   const target = e.target as HTMLImageElement;
                   target.style.display = "none";
                   const parent = target.parentElement;
-                  if (parent) {
+                  if (parent && settings?.siteName) {
                     parent.innerHTML = `
                       <div class="w-8 h-8 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded flex items-center justify-center text-white font-bold text-xs">
-                        GA
+                        ${settings.siteName.substring(0, 2).toUpperCase()}
                       </div>
                     `;
                   }
                 }}
               />
               <h1 className="bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
-                Admin Panel
+                {settings?.siteName || "Admin Panel"}
               </h1>
             </div>
 
@@ -517,22 +522,20 @@ export default function AdminPanel() {
           <nav className="mt-8 px-4 space-y-2">
             <button
               onClick={() => setActiveMainSection("blog")}
-              className={`w-full flex items-center px-4 py-3 rounded-lg font-medium transition-all ${
-                activeMainSection === "blog"
-                  ? "bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white shadow-lg"
-                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
-              }`}
+              className={`w-full flex items-center px-4 py-3 rounded-lg font-medium transition-all ${activeMainSection === "blog"
+                ? "bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white shadow-lg"
+                : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                }`}
             >
               <BookOpen className="h-5 w-5 mr-3" />
               Blog
             </button>
             <button
               onClick={() => setActiveMainSection("service")}
-              className={`w-full flex items-center px-4 py-3 rounded-lg font-medium transition-all ${
-                activeMainSection === "service"
-                  ? "bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white shadow-lg"
-                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
-              }`}
+              className={`w-full flex items-center px-4 py-3 rounded-lg font-medium transition-all ${activeMainSection === "service"
+                ? "bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white shadow-lg"
+                : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                }`}
             >
               <Briefcase className="h-5 w-5 mr-3" />
               Service
@@ -540,22 +543,20 @@ export default function AdminPanel() {
 
             <button
               onClick={() => setActiveMainSection("hire-developer")}
-              className={`w-full flex items-center px-4 py-3 rounded-lg font-medium transition-all ${
-                activeMainSection === "hire-developer"
-                  ? "bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white shadow-lg"
-                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
-              }`}
+              className={`w-full flex items-center px-4 py-3 rounded-lg font-medium transition-all ${activeMainSection === "hire-developer"
+                ? "bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white shadow-lg"
+                : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                }`}
             >
               <UserPlus className="h-5 w-5 mr-3" />
               Hire Developer
             </button>
             <button
               onClick={() => setActiveMainSection("case-studies")}
-              className={`w-full flex items-center px-4 py-3 rounded-lg font-medium transition-all ${
-                activeMainSection === "case-studies"
-                  ? "bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white shadow-lg"
-                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
-              }`}
+              className={`w-full flex items-center px-4 py-3 rounded-lg font-medium transition-all ${activeMainSection === "case-studies"
+                ? "bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white shadow-lg"
+                : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                }`}
             >
               <FolderOpen className="h-5 w-5 mr-3" />
               Case Studies
@@ -563,11 +564,10 @@ export default function AdminPanel() {
 
             <button
               onClick={() => setActiveMainSection("industry")}
-              className={`w-full flex items-center px-4 py-3 rounded-lg font-medium transition-all ${
-                activeMainSection === "industry"
-                  ? "bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white shadow-lg"
-                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
-              }`}
+              className={`w-full flex items-center px-4 py-3 rounded-lg font-medium transition-all ${activeMainSection === "industry"
+                ? "bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white shadow-lg"
+                : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                }`}
             >
               <Factory className="h-5 w-5 mr-3" />
               Industry
@@ -576,51 +576,71 @@ export default function AdminPanel() {
             {/* Authors section */}
             <button
               onClick={() => setActiveMainSection("authors")}
-              className={`w-full flex items-center px-4 py-3 rounded-lg font-medium transition-all ${
-                activeMainSection === "authors"
-                  ? "bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white shadow-lg"
-                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
-              }`}
+              className={`w-full flex items-center px-4 py-3 rounded-lg font-medium transition-all ${activeMainSection === "authors"
+                ? "bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white shadow-lg"
+                : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                }`}
             >
               <User className="h-5 w-5 mr-3" />
               Authors
             </button>
 
             {/* Technology section */}
-            <button
+            {/* <button
               onClick={() => setActiveMainSection("technologies")}
-              className={`w-full flex items-center px-4 py-3 rounded-lg font-medium transition-all ${
-                activeMainSection === "technologies"
-                  ? "bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white shadow-lg"
-                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
-              }`}
+              className={`w-full flex items-center px-4 py-3 rounded-lg font-medium transition-all ${activeMainSection === "technologies"
+                ? "bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white shadow-lg"
+                : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                }`}
             >
               <Cpu className="h-5 w-5 mr-3" />
               Technologies
-            </button>
+            </button> */}
 
             {/* SEO Dashboard section */}
             <button
               onClick={() => setActiveMainSection("seo")}
-              className={`w-full flex items-center px-4 py-3 rounded-lg font-medium transition-all ${
-                activeMainSection === "seo"
-                  ? "bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white shadow-lg"
-                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
-              }`}
+              className={`w-full flex items-center px-4 py-3 rounded-lg font-medium transition-all ${activeMainSection === "seo"
+                ? "bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white shadow-lg"
+                : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                }`}
             >
               <Search className="h-5 w-5 mr-3" />
               SEO Dashboard
+            </button>
+
+            {/* SEO Configuration section */}
+            <button
+              onClick={() => setActiveMainSection("seo-configuration")}
+              className={`w-full flex items-center px-4 py-3 rounded-lg font-medium transition-all ${activeMainSection === "seo-configuration"
+                ? "bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white shadow-lg"
+                : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                }`}
+            >
+              <Settings className="h-5 w-5 mr-3" />
+              SEO Configuration
+            </button>
+
+            {/* Site Settings section */}
+            <button
+              onClick={() => setActiveMainSection("settings")}
+              className={`w-full flex items-center px-4 py-3 rounded-lg font-medium transition-all ${activeMainSection === "settings"
+                ? "bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white shadow-lg"
+                : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                }`}
+            >
+              <Settings className="h-5 w-5 mr-3" />
+              Site Settings
             </button>
 
             {/* Users section - only show for super_admin and user_admin */}
             {canManageUsers(user) && (
               <button
                 onClick={() => setActiveMainSection("users")}
-                className={`w-full flex items-center px-4 py-3 rounded-lg font-medium transition-all ${
-                  activeMainSection === "users"
-                    ? "bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white shadow-lg"
-                    : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
-                }`}
+                className={`w-full flex items-center px-4 py-3 rounded-lg font-medium transition-all ${activeMainSection === "users"
+                  ? "bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white shadow-lg"
+                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                  }`}
               >
                 <Settings className="h-5 w-5 mr-3" />
                 Users
@@ -641,6 +661,9 @@ export default function AdminPanel() {
           {activeMainSection === "authors" && <AuthorManagement />}
           {activeMainSection === "technologies" && <TechnologyManagement />}
           {activeMainSection === "seo" && <SEODashboard />}
+          {activeMainSection === "seo-configuration" && <SEOConfigurationForm />}
+
+          {activeMainSection === "settings" && <SiteSettingsForm />}
           {activeMainSection === "users" && renderUsersSection()}
         </div>
       </div>
@@ -656,11 +679,11 @@ export default function AdminPanel() {
                 className="h-5 w-5 rounded"
               />
               <span className="bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
-                GreenAppleX
+                {settings?.siteName || "GreenAppleX"}
               </span>
             </div>
             <span className="text-gray-500 text-sm ml-2">
-              © 2025 GreenAppleX. All rights reserved. | Blog Content
+              © 2025 {settings?.siteName || "GreenAppleX"}. All rights reserved. | Blog Content
               Management System
             </span>
           </div>

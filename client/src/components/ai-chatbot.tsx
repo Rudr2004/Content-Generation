@@ -7,6 +7,8 @@ import { MessageCircle, X, Send, Bot, User, Minimize2, Maximize2 } from "lucide-
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { useSiteSettings } from "@/contexts/SiteSettingsContext";
+import { COMPANY_INFO } from "@/lib/constants";
 
 interface Message {
   id: string;
@@ -16,12 +18,14 @@ interface Message {
 }
 
 export function AIChatbot() {
+  const { settings } = useSiteSettings();
+  const siteName = settings?.siteName || COMPANY_INFO.name;
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "welcome",
-      text: "Hi! I'm your GreenAppleX AI assistant. I can help you with questions about our services, technologies, and solutions. How can I assist you today?\n\nYou can ask me about:\n• AI & Machine Learning services\n• Web3 & Blockchain development\n• Mobile app development\n• Custom software solutions\n• Pricing and project timelines\n• Our technologies and expertise",
+      text: `Hi! I'm your ${siteName} AI assistant. I can help you with questions about our services, technologies, and solutions. How can I assist you today?\n\nYou can ask me about:\n• AI & Machine Learning services\n• Web3 & Blockchain development\n• Mobile app development\n• Custom software solutions\n• Pricing and project timelines\n• Our technologies and expertise`,
       isUser: false,
       timestamp: new Date(),
     },
@@ -108,7 +112,7 @@ export function AIChatbot() {
                     <Bot className="h-5 w-5" />
                   </div>
                   <div>
-                    <CardTitle className="text-sm font-medium">GreenAppleX AI</CardTitle>
+                    <CardTitle className="text-sm font-medium">{siteName} AI</CardTitle>
                     <p className="text-xs text-white/80">Always here to help</p>
                   </div>
                 </div>

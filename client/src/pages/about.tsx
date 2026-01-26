@@ -1,5 +1,7 @@
 import { SEOHead } from "@/components/seo-head";
 import { Navigation } from "@/components/ui/navigation";
+import { useSiteSettings } from "@/contexts/SiteSettingsContext";
+import { COMPANY_INFO } from "@/lib/constants";
 import { Footer } from "@/components/ui/footer";
 import { Button } from "@/components/ui/button";
 import { SEO_PAGES } from "@/lib/seo";
@@ -71,8 +73,11 @@ const partners = [
 ];
 
 export default function About() {
+  const { settings } = useSiteSettings();
+  const siteName = settings?.siteName || COMPANY_INFO.name;
+
   const seoData = SEO_PAGES['/about'] || {
-    title: "About GreenAppleX - Leading AI Development & Enterprise Software Solutions Company",
+    title: `About ${siteName} - Leading AI Development & Enterprise Software Solutions Company`,
     description: "Leading AI development & enterprise software solutions company with 250+ developers. Trusted by Fortune 500 companies worldwide for generative AI, Web3, and digital transformation services.",
     keywords: [
       "AI development company",
@@ -85,7 +90,7 @@ export default function About() {
       "machine learning consulting"
     ],
     canonicalUrl: "https://www.greenapplex.com/about",
-    ogTitle: "About GreenAppleX - Leading AI Development & Enterprise Software Solutions Company",
+    ogTitle: `About ${siteName} - Leading AI Development & Enterprise Software Solutions Company`,
     ogDescription: "Leading AI development & enterprise software solutions company with 250+ developers. Trusted by Fortune 500 companies worldwide for cutting-edge technology solutions."
   };
   const structuredData = getOrganizationStructuredData();
@@ -224,7 +229,7 @@ export default function About() {
               </div>
             </h1>
             <p className="text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed text-poppins">
-              GreenAppleX is a premier technology company specializing in cutting-edge AI development,
+              {siteName} is a premier technology company specializing in cutting-edge AI development,
               Web3 solutions, and enterprise software development. With over 250 skilled developers
               and a track record of 150+ successful projects, we transform businesses through innovative
               digital solutions that drive growth and efficiency.
@@ -675,7 +680,7 @@ export default function About() {
             </div>
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-8 heading-georgia">
               Why Choose
-              <span className="bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent"> GreenAppleX</span>
+              <span className="bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent"> {siteName}</span>
             </h2>
             <p className="text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed text-poppins">
               Our commitments to excellence, innovation, and client success set us apart in the

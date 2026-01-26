@@ -16,6 +16,8 @@ import { insertBlogPostSchema } from "@shared/schema";
 import { z } from "zod";
 import { SEOBlogGenerator } from "./seo-blog-generator";
 import { RichTextEditor } from "@/components/ui/rich-text-editor";
+import { useSiteSettings } from "@/contexts/SiteSettingsContext";
+import { COMPANY_INFO } from "@/lib/constants";
 
 interface BlogFormProps {
   post?: any;
@@ -25,7 +27,7 @@ interface BlogFormProps {
 
 const PREDEFINED_TAGS = [
   "Web3",
-  "AI and Machine Learning", 
+  "AI and Machine Learning",
   "Mobile Development",
   "Software Engineering",
   "Digital Transformation"
@@ -39,6 +41,8 @@ const blogFormSchema = insertBlogPostSchema.extend({
 
 export function BlogForm({ post, onClose, onSuccess }: BlogFormProps) {
   const { toast } = useToast();
+  const { settings } = useSiteSettings();
+  const siteName = settings?.siteName || COMPANY_INFO.name;
   const queryClient = useQueryClient();
   const [tags, setTags] = useState<string[]>(Array.isArray(post?.tags) ? post.tags : []);
   const [tagInput, setTagInput] = useState("");
@@ -101,9 +105,9 @@ export function BlogForm({ post, onClose, onSuccess }: BlogFormProps) {
   // Auto-suggest meta title
   useEffect(() => {
     if (title && !form.getValues("metaTitle")) {
-      form.setValue("metaTitle", `${title} | GreenAppleX Blog`);
+      form.setValue("metaTitle", `${title} | ${siteName} Blog`);
     }
-  }, [title, form]);
+  }, [title, form, siteName]);
 
   const addTag = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && tagInput.trim()) {
@@ -174,19 +178,19 @@ export function BlogForm({ post, onClose, onSuccess }: BlogFormProps) {
   const onSubmit = (data: any) => {
     const { tagsInput, ...blogData } = data;
     blogData.tags = tags;
-    
+
     // Handle scheduledAt conversion
     if (blogData.scheduledAt) {
       blogData.scheduledAt = new Date(blogData.scheduledAt).toISOString();
     }
-    
+
     // Remove empty/undefined fields
     Object.keys(blogData).forEach(key => {
       if (blogData[key] === '' || blogData[key] === undefined) {
         delete blogData[key];
       }
     });
-    
+
     // Check if this is an existing post (has valid id) or a new post
     if (post && post.id && post.id !== null) {
       updateMutation.mutate(blogData);
@@ -206,12 +210,12 @@ export function BlogForm({ post, onClose, onSuccess }: BlogFormProps) {
     form.setValue("keywords", generatedContent.keywords);
     form.setValue("imageUrl", generatedContent.imageUrl);
     form.setValue("imageAlt", generatedContent.imageAlt);
-    
+
     // Update tags - ensure it's an array
     const tagsArray = Array.isArray(generatedContent.tags) ? generatedContent.tags : [];
     setTags(tagsArray);
     form.setValue("tags", tagsArray);
-    
+
     setShowSEOGenerator(false);
   };
 
@@ -369,11 +373,10 @@ export function BlogForm({ post, onClose, onSuccess }: BlogFormProps) {
                       <Badge
                         key={tag}
                         variant={Array.isArray(tags) && tags.includes(tag) ? "default" : "outline"}
-                        className={`cursor-pointer transition-colors ${
-                          Array.isArray(tags) && tags.includes(tag) 
-                            ? "bg-blue-500 text-white" 
+                        className={`cursor-pointer transition-colors ${Array.isArray(tags) && tags.includes(tag)
+                            ? "bg-blue-500 text-white"
                             : "hover:bg-blue-50"
-                        }`}
+                          }`}
                         onClick={() => {
                           const currentTags = Array.isArray(tags) ? tags : [];
                           if (currentTags.includes(tag)) {
@@ -590,7 +593,7 @@ export function BlogForm({ post, onClose, onSuccess }: BlogFormProps) {
           </form>
         </Form>
       </CardContent>
-      
+
       {showSEOGenerator && (
         <SEOBlogGenerator
           onGenerate={handleSEOGenerate}

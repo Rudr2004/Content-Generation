@@ -4,6 +4,8 @@ import { Badge } from './ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Edit2, ExternalLink, Eye, Calendar, Hash, Tag, Star } from 'lucide-react';
 import type { HirePage } from '@shared/schema';
+import { useSiteSettings } from "@/contexts/SiteSettingsContext";
+import { COMPANY_INFO } from "@/lib/constants";
 
 interface HireDeveloperPageViewProps {
   page: HirePage;
@@ -11,6 +13,8 @@ interface HireDeveloperPageViewProps {
 }
 
 export function HireDeveloperPageView({ page, onEdit }: HireDeveloperPageViewProps) {
+  const { settings } = useSiteSettings();
+  const siteName = settings?.siteName || COMPANY_INFO.name;
   const secondaryKeywords = page.secondaryKeywords?.split(', ') || [];
 
   const getStatusBadge = (status: string) => {
@@ -77,7 +81,7 @@ export function HireDeveloperPageView({ page, onEdit }: HireDeveloperPageViewPro
             <h4 className="font-medium text-gray-900 mb-1">Title</h4>
             <p className="text-gray-600">{page.title}</p>
           </div>
-          
+
           <div>
             <h4 className="font-medium text-gray-900 mb-1">Slug</h4>
             <p className="text-gray-600">/{page.slug}</p>
@@ -150,7 +154,7 @@ export function HireDeveloperPageView({ page, onEdit }: HireDeveloperPageViewPro
               <CardTitle>Hero Description</CardTitle>
             </CardHeader>
             <CardContent>
-              <div 
+              <div
                 className="prose prose-sm max-w-none"
                 dangerouslySetInnerHTML={{ __html: page.heroDescription }}
               />
@@ -162,10 +166,10 @@ export function HireDeveloperPageView({ page, onEdit }: HireDeveloperPageViewPro
         {page.whyHireDescription && (
           <Card>
             <CardHeader>
-              <CardTitle>Why Hire From GreenAppleX</CardTitle>
+              <CardTitle>Why Hire From {siteName}</CardTitle>
             </CardHeader>
             <CardContent>
-              <div 
+              <div
                 className="prose prose-sm max-w-none"
                 dangerouslySetInnerHTML={{ __html: page.whyHireDescription }}
               />
@@ -180,7 +184,7 @@ export function HireDeveloperPageView({ page, onEdit }: HireDeveloperPageViewPro
               <CardTitle>Services Description</CardTitle>
             </CardHeader>
             <CardContent>
-              <div 
+              <div
                 className="prose prose-sm max-w-none"
                 dangerouslySetInnerHTML={{ __html: page.servicesDescription }}
               />

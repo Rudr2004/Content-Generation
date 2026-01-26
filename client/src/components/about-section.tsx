@@ -1,10 +1,14 @@
-import { Award, ArrowRight } from "lucide-react";
+import { ArrowRight, CheckCircle2, Award, Users, Globe2, Rocket } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { STATS } from "@/lib/constants";
 import { HeroAnimatedButton } from "@/components/ui/hero-animated-button";
+import { useSiteSettings } from "@/contexts/SiteSettingsContext";
 
 export function AboutSection() {
+  const { settings } = useSiteSettings();
+  const siteName = settings?.siteName || "GreenAppleX"; // Assuming "GreenAppleX" is the default if COMPANY_INFO.name was not explicitly imported
+
   return (
     <section id="about" className="py-24 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -20,7 +24,7 @@ export function AboutSection() {
             </div>
           </h1>
           <p className="text-xl text-gray-600 max-w-5xl mx-auto font-light leading-relaxed text-poppins">
-            Founded in 2021, <strong>GreenAppleX</strong> is a leading AI development, enterprise software development, and digital transformation company helping global businesses achieve AI-powered growth. As a true technological companion, GreenAppleX empowers startups to enterprise-level businesses with custom AI solutions, generative AI development, and innovative software solutions.
+            Founded in 2021, <strong>{siteName}</strong> is a leading AI development, enterprise software development, and digital transformation company helping global businesses achieve AI-powered growth. As a true technological companion, {siteName} empowers startups to enterprise-level businesses with custom AI solutions, generative AI development, and innovative software solutions.
           </p>
         </div>
 
