@@ -148,7 +148,7 @@ export function SiteSettingsForm() {
                             )}
                         />
 
-                        <FormField
+                        {/* <FormField
                             control={form.control}
                             name="targetRegions"
                             render={({ field }) => (
@@ -180,7 +180,7 @@ export function SiteSettingsForm() {
                                     <FormMessage />
                                 </FormItem>
                             )}
-                        />
+                        /> */}
 
                         <Button type="submit" disabled={form.formState.isSubmitting}>
                             {form.formState.isSubmitting && (
