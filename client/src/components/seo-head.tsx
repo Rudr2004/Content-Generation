@@ -6,7 +6,7 @@ import { generateDynamicKeywords } from '@/lib/seo';
 interface SEOHeadProps {
   title: string;
   description: string;
-  keywords: string[];
+  keywords: string[] | string;
   canonicalUrl?: string;
   ogTitle?: string;
   ogDescription?: string;
@@ -28,7 +28,16 @@ export function SEOHead({
   const siteName = settings?.siteName || COMPANY_INFO.name;
 
   const dynamicKeywords = useMemo(() => {
-    return generateDynamicKeywords(keywords, settings?.targetRegions || undefined, settings?.industryFocus || undefined);
+    // Ensure keywords is always an array
+    let keywordsArray: string[] = [];
+    
+    if (Array.isArray(keywords)) {
+      keywordsArray = keywords;
+    } else if (typeof keywords === 'string') {
+      keywordsArray = keywords.split(',').map((k: string) => k.trim()).filter(Boolean);
+    }
+    
+    return generateDynamicKeywords(keywordsArray, settings?.targetRegions || undefined, settings?.industryFocus || undefined);
   }, [keywords, settings?.targetRegions, settings?.industryFocus]);
 
   useEffect(() => {

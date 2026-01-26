@@ -285,19 +285,37 @@ export function generateMetaKeywords(keywords: string[]): string {
  * @returns Combined and deduplicated array of localized keywords
  */
 export function generateDynamicKeywords(
-  baseKeywords: string[],
+  baseKeywords: string[] | string | undefined | null,
   targetRegions: string | undefined,
   industryFocus?: string
 ): string[] {
+  // Ensure baseKeywords is always an array
+  let keywordsArray: string[] = [];
+  
+  if (Array.isArray(baseKeywords)) {
+    keywordsArray = baseKeywords;
+  } else if (typeof baseKeywords === 'string') {
+    // If it's a comma-separated string, split it
+    keywordsArray = baseKeywords.split(',').map(k => k.trim()).filter(Boolean);
+  } else if (baseKeywords) {
+    // Try to convert to array if it's some other type
+    keywordsArray = [String(baseKeywords)];
+  }
+  
+  // If still no keywords, return empty array
+  if (keywordsArray.length === 0) {
+    return [];
+  }
+  
   const regions = targetRegions ? targetRegions.split(',').map(r => r.trim()).filter(Boolean) : [];
 
   // If no regions configured, default to USA, Canada
   if (regions.length === 0) {
     const defaultRegions = ["USA", "Canada"];
-    return generateLocalizedKeywords(baseKeywords, defaultRegions);
+    return generateLocalizedKeywords(keywordsArray, defaultRegions);
   }
   
-  return generateLocalizedKeywords(baseKeywords, regions);
+  return generateLocalizedKeywords(keywordsArray, regions);
 }
 
 function generateLocalizedKeywords(baseKeywords: string[], regions: string[]): string[] {
