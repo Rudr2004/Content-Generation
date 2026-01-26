@@ -1114,8 +1114,90 @@ function ServiceFormComponent({ service, onSuccess, onCancel }: ServiceFormProps
               type="button"
               variant="outline"
               size="sm"
-              onClick={() => generateWithAI('keywords')}
-              disabled={isGeneratingAI || !form.watch('title')}
+              onClick={async () => {
+                const title = form.getValues('title') || form.getValues('pageName');
+                const category = form.getValues('category');
+                const subCategory = form.getValues('subCategory');
+                const region = form.getValues('region') || resolveRegion(null, settings?.targetRegions);
+                
+                if (!title || !category || !subCategory) {
+                  toast({
+                    title: "Missing Information",
+                    description: "Please fill in Title, Category, and Sub-category first",
+                    variant: "destructive",
+                  });
+                  return;
+                }
+                
+                if (!region || region.trim() === "") {
+                  toast({
+                    title: "Region Required",
+                    description: "Please set a target region first. This is required for SEO keyword generation.",
+                    variant: "destructive",
+                  });
+                  return;
+                }
+                
+                setIsGeneratingAI(true);
+                setGeneratingField('keywords');
+                
+                try {
+                  const response = await fetch("/api/ai/generate-seo-keywords", {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                      "Authorization": `Bearer ${localStorage.getItem('authToken')}`,
+                    },
+                    body: JSON.stringify({
+                      title: title || `${category} - ${subCategory}`,
+                      category,
+                      subCategory,
+                      region,
+                    }),
+                  });
+
+                  if (!response.ok) {
+                    throw new Error("Failed to generate keywords");
+                  }
+
+                  const data = await response.json();
+                  
+                  // Handle both formats: comma-separated string or primary/secondary format
+                  if (data.primaryKeyword && data.secondaryKeywords) {
+                    form.setValue('primaryKeyword', data.primaryKeyword);
+                    form.setValue('secondaryKeywords', typeof data.secondaryKeywords === 'string' 
+                      ? data.secondaryKeywords 
+                      : Array.isArray(data.secondaryKeywords) 
+                        ? data.secondaryKeywords.join(', ')
+                        : '');
+                  } else if (data.keywords) {
+                    const keywords = data.keywords || "";
+                    const keywordArray = keywords.split(',').map((k: string) => k.trim()).filter(Boolean);
+                    
+                    if (keywordArray.length > 0) {
+                      form.setValue('primaryKeyword', keywordArray[0] || "");
+                      form.setValue('secondaryKeywords', keywordArray.slice(1).join(', ') || "");
+                    }
+                  } else {
+                    throw new Error("No keywords received from server");
+                  }
+                  
+                  toast({
+                    title: "Keywords Generated",
+                    description: "SEO keywords generated and applied to the form.",
+                  });
+                } catch (error: any) {
+                  toast({
+                    title: "Generation Failed",
+                    description: error.message || "Failed to generate keywords. Please try again.",
+                    variant: "destructive",
+                  });
+                } finally {
+                  setIsGeneratingAI(false);
+                  setGeneratingField("");
+                }
+              }}
+              disabled={isGeneratingAI || !form.watch('title') || !form.watch('category') || !form.watch('subCategory')}
               className="flex items-center gap-2"
             >
               <span className="text-lg">🔍</span>

@@ -8,6 +8,7 @@ interface SEOBlogRequest {
   blogTitle: string;
   primaryKeyword: string;
   secondaryKeywords: string[];
+  region?: string;
 }
 
 interface SEOBlogResponse {
@@ -24,7 +25,13 @@ interface SEOBlogResponse {
 }
 
 export async function generateSEOBlog(request: SEOBlogRequest): Promise<SEOBlogResponse> {
-  const { blogTitle, primaryKeyword, secondaryKeywords } = request;
+  const { blogTitle, primaryKeyword, secondaryKeywords, region = "USA, Canada" } = request;
+  
+  // Resolve region with priority order
+  const { resolveRegion } = await import("./region-resolver");
+  const resolvedRegion = await resolveRegion(region);
+  const regions = resolvedRegion.split(',').map(r => r.trim()).filter(Boolean);
+  const regionList = regions.join(", ");
 
   try {
     // Generate the blog content using OpenAI
@@ -34,7 +41,13 @@ export async function generateSEOBlog(request: SEOBlogRequest): Promise<SEOBlogR
         {
           role: "system",
           content: `You are an expert SEO content strategist and blog copywriter with 15+ years of experience. 
-          You generate complete SEO-optimized blog content that ranks well on Google.
+          You generate complete SEO-optimized blog content that ranks well on Google for ${regionList} markets.
+          
+          CRITICAL REGION REQUIREMENTS:
+          - Target audience: Readers in ${regionList} markets
+          - Use examples, case studies, and references relevant to ${regionList}
+          - Include location-specific information where appropriate for ${regionList}
+          - DO NOT include USA, Canada, or other regions unless they are in: ${regionList}
           
           Follow these guidelines:
           - Write 1000-1200 words in conversational, engaging style (8th-grade reading level)
@@ -46,13 +59,14 @@ export async function generateSEOBlog(request: SEOBlogRequest): Promise<SEOBlogR
           - Use clear H2/H3 sub-headings
           - Include concluding paragraph with CTA
           - Format content in HTML with proper heading tags
+          - Make content relevant to ${regionList} markets
           
           Generate SEO elements:
           - Slug: SEO-friendly URL (lowercase, hyphens, using primary keyword)
           - Meta Title: Max 60 characters, include primary keyword
           - Meta Description: 150-160 characters, compelling, include primary keyword
           - Excerpt: 30-50 words summarizing the article
-          - Keywords: Primary + secondary keywords as comma-separated string
+          - Keywords: Primary + secondary keywords as comma-separated string (targeting ${regionList})
           - Tags: 3-5 relevant tags for categorization
           
           Respond with JSON in this exact format:
@@ -69,13 +83,14 @@ export async function generateSEOBlog(request: SEOBlogRequest): Promise<SEOBlogR
         },
         {
           role: "user",
-          content: `Generate a complete SEO-optimized blog post:
+          content: `Generate a complete SEO-optimized blog post targeting ${regionList} markets:
           
           Blog Title: ${blogTitle}
           Primary Keyword: ${primaryKeyword}
           Secondary Keywords: ${secondaryKeywords.join(', ')}
+          Target Regions: ${regionList}
           
-          Please create comprehensive content following all SEO best practices.`
+          Please create comprehensive content following all SEO best practices, with examples and references relevant to ${regionList} markets.`
         }
       ],
       response_format: { type: "json_object" },
@@ -330,14 +345,26 @@ function generateFallbackSEOKeywords(blogTitle: string, region: string = "USA, C
   return [...new Set(fallbackKeywords)].slice(0, 25);
 }
 
-export async function regenerateContent(blogTitle: string, primaryKeyword: string, secondaryKeywords: string[]): Promise<{ content: string; excerpt: string; metaTitle: string; metaDescription: string; keywords: string; tags: string[] }> {
+export async function regenerateContent(blogTitle: string, primaryKeyword: string, secondaryKeywords: string[], region: string = "USA, Canada"): Promise<{ content: string; excerpt: string; metaTitle: string; metaDescription: string; keywords: string; tags: string[] }> {
   try {
+    // Resolve region with priority order
+    const { resolveRegion } = await import("./region-resolver");
+    const resolvedRegion = await resolveRegion(region);
+    const regions = resolvedRegion.split(',').map(r => r.trim()).filter(Boolean);
+    const regionList = regions.join(", ");
+    
     const blogContentResponse = await openai.chat.completions.create({
       model: "gpt-4o",
       messages: [
         {
           role: "system",
-          content: `You are an expert SEO content strategist. Generate fresh, unique blog content that is different from previous versions while maintaining SEO best practices.
+          content: `You are an expert SEO content strategist. Generate fresh, unique blog content that is different from previous versions while maintaining SEO best practices for ${regionList} markets.
+          
+          CRITICAL REGION REQUIREMENTS:
+          - Target audience: Readers in ${regionList} markets
+          - Use examples, case studies, and references relevant to ${regionList}
+          - Include location-specific information where appropriate for ${regionList}
+          - DO NOT include USA, Canada, or other regions unless they are in: ${regionList}
           
           Guidelines:
           - Write 1000-1200 words of engaging, SEO-optimized content
@@ -348,22 +375,24 @@ export async function regenerateContent(blogTitle: string, primaryKeyword: strin
           - Add FAQ section with 2-3 relevant questions
           - Include call-to-action at the end
           - Format as clean HTML
+          - Make content relevant to ${regionList} markets
           
           Generate SEO elements:
           - Excerpt: 30-50 word summary
           - Meta Title: Max 60 characters with primary keyword
           - Meta Description: 150-160 characters, compelling
-          - Keywords: Primary + secondary keywords as comma-separated string
+          - Keywords: Primary + secondary keywords as comma-separated string (targeting ${regionList})
           - Tags: 3-5 relevant tags for categorization
           
           Return response as JSON with: content, excerpt, metaTitle, metaDescription, keywords, tags`
         },
         {
           role: "user",
-          content: `Generate SEO-optimized blog content for:
+          content: `Generate SEO-optimized blog content for ${regionList} markets:
           Title: "${blogTitle}"
           Primary Keyword: "${primaryKeyword}"
-          Secondary Keywords: ${secondaryKeywords.join(", ")}`
+          Secondary Keywords: ${secondaryKeywords.join(", ")}
+          Target Regions: ${regionList}`
         }
       ],
       response_format: { type: "json_object" },

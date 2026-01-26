@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
@@ -20,6 +20,7 @@ const seoGeneratorSchema = z.object({
   blogTitle: z.string().min(1, "Blog title is required"),
   primaryKeyword: z.string().min(1, "Primary keyword is required"),
   secondaryKeywords: z.string().min(1, "Secondary keywords are required (comma-separated)"),
+  region: z.string().optional(),
 });
 
 const titleGeneratorSchema = z.object({
@@ -54,8 +55,17 @@ export function SEOBlogGenerator({ onGenerate, onClose }: SEOBlogGeneratorProps)
       blogTitle: "",
       primaryKeyword: "",
       secondaryKeywords: "",
+      region: resolveRegion(null, settings?.targetRegions),
     },
   });
+
+  // Update region default when settings load
+  useEffect(() => {
+    if (settings && !form.getValues("region")) {
+      const resolvedRegion = resolveRegion(null, settings.targetRegions);
+      form.setValue("region", resolvedRegion);
+    }
+  }, [settings, form]);
 
   const titleForm = useForm({
     resolver: zodResolver(titleGeneratorSchema),
@@ -70,7 +80,10 @@ export function SEOBlogGenerator({ onGenerate, onClose }: SEOBlogGeneratorProps)
   const generateKeywordsMutation = useMutation({
     mutationFn: async (blogTitle: string) => {
       setIsGeneratingKeywords(true);
-      const region = resolveRegion(null, settings?.targetRegions);
+      const region = form.getValues("region") || resolveRegion(null, settings?.targetRegions);
+      if (!region || region.trim() === "") {
+        throw new Error("Region is required for keyword generation. Please set a target region.");
+      }
       const response = await apiRequest("POST", "/api/generate-seo-keywords", { blogTitle, region });
       return response.json();
     },
@@ -133,7 +146,11 @@ export function SEOBlogGenerator({ onGenerate, onClose }: SEOBlogGeneratorProps)
   const generateBlogMutation = useMutation({
     mutationFn: async (data: z.infer<typeof seoGeneratorSchema>) => {
       setIsGenerating(true);
-      const response = await apiRequest("POST", "/api/generate-seo-blog", data);
+      const region = data.region || resolveRegion(null, settings?.targetRegions);
+      const response = await apiRequest("POST", "/api/generate-seo-blog", {
+        ...data,
+        region
+      });
       return response.json();
     },
     onSuccess: (data) => {
@@ -170,7 +187,11 @@ export function SEOBlogGenerator({ onGenerate, onClose }: SEOBlogGeneratorProps)
   const regenerateContentMutation = useMutation({
     mutationFn: async (data: { blogTitle: string; primaryKeyword: string; secondaryKeywords: string }) => {
       setIsRegeneratingContent(true);
-      const response = await apiRequest("POST", "/api/regenerate-content", data);
+      const region = form.getValues("region") || resolveRegion(null, settings?.targetRegions);
+      const response = await apiRequest("POST", "/api/regenerate-content", {
+        ...data,
+        region
+      });
       return response.json();
     },
     onSuccess: (data) => {
@@ -280,9 +301,27 @@ export function SEOBlogGenerator({ onGenerate, onClose }: SEOBlogGeneratorProps)
 
   const handleGenerateKeywords = () => {
     const blogTitle = form.getValues("blogTitle");
-    if (blogTitle) {
-      generateKeywordsMutation.mutate(blogTitle);
+    const region = form.getValues("region");
+    
+    if (!blogTitle) {
+      toast({
+        title: "Blog Title Required",
+        description: "Please enter a blog title first.",
+        variant: "destructive",
+      });
+      return;
     }
+    
+    if (!region || region.trim() === "") {
+      toast({
+        title: "Region Required",
+        description: "Please set a target region first. This is required for SEO keyword generation.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    generateKeywordsMutation.mutate(blogTitle);
   };
 
   const handleKeywordSelect = (keyword: string) => {
@@ -455,6 +494,41 @@ export function SEOBlogGenerator({ onGenerate, onClose }: SEOBlogGeneratorProps)
                       </div>
                     )}
                   </div>
+
+                  <FormField
+                    control={form.control}
+                    name="region"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-lg font-semibold flex items-center gap-2">
+                          <span>🌍 Target Regions</span>
+                          {settings?.targetRegions && !field.value && (
+                            <Badge variant="outline" className="text-xs bg-blue-100 text-blue-700">
+                              Using Global: {settings.targetRegions}
+                            </Badge>
+                          )}
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder={settings?.targetRegions || "USA, Canada, India, UK, Germany"}
+                            {...field}
+                            value={field.value || ""}
+                            className="text-lg"
+                          />
+                        </FormControl>
+                        <p className="text-sm text-gray-500">
+                          {field.value ? (
+                            <>Region set: <strong>{field.value}</strong>. This will be used for SEO keyword generation.</>
+                          ) : settings?.targetRegions ? (
+                            <>Using global default: <strong>{settings.targetRegions}</strong>. Leave empty to use global, or set a page-specific region.</>
+                          ) : (
+                            <>Comma-separated list of target regions for this blog. This is required for SEO keyword generation.</>
+                          )}
+                        </p>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
                   <FormField
                     control={form.control}

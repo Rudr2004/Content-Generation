@@ -112,25 +112,58 @@ export async function generateSeoKeywords(serviceName: string, referenceContent?
     const regions = region ? region.split(',').map(r => r.trim()).filter(Boolean) : ["USA", "Canada"];
     const regionList = regions.join(", ");
     
-    const prompt = `Generate SEO keywords for a service page about "${serviceName}" targeting ${regionList} markets.
+    const prompt = `Generate SEO keywords for a service page about "${serviceName}" targeting ONLY ${regionList} markets.
+
+CRITICAL REGION REQUIREMENTS - MUST FOLLOW STRICTLY:
+1. ONLY use regions from this exact list: ${regionList}
+2. NEVER include USA, Canada, or any other regions unless they are explicitly in the list above
+3. If the region is "India, Australia", generate keywords ONLY for India and Australia
+4. DO NOT add "USA" or "Canada" to any keywords
+5. All location-based keywords must use ONLY: ${regions.map(r => r.trim()).join(', ')}
+
 ${referenceContent ? `Reference content context: ${referenceContent}` : ''}
 
+EXAMPLES FOR ${regionList}:
+${regions.map(r => {
+  const rLower = r.trim().toLowerCase();
+  if (rLower.includes('india')) {
+    return `- For India: "${serviceName} India", "${serviceName} services Mumbai", "${serviceName} Delhi", "${serviceName} Bangalore", "best ${serviceName} company India"`;
+  } else if (rLower.includes('australia')) {
+    return `- For Australia: "${serviceName} Australia", "${serviceName} services Sydney", "${serviceName} Melbourne", "${serviceName} Brisbane", "top ${serviceName} providers Australia"`;
+  }
+  return `- For ${r.trim()}: "${serviceName} ${r.trim()}", "${serviceName} services ${r.trim()}"`;
+}).join('\n')}
+
 Provide:
-1. One primary keyword (2-4 words, high-intent)
-2. 5-7 secondary keywords (related terms, long-tail variations)
+1. One primary keyword (2-4 words, high-intent) - MUST include region from ${regionList}
+2. 5-7 secondary keywords (related terms, long-tail variations) - MUST use ONLY regions from ${regionList}
 
 Focus on business-oriented, high-intent keywords that potential clients in ${regionList} would search for.
-Include location-specific variations where appropriate (e.g., "${serviceName} ${regions[0] || 'USA'}", "${serviceName} services ${regions[1] || 'Canada'}").
+Include location-specific variations using ONLY the specified regions.
 
 Return as JSON:
 {
-  "primaryKeyword": "primary keyword here",
+  "primaryKeyword": "primary keyword here (must include region from ${regionList})",
   "secondaryKeywords": ["keyword1", "keyword2", "keyword3", "keyword4", "keyword5"]
 }`;
 
     const response = await getOpenAIClient().chat.completions.create({
       model: 'gpt-4o',
-      messages: [{ role: 'user', content: prompt }],
+      messages: [
+        {
+          role: 'system',
+          content: `You are an SEO expert specializing in generating region-specific keywords for technology services.
+
+CRITICAL REGION COMPLIANCE RULES:
+1. ONLY use regions from the provided list: ${regionList}
+2. NEVER include USA, Canada, or any other regions unless they are explicitly in the provided list
+3. If the region is "India, Australia", generate keywords ONLY for India and Australia
+4. All location-based keywords must use ONLY: ${regions.map(r => r.trim()).join(', ')}
+5. Include major cities from the specified regions only (e.g., for India: Mumbai, Delhi, Bangalore; for Australia: Sydney, Melbourne, Brisbane)
+6. Generate keywords that are specific, actionable, and optimized for search engines in the target regions.`
+        },
+        { role: 'user', content: prompt }
+      ],
       max_tokens: 300,
       temperature: 0.3
     });
@@ -149,19 +182,128 @@ Return as JSON:
       cleanContent = cleanContent.substring(jsonStart, jsonEnd);
     }
     
-    return JSON.parse(cleanContent);
+    const result = JSON.parse(cleanContent);
+    
+    // Post-process: Filter out USA/Canada keywords if not in region list
+    const regionLower = region.toLowerCase();
+    const hasUSA = regionLower.includes('usa') || regionLower.includes('united states');
+    const hasCanada = regionLower.includes('canada');
+    
+    // Filter primary keyword
+    if (result.primaryKeyword) {
+      const pkLower = result.primaryKeyword.toLowerCase();
+      // Check for combined phrases first
+      if ((!hasUSA || !hasCanada) && (
+        pkLower.includes('usa canada') ||
+        pkLower.includes('usa, canada') ||
+        pkLower.includes('usa & canada') ||
+        pkLower.includes('usa and canada')
+      )) {
+        // Replace with first region
+        const firstRegion = regions[0] || '';
+        result.primaryKeyword = result.primaryKeyword
+          .replace(/\bUSA\s+Canada\b/gi, firstRegion)
+          .replace(/\bUSA,\s+Canada\b/gi, firstRegion)
+          .replace(/\bUSA\s+&\s+Canada\b/gi, firstRegion)
+          .replace(/\bUSA\s+and\s+Canada\b/gi, firstRegion);
+      }
+      if (!hasUSA && (
+        pkLower.includes(' usa') || 
+        pkLower.includes('usa ') || 
+        pkLower.endsWith(' usa') || 
+        pkLower.startsWith('usa ') ||
+        pkLower.includes('united states') ||
+        /\busa\b/i.test(result.primaryKeyword) ||
+        /\bunited\s+states\b/i.test(result.primaryKeyword)
+      )) {
+        // Replace USA with first region
+        const firstRegion = regions[0] || '';
+        result.primaryKeyword = result.primaryKeyword.replace(/\bUSA\b/gi, firstRegion).replace(/\bUnited States\b/gi, firstRegion);
+      }
+      if (!hasCanada && (
+        pkLower.includes(' canada') || 
+        pkLower.includes('canada ') || 
+        pkLower.endsWith(' canada') || 
+        pkLower.startsWith('canada ') ||
+        /\bcanada\b/i.test(result.primaryKeyword)
+      )) {
+        // Replace Canada with first region
+        const firstRegion = regions[0] || '';
+        result.primaryKeyword = result.primaryKeyword.replace(/\bCanada\b/gi, firstRegion);
+      }
+    }
+    
+    // Filter secondary keywords
+    if (result.secondaryKeywords && Array.isArray(result.secondaryKeywords)) {
+      result.secondaryKeywords = result.secondaryKeywords
+        .map((kw: string) => {
+          const kwLower = kw.toLowerCase();
+          // Remove if contains "USA Canada" or "USA, Canada" as combined phrase
+          if ((!hasUSA || !hasCanada) && (
+            kwLower.includes('usa canada') ||
+            kwLower.includes('usa, canada') ||
+            kwLower.includes('usa & canada') ||
+            kwLower.includes('usa and canada')
+          )) {
+            return null;
+          }
+          // Remove if contains USA and USA is not in region (check for various patterns)
+          if (!hasUSA && (
+            kwLower.includes(' usa') || 
+            kwLower.includes('usa ') || 
+            kwLower.endsWith(' usa') || 
+            kwLower.startsWith('usa ') || 
+            kwLower.includes('united states') ||
+            /\busa\b/i.test(kw) ||
+            /\bunited\s+states\b/i.test(kw)
+          )) {
+            return null;
+          }
+          // Remove if contains Canada and Canada is not in region (check for various patterns)
+          if (!hasCanada && (
+            kwLower.includes(' canada') || 
+            kwLower.includes('canada ') || 
+            kwLower.endsWith(' canada') || 
+            kwLower.startsWith('canada ') ||
+            /\bcanada\b/i.test(kw)
+          )) {
+            return null;
+          }
+          return kw;
+        })
+        .filter((kw: string | null) => kw !== null) as string[];
+    }
+    
+    return result;
   } catch (error) {
     console.error('Error generating SEO keywords:', error);
-    // Fallback keywords
+    // Fallback keywords - region-aware
+    const regions = region ? region.split(',').map(r => r.trim()).filter(Boolean) : [];
+    const regionLower = region.toLowerCase();
+    const hasUSA = regionLower.includes('usa') || regionLower.includes('united states');
+    const hasCanada = regionLower.includes('canada');
+    const regionSuffix = regions.length > 0 ? ` ${regions[0]}` : '';
+    
+    const fallbackKeywords = [
+      `${serviceName} services${regionSuffix}`,
+      `${serviceName} development${regionSuffix}`,
+      `${serviceName} solutions${regionSuffix}`,
+      `${serviceName} consulting${regionSuffix}`,
+      `professional ${serviceName}${regionSuffix}`,
+      `${serviceName} company${regionSuffix}`
+    ];
+    
+    // Only add USA/Canada if they're in the region list
+    if (hasUSA) {
+      fallbackKeywords.push(`${serviceName} services USA`);
+    }
+    if (hasCanada) {
+      fallbackKeywords.push(`${serviceName} services Canada`);
+    }
+    
     return {
-      primaryKeyword: `${serviceName} services`,
-      secondaryKeywords: [
-        `${serviceName} development`,
-        `${serviceName} solutions`,
-        `${serviceName} consulting`,
-        `professional ${serviceName}`,
-        `${serviceName} company`
-      ]
+      primaryKeyword: fallbackKeywords[0] || `${serviceName} services`,
+      secondaryKeywords: fallbackKeywords.slice(1)
     };
   }
 }

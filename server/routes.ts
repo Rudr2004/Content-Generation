@@ -960,7 +960,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // SEO Blog Generation endpoint
   app.post("/api/generate-seo-blog", async (req, res) => {
     try {
-      const { blogTitle, primaryKeyword, secondaryKeywords } = req.body;
+      const { blogTitle, primaryKeyword, secondaryKeywords, region } = req.body;
 
       if (!process.env.OPENAI_API_KEY) {
         return res.status(500).json({
@@ -969,12 +969,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
+      // Resolve region with priority order
+      const { resolveRegion } = await import("./region-resolver");
+      const resolvedRegion = await resolveRegion(region);
+
       const { generateSEOBlog } = await import("./ai-blog-generator");
 
       const generatedContent = await generateSEOBlog({
         blogTitle,
         primaryKeyword,
         secondaryKeywords: secondaryKeywords.split(',').map((k: string) => k.trim()),
+        region: resolvedRegion,
       });
 
       res.json(generatedContent);
@@ -1118,7 +1123,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Regenerate Content endpoint
   app.post("/api/regenerate-content", async (req, res) => {
     try {
-      const { blogTitle, primaryKeyword, secondaryKeywords } = req.body;
+      const { blogTitle, primaryKeyword, secondaryKeywords, region } = req.body;
 
       if (!process.env.OPENAI_API_KEY) {
         return res.status(500).json({
@@ -1127,12 +1132,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
+      // Resolve region with priority order
+      const { resolveRegion } = await import("./region-resolver");
+      const resolvedRegion = await resolveRegion(region);
+
       const { regenerateContent } = await import("./ai-blog-generator");
 
       const content = await regenerateContent(
         blogTitle,
         primaryKeyword,
-        secondaryKeywords.split(',').map((k: string) => k.trim())
+        secondaryKeywords.split(',').map((k: string) => k.trim()),
+        resolvedRegion
       );
 
       res.json(content);
@@ -1294,9 +1304,12 @@ Our ${subCategory.toLowerCase()} solutions are designed with future growth in mi
   });
 
   // AI Service SEO Keywords Generation endpoint  
+  // OLD endpoint - redirect to new one with region support
   app.post("/api/ai/generate-seo-keywords", async (req, res) => {
+    // This endpoint is deprecated - redirect to the authenticated version
+    // But handle it for backward compatibility
     try {
-      const { title, category, subCategory } = req.body;
+      const { title, category, subCategory, region } = req.body;
 
       if (!title || !category || !subCategory) {
         return res.status(400).json({
@@ -1305,7 +1318,15 @@ Our ${subCategory.toLowerCase()} solutions are designed with future growth in mi
         });
       }
 
-      // Generate fallback keywords based on service details
+      // Use the same logic as the authenticated endpoint
+      const { resolveRegion } = await import("./region-resolver");
+      const resolvedRegion = await resolveRegion(region);
+      const regions = resolvedRegion.split(',').map(r => r.trim()).filter(Boolean);
+      const regionLower = resolvedRegion.toLowerCase();
+      const hasUSA = regionLower.includes('usa') || regionLower.includes('united states');
+      const hasCanada = regionLower.includes('canada');
+
+      // Generate fallback keywords based on service details - region-aware
       const baseKeywords = [
         `${subCategory.toLowerCase()} services`,
         `professional ${subCategory.toLowerCase()}`,
@@ -1320,8 +1341,12 @@ Our ${subCategory.toLowerCase()} solutions are designed with future growth in mi
         `professional ${category.toLowerCase()}`,
         `${subCategory.toLowerCase()} specialists`,
         `enterprise ${subCategory.toLowerCase()}`,
-        `${subCategory.toLowerCase()} services USA`,
-        `${subCategory.toLowerCase()} services Canada`,
+        // Only add USA/Canada if they're in the region list
+        ...(hasUSA ? [`${subCategory.toLowerCase()} services USA`] : []),
+        ...(hasCanada ? [`${subCategory.toLowerCase()} services Canada`] : []),
+        // Add region-specific keywords
+        ...regions.map(r => `${subCategory.toLowerCase()} services ${r}`),
+        ...regions.map(r => `${subCategory.toLowerCase()} ${r}`),
         `hire ${subCategory.toLowerCase()} developers`,
         `${subCategory.toLowerCase()} outsourcing`,
         `${category.toLowerCase()} consulting services`,
@@ -1334,7 +1359,14 @@ Our ${subCategory.toLowerCase()} solutions are designed with future growth in mi
     } catch (error) {
       console.error("Service SEO keywords generation error:", error);
 
-      // Return fallback keywords for services
+      // Return fallback keywords for services - region-aware
+      const { resolveRegion } = await import("./region-resolver");
+      const resolvedRegion = await resolveRegion((req.body as any).region).catch(() => "USA, Canada");
+      const regions = resolvedRegion.split(',').map(r => r.trim()).filter(Boolean);
+      const regionLower = resolvedRegion.toLowerCase();
+      const hasUSA = regionLower.includes('usa') || regionLower.includes('united states');
+      const hasCanada = regionLower.includes('canada');
+
       const fallbackKeywords = [
         "professional services",
         "business solutions",
@@ -1344,8 +1376,12 @@ Our ${subCategory.toLowerCase()} solutions are designed with future growth in mi
         "custom development",
         "business innovation",
         "professional consulting",
-        "technology services USA",
-        "business development Canada"
+        // Only add USA/Canada if they're in the region list
+        ...(hasUSA ? ["technology services USA"] : []),
+        ...(hasCanada ? ["business development Canada"] : []),
+        // Add region-specific keywords
+        ...regions.map(r => `technology services ${r}`),
+        ...regions.map(r => `business development ${r}`)
       ].join(', ');
 
       res.json({ keywords: fallbackKeywords });
@@ -3103,6 +3139,17 @@ Focus on creating compelling meta data that will attract business leaders and de
 
       console.log("Generating case study content for:", { title, category });
 
+      // Validate region
+      const { resolveRegion } = await import("./region-resolver");
+      const resolvedRegion = await resolveRegion((req.body as any).region);
+      
+      if (!resolvedRegion || resolvedRegion.trim() === "") {
+        return res.status(400).json({
+          success: false,
+          message: "Region is required for case study content generation. Please set a target region in the form."
+        });
+      }
+
       // Use inline case study structure instead of file loading to avoid module issues
       const caseStudyStructure = {
         "title": "string",
@@ -3146,14 +3193,26 @@ Focus on creating compelling meta data that will attract business leaders and de
         "conclusion": "string"
       };
 
+      const regions = resolvedRegion.split(',').map(r => r.trim()).filter(Boolean);
+      const regionList = regions.join(", ");
+      
       let prompt = `Generate a comprehensive case study following this exact JSON structure:
       ${JSON.stringify(caseStudyStructure, null, 2)}
+      
+      CRITICAL REGION REQUIREMENTS:
+      - Target regions: ${regionList}
+      - Client location in case study should be from: ${regionList} ONLY
+      - DO NOT include USA, Canada, or any other regions unless they are explicitly in the list above
+      - If the region is "India, North-East, Australia", use locations ONLY from India, North-East, and Australia
+      - DO NOT add "USA" or "Canada" to any location references unless they are in the provided region list
       
       Requirements:
       - Title: ${title}
       - Category: ${category}
+      - Target Regions: ${regionList}
       - For client.name field: MUST use a random human name (e.g., "Michael Johnson", "Sarah Chen", "David Rodriguez") - NEVER use company names
-      - Include realistic industry and location information
+      - For client.location field: Use ONLY locations from ${regionList} (e.g., cities in ${regions[0] || regions[0]}, ${regions[1] || regions[0]})
+      - Include realistic industry and location information from ${regionList} ONLY
       - Include specific project challenges and objectives
       - Detail the solution strategy with features and technologies
       - Provide quantitative metrics (percentages, numbers, improvements)
@@ -3167,7 +3226,7 @@ Focus on creating compelling meta data that will attract business leaders and de
       - Make it clear, concise, and professional while staying within the exact word limit.
       
       IMPORTANT: The client.name field should always be a human name for privacy protection, not a company name.
-      Make it professional, detailed, and realistic for the ${category} industry.
+      Make it professional, detailed, and realistic for the ${category} industry in ${regionList} markets.
       Use specific technologies relevant to ${category}.
       Include real business metrics and measurable outcomes.`;
 
@@ -3185,7 +3244,15 @@ Focus on creating compelling meta data that will attract business leaders and de
         messages: [
           {
             role: "system",
-            content: "You are an expert case study writer creating comprehensive, structured content for technology companies. Generate detailed JSON content following the exact structure provided, with realistic client information, specific metrics, and professional business outcomes."
+            content: `You are an expert case study writer creating comprehensive, structured content for technology companies targeting ${regionList} markets.
+
+CRITICAL REGION COMPLIANCE RULES:
+1. ONLY use regions from the provided list: ${regionList}
+2. NEVER include USA, Canada, or any other regions unless they are explicitly in the provided list
+3. If the region is "India, Australia", generate content ONLY for India and Australia
+4. Client location must be from: ${regionList} ONLY
+5. All location references must use ONLY: ${regions.map(r => r.trim()).join(', ')}
+6. Generate detailed JSON content following the exact structure provided, with realistic client information, specific metrics, and professional business outcomes relevant to ${regionList} markets.`
           },
           {
             role: "user",
@@ -3215,12 +3282,15 @@ Focus on creating compelling meta data that will attract business leaders and de
       } catch (parseError) {
         console.error('Error parsing generated JSON:', parseError);
         // Fallback to basic structure
+        const regions = resolvedRegion.split(',').map(r => r.trim()).filter(Boolean);
+        const defaultLocation = regions[0] || "Global";
+        
         structuredContent = {
           title: title,
           client: {
             name: "Michael Thompson",
             industry: category,
-            location: "United States"
+            location: defaultLocation
           },
           project_overview: {
             duration: "6 months",
@@ -3261,7 +3331,24 @@ Focus on creating compelling meta data that will attract business leaders and de
       // Generate SEO metadata
       const metaTitle = `${title} | Case Studies | GreenAppleX`;
       const metaDescription = structuredContent.project_overview?.problem_statement?.substring(0, 160) || `Explore our ${category.toLowerCase()} case studies and success stories. See how GreenAppleX delivers exceptional results for clients.`;
-      const metaKeywords = `${category.toLowerCase()}, case studies, success stories, client projects, ${structuredContent.client?.industry || 'technology solutions'}`.toLowerCase();
+      // Generate region-aware keywords for case study
+      const { generateSeoKeywords } = await import("./ai-service-content-generator");
+      let regionAwareKeywords: { primaryKeyword: string; secondaryKeywords: string[] } | null = null;
+      
+      try {
+        const caseStudyDescription = structuredContent.project_overview?.problem_statement || 
+                                   structuredContent.conclusion || 
+                                   `${title} case study`;
+        regionAwareKeywords = await generateSeoKeywords(title, caseStudyDescription, resolvedRegion);
+      } catch (error) {
+        console.error("Error generating region-aware keywords for case study:", error);
+        // Fallback to simple keywords
+      }
+      
+      // Use region-aware keywords if available, otherwise fallback
+      const metaKeywords = regionAwareKeywords 
+        ? `${regionAwareKeywords.primaryKeyword}, ${regionAwareKeywords.secondaryKeywords.join(', ')}`
+        : `${category.toLowerCase()}, case studies, success stories, client projects, ${structuredContent.client?.industry || 'technology solutions'}`.toLowerCase();
 
       res.json({
         success: true,
@@ -3615,30 +3702,57 @@ Focus on creating compelling meta data that will attract business leaders and de
         const OpenAI = (await import("openai")).default;
         const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-        const prompt = `Generate SEO-optimized keywords for a technology service targeting ${region} markets:
+        const prompt = `Generate SEO-optimized keywords for a technology service targeting ONLY ${region} markets.
+
+CRITICAL REGION REQUIREMENTS - MUST FOLLOW STRICTLY:
+1. ONLY use regions from this exact list: ${region}
+2. NEVER include USA, Canada, or any other regions unless they are explicitly in the list above
+3. If the region is "India, Australia", generate keywords ONLY for India and Australia
+4. DO NOT add "USA" or "Canada" to any keywords
+5. All location-based keywords must use ONLY: ${regions.map(r => r.trim()).join(', ')}
 
 Title: ${title}
 Category: ${category}
 Sub-category: ${subCategory}
 
+EXAMPLES FOR ${region}:
+${regions.map(r => {
+  const rLower = r.trim().toLowerCase();
+  if (rLower.includes('india')) {
+    return `- For India: "${title} services India", "${title} Mumbai", "${title} Delhi", "${title} Bangalore", "${title} development India", "best ${title} company India"`;
+  } else if (rLower.includes('australia')) {
+    return `- For Australia: "${title} services Australia", "${title} Sydney", "${title} Melbourne", "${title} Brisbane", "${title} development Australia", "top ${title} providers Australia"`;
+  }
+  return `- For ${r.trim()}: "${title} services ${r.trim()}", "${title} ${r.trim()}", "${title} development ${r.trim()}"`;
+}).join('\n')}
+
 Generate 18-20 highly targeted SEO keywords focusing on:
-- Primary service keywords with high search volume
-- ${region} location-based terms (include major cities from ${regions.join(', ')})
+- Primary service keywords with high search volume for ${region} markets
+- Location-based terms using ONLY ${regions.map(r => r.trim()).join(', ')} and their major cities
 - Action-oriented keywords (hire, outsource, custom, professional, enterprise)
 - Long-tail keywords for better conversion
 - B2B focused terms (for startups, for enterprises, consulting, solutions)
-- Industry-specific terminology
+- Industry-specific terminology relevant to ${region}
 - Competitive advantage terms (affordable, top-rated, experienced, certified)
 
 Target audience: Business decision makers in ${region} looking for technology services.
-Return ONLY the keywords separated by commas, no additional text or explanations.`;
+
+IMPORTANT: Return ONLY the keywords separated by commas. Each keyword should be relevant to ${region} markets. DO NOT include any keywords with USA or Canada unless they are in the region list.`;
 
         const response = await openai.chat.completions.create({
           model: "gpt-4o", // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
           messages: [
             {
               role: "system",
-              content: "You are an SEO expert specializing in generating high-quality, relevant keywords for technology services. Generate keywords that are specific, actionable, and optimized for search engines."
+              content: `You are an SEO expert specializing in generating high-quality, relevant keywords for technology services targeting specific geographic regions.
+
+CRITICAL REGION COMPLIANCE RULES:
+1. ONLY use regions from the provided list: ${region}
+2. NEVER include USA, Canada, or any other regions unless they are explicitly in the provided list
+3. If the region is "India, Australia", generate keywords ONLY for India and Australia
+4. All location-based keywords must use ONLY: ${regions.map(r => r.trim()).join(', ')}
+5. Include major cities from the specified regions only (e.g., for India: Mumbai, Delhi, Bangalore; for Australia: Sydney, Melbourne, Brisbane)
+6. Generate keywords that are specific, actionable, and optimized for search engines in the target regions.`
             },
             {
               role: "user",
@@ -3650,6 +3764,57 @@ Return ONLY the keywords separated by commas, no additional text or explanations
         });
 
         keywords = response.choices[0].message.content?.trim() || "";
+        
+        // Post-process: Filter out USA/Canada keywords if not in region list
+        const regionLower = region.toLowerCase();
+        const hasUSA = regionLower.includes('usa') || regionLower.includes('united states');
+        const hasCanada = regionLower.includes('canada');
+        
+        // Always filter if USA or Canada is not in the region list
+        if (!hasUSA || !hasCanada) {
+          // Also check for "USA Canada" as a combined phrase
+          // Split keywords by comma and filter
+          const keywordArray = keywords.split(',').map(k => k.trim()).filter(Boolean);
+          const filteredKeywords = keywordArray.filter(keyword => {
+            const kwLower = keyword.toLowerCase();
+            // Remove if contains USA and USA is not in region (check for various patterns)
+            if (!hasUSA && (
+              kwLower.includes(' usa') || 
+              kwLower.includes('usa ') || 
+              kwLower.endsWith(' usa') || 
+              kwLower.startsWith('usa ') ||
+              kwLower.includes('united states') ||
+              kwLower.includes('usa canada') ||
+              kwLower.includes('usa, canada') ||
+              /\busa\b/i.test(keyword) ||
+              /\bunited\s+states\b/i.test(keyword)
+            )) {
+              return false;
+            }
+            // Remove if contains Canada and Canada is not in region (check for various patterns)
+            if (!hasCanada && (
+              kwLower.includes(' canada') || 
+              kwLower.includes('canada ') || 
+              kwLower.endsWith(' canada') || 
+              kwLower.startsWith('canada ') ||
+              kwLower.includes('usa canada') ||
+              kwLower.includes('usa, canada') ||
+              /\bcanada\b/i.test(keyword)
+            )) {
+              return false;
+            }
+            // Remove if contains "USA Canada" or "USA, Canada" as combined phrase
+            if ((!hasUSA || !hasCanada) && (
+              kwLower.includes('usa canada') ||
+              kwLower.includes('usa, canada') ||
+              kwLower.includes('usa & canada')
+            )) {
+              return false;
+            }
+            return true;
+          });
+          keywords = filteredKeywords.join(', ');
+        }
       } catch (openaiError: any) {
         console.log("OpenAI API failed, using fallback keywords:", openaiError.message);
 
@@ -3658,9 +3823,16 @@ Return ONLY the keywords separated by commas, no additional text or explanations
         keywords = baseKeywords;
       }
 
+      // Parse keywords to extract primary and secondary
+      const keywordArray = keywords.split(',').map(k => k.trim()).filter(Boolean);
+      const primaryKeyword = keywordArray[0] || "";
+      const secondaryKeywords = keywordArray.slice(1).join(', ') || "";
+
       res.json({
         success: true,
         keywords,
+        primaryKeyword,
+        secondaryKeywords,
         message: keywords.includes("development services") ? "SEO keywords generated using fallback system" : "SEO keywords generated successfully"
       });
     } catch (error) {
@@ -5395,16 +5567,26 @@ CRITICAL INSTRUCTIONS:
         }
       }
 
+      // Resolve region early for keyword generation
+      const { resolveRegion } = await import("./region-resolver");
+      const regionParam = await resolveRegion(region);
+      
       // Step 2: Use new reference-based content generation if reference content is provided
       let content;
       if (hasReferenceContent) {
         console.log("Using reference content for AI generation");
         try {
+          // Generate region-aware keywords first
+          const seoKeywords = await generateSeoKeywords(serviceName, normalizedReferenceContent, regionParam);
+          
           content = await generateServiceContentFromReference(
             serviceName,
             "AI & Data Services", // Default category
             normalizedReferenceContent
           );
+          
+          // Store the region-aware keywords for response
+          (content as any).generatedSeoKeywords = seoKeywords;
         } catch (error: any) {
           console.error("Error generating content from reference:", error);
           throw new Error(`Failed to generate content from reference: ${error.message || 'Unknown error'}`);
@@ -5423,6 +5605,9 @@ CRITICAL INSTRUCTIONS:
             normalizedRawData || undefined,
             [seoKeywords.primaryKeyword, ...seoKeywords.secondaryKeywords]
           );
+          
+          // Store the region-aware keywords for response
+          (content as any).generatedSeoKeywords = seoKeywords;
         } catch (error: any) {
           console.error("Error generating content from URL/data:", error);
           throw new Error(`Failed to generate content: ${error.message || 'Unknown error'}`);
@@ -5436,11 +5621,25 @@ CRITICAL INSTRUCTIONS:
 
       // Step 4: Generate SEO meta information
       let seoMeta;
+      let regionAwareKeywords: { primaryKeyword: string; secondaryKeywords: string[] } | null = null;
+      
+      // If we have region-aware keywords from generateSeoKeywords, use those
+      if ((content as any).generatedSeoKeywords) {
+        regionAwareKeywords = (content as any).generatedSeoKeywords;
+      }
+      
       if (referenceContent) {
         seoMeta = await generateServiceMetadata(serviceName, "AI & Data Services", content);
       } else {
         // Type assertion: when no referenceContent, content is ServicePageContent
         seoMeta = await generateSeoMeta(serviceName, content as any);
+      }
+      
+      // If we don't have region-aware keywords, generate them now
+      if (!regionAwareKeywords) {
+        const { resolveRegion } = await import("./region-resolver");
+        const regionParam = await resolveRegion(region);
+        regionAwareKeywords = await generateSeoKeywords(serviceName, referenceContent || (content as any).introOverview?.description || "", regionParam);
       }
 
       // Prepare response with all generated content in new structure
@@ -5449,11 +5648,11 @@ CRITICAL INSTRUCTIONS:
         title: content.heroSection.headline,
         serviceName,
 
-        // SEO Information
+        // SEO Information - use region-aware keywords
         metaTitle: seoMeta.metaTitle,
         metaDescription: seoMeta.metaDescription,
-        primaryKeyword: (seoMeta as any).primaryKeyword || (referenceContent ? "AI chatbot development" : ""),
-        secondaryKeywords: (seoMeta as any).secondaryKeywords || (referenceContent ? "conversational AI, enterprise chatbots" : ""),
+        primaryKeyword: regionAwareKeywords.primaryKeyword || (seoMeta as any).primaryKeyword || "",
+        secondaryKeywords: regionAwareKeywords.secondaryKeywords?.join(', ') || (seoMeta as any).secondaryKeywords || "",
 
         // Complete structured content as JSON string
         structuredContent: JSON.stringify(content),

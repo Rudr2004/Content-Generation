@@ -5,6 +5,8 @@ const siteSettingSchema = new mongoose.Schema({
     theme: { type: String, default: "light", required: true },
     primaryColor: { type: String, default: "blue" },
     logoUrl: String,
+    targetRegions: { type: String, default: "USA, Canada" },
+    industryFocus: { type: String, default: "Technology, AI" },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },
 });

@@ -154,6 +154,8 @@ export interface SiteSettings {
   theme: string;
   primaryColor?: string;
   logoUrl?: string;
+  targetRegions?: string;
+  industryFocus?: string;
   updatedAt: Date;
 }
 
