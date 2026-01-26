@@ -15,6 +15,8 @@ import { Plus, Edit, Trash2, Search, Wand2, Eye, FileText, Users, BarChart3, Set
 import type { CaseStudyPage, IndividualCaseStudy, CaseStudyTestimonial, CaseStudyCategory, InsertCaseStudyCategory } from "@shared/schema";
 import { motion } from "framer-motion";
 import { RichTextEditor } from "@/components/ui/rich-text-editor";
+import { useSiteSettings } from "@/contexts/SiteSettingsContext";
+import { resolveRegion } from "@/lib/region-resolver";
 
 interface CaseStudyFormData {
   title: string;
@@ -24,12 +26,14 @@ interface CaseStudyFormData {
   metaTitle: string;
   metaDescription: string;
   metaKeywords: string;
+  region?: string;
   status: string;
 }
 
 export function CaseStudyManagement() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { settings } = useSiteSettings();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedPage, setSelectedPage] = useState<CaseStudyPage | null>(null);
   const [showCategoryManager, setShowCategoryManager] = useState(false);
@@ -41,6 +45,7 @@ export function CaseStudyManagement() {
     metaTitle: "",
     metaDescription: "",
     metaKeywords: "",
+    region: "",
     status: "draft",
   });
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -147,6 +152,7 @@ export function CaseStudyManagement() {
       metaTitle: "",
       metaDescription: "",
       metaKeywords: "",
+      region: "",
       status: "draft",
     });
     setSelectedPage(null);
@@ -173,7 +179,8 @@ export function CaseStudyManagement() {
         body: JSON.stringify({
           title: formData.title,
           category: formData.category,
-          referenceContent: formData.referenceContent || ""
+          referenceContent: formData.referenceContent || "",
+          region: formData.region || resolveRegion(null, settings?.targetRegions)
         })
       });
 
@@ -232,6 +239,7 @@ export function CaseStudyManagement() {
       metaTitle: page.metaTitle || "",
       metaDescription: page.metaDescription || "",
       metaKeywords: page.metaKeywords || "",
+      region: (page as any).region || "",
       status: page.status || "draft",
     });
     setIsDialogOpen(true);
@@ -379,6 +387,32 @@ export function CaseStudyManagement() {
                 {/* SEO Settings Section */}
                 <div className="space-y-4 border-t pt-6">
                   <h3 className="text-lg font-semibold text-gray-900">SEO Settings</h3>
+                  
+                  <div className="space-y-2 bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <Label htmlFor="region" className="flex items-center gap-2">
+                      <span>🌍 Target Regions</span>
+                      {settings?.targetRegions && !formData.region && (
+                        <Badge variant="outline" className="text-xs bg-blue-100 text-blue-700">
+                          Using Global: {settings.targetRegions}
+                        </Badge>
+                      )}
+                    </Label>
+                    <Input
+                      id="region"
+                      value={formData.region || ""}
+                      onChange={(e) => setFormData(prev => ({ ...prev, region: e.target.value }))}
+                      placeholder={settings?.targetRegions || "USA, Canada, UK, Germany"}
+                    />
+                    <p className="text-xs text-gray-500">
+                      {formData.region ? (
+                        <>Page-specific region set. Keywords will target: <strong>{formData.region}</strong></>
+                      ) : settings?.targetRegions ? (
+                        <>Using global default: <strong>{settings.targetRegions}</strong>. Leave empty to use global, or set a page-specific region.</>
+                      ) : (
+                        <>Comma-separated list of target regions. If not set, will use global default from Site Settings.</>
+                      )}
+                    </p>
+                  </div>
                   
                   <div className="space-y-2">
                     <Label htmlFor="metaTitle">Meta Title</Label>

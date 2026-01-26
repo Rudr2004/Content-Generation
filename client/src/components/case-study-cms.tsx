@@ -12,6 +12,8 @@ import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Sparkles, Save, Plus, X, FileText } from 'lucide-react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useSiteSettings } from '@/contexts/SiteSettingsContext';
+import { resolveRegion } from '@/lib/region-resolver';
 
 // Simplified Case Study form validation schema matching Service Form structure
 const caseStudySchema = z.object({
@@ -23,6 +25,7 @@ const caseStudySchema = z.object({
   metaTitle: z.string().optional(),
   metaDescription: z.string().optional(),
   metaKeywords: z.string().optional(),
+  region: z.string().optional(),
   status: z.enum(['draft', 'published']).default('draft'),
 });
 
@@ -62,6 +65,7 @@ interface CaseStudyCMSProps {
 
 export function CaseStudyCMS({ caseStudy, onSave, onClose }: CaseStudyCMSProps) {
   const { toast } = useToast();
+  const { settings } = useSiteSettings();
   const queryClient = useQueryClient();
   const [isGeneratingAI, setIsGeneratingAI] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('');
@@ -94,10 +98,19 @@ export function CaseStudyCMS({ caseStudy, onSave, onClose }: CaseStudyCMSProps) 
       metaTitle: caseStudy?.metaTitle || '',
       metaDescription: caseStudy?.metaDescription || '',
       metaKeywords: caseStudy?.metaKeywords || '',
+      region: caseStudy?.region || resolveRegion(null, settings?.targetRegions),
       status: caseStudy?.status || 'draft',
       featured: caseStudy?.featured || false,
     },
   });
+
+  // Update region default when settings load
+  useEffect(() => {
+    if (settings && !caseStudy?.region) {
+      const resolvedRegion = resolveRegion(null, settings.targetRegions);
+      form.setValue("region", resolvedRegion);
+    }
+  }, [settings, caseStudy?.region, form]);
 
   const saveMutation = useMutation({
     mutationFn: async (data: CaseStudyFormData) => {
@@ -135,10 +148,11 @@ export function CaseStudyCMS({ caseStudy, onSave, onClose }: CaseStudyCMSProps) 
 
   const generateAIMutation = useMutation({
     mutationFn: async (data: { title: string; category: string; referenceContent?: string }) => {
+      const region = form.getValues("region") || resolveRegion(null, settings?.targetRegions);
       const response = await fetch('/api/ai/generate-case-study-content', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
+        body: JSON.stringify({ ...data, region }),
       });
       
       if (!response.ok) {
@@ -689,6 +703,40 @@ export function CaseStudyCMS({ caseStudy, onSave, onClose }: CaseStudyCMSProps) 
                   <CardTitle>SEO & Settings</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
+                  <FormField
+                    control={form.control}
+                    name="region"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="flex items-center gap-2">
+                          <span>🌍 Target Regions</span>
+                          {settings?.targetRegions && !field.value && (
+                            <Badge variant="outline" className="text-xs bg-blue-100 text-blue-700">
+                              Using Global: {settings.targetRegions}
+                            </Badge>
+                          )}
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder={settings?.targetRegions || "USA, Canada, UK, Germany"}
+                            {...field}
+                            value={field.value || ""}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                        <p className="text-xs text-gray-500">
+                          {field.value ? (
+                            <>Page-specific region set. Keywords will target: <strong>{field.value}</strong></>
+                          ) : settings?.targetRegions ? (
+                            <>Using global default: <strong>{settings.targetRegions}</strong>. Leave empty to use global, or set a page-specific region.</>
+                          ) : (
+                            <>Comma-separated list of target regions. If not set, will use global default from Site Settings.</>
+                          )}
+                        </p>
+                      </FormItem>
+                    )}
+                  />
+
                   <FormField
                     control={form.control}
                     name="metaTitle"

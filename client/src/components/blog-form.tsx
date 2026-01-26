@@ -18,6 +18,7 @@ import { SEOBlogGenerator } from "./seo-blog-generator";
 import { RichTextEditor } from "@/components/ui/rich-text-editor";
 import { useSiteSettings } from "@/contexts/SiteSettingsContext";
 import { COMPANY_INFO } from "@/lib/constants";
+import { resolveRegion } from "@/lib/region-resolver";
 
 interface BlogFormProps {
   post?: any;
@@ -37,6 +38,7 @@ const blogFormSchema = insertBlogPostSchema.extend({
   tagsInput: z.string().optional(),
   scheduledAt: z.string().optional(),
   authorId: z.number().optional(),
+  region: z.string().optional(),
 });
 
 export function BlogForm({ post, onClose, onSuccess }: BlogFormProps) {
@@ -70,12 +72,21 @@ export function BlogForm({ post, onClose, onSuccess }: BlogFormProps) {
       metaTitle: post?.metaTitle || "",
       metaDescription: post?.metaDescription || "",
       keywords: post?.keywords || "",
+      region: post?.region || resolveRegion(null, settings?.targetRegions),
       status: post?.status || "draft",
       scheduledAt: post?.scheduledAt ? new Date(post.scheduledAt).toISOString().slice(0, 16) : "",
       authorId: post?.authorId || undefined,
       tagsInput: "",
     },
   });
+
+  // Update region default when settings load
+  useEffect(() => {
+    if (settings && !post?.region) {
+      const resolvedRegion = resolveRegion(null, settings.targetRegions);
+      form.setValue("region", resolvedRegion);
+    }
+  }, [settings, post?.region, form]);
 
   const title = form.watch("title");
   const content = form.watch("content");
@@ -461,6 +472,40 @@ export function BlogForm({ post, onClose, onSuccess }: BlogFormProps) {
                         />
                       </FormControl>
                       <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="region"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-poppins flex items-center gap-2">
+                        <span>🌍 Target Regions</span>
+                        {settings?.targetRegions && !field.value && (
+                          <Badge variant="outline" className="text-xs bg-blue-100 text-blue-700">
+                            Using Global: {settings.targetRegions}
+                          </Badge>
+                        )}
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder={settings?.targetRegions || "USA, Canada, UK, Germany"}
+                          {...field}
+                          className="text-poppins"
+                          value={field.value || ""}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                      <p className="text-xs text-gray-500 text-poppins">
+                        {field.value ? (
+                          <>Page-specific region set. Keywords will target: <strong>{field.value}</strong></>
+                        ) : settings?.targetRegions ? (
+                          <>Using global default: <strong>{settings.targetRegions}</strong>. Leave empty to use global, or set a page-specific region.</>
+                        ) : (
+                          <>Comma-separated list of target regions. If not set, will use global default from Site Settings.</>
+                        )}
+                      </p>
                     </FormItem>
                   )}
                 />

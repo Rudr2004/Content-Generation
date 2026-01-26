@@ -291,8 +291,16 @@ export function generateDynamicKeywords(
 ): string[] {
   const regions = targetRegions ? targetRegions.split(',').map(r => r.trim()).filter(Boolean) : [];
 
-  // If no regions configured, returns base keywords to avoid empty bias
-  if (regions.length === 0) return baseKeywords;
+  // If no regions configured, default to USA, Canada
+  if (regions.length === 0) {
+    const defaultRegions = ["USA", "Canada"];
+    return generateLocalizedKeywords(baseKeywords, defaultRegions);
+  }
+  
+  return generateLocalizedKeywords(baseKeywords, regions);
+}
+
+function generateLocalizedKeywords(baseKeywords: string[], regions: string[]): string[] {
 
   const localizedKeywords: string[] = [];
 

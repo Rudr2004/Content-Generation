@@ -104,19 +104,23 @@ export async function scrapeAndSummarizeUrl(url: string): Promise<string> {
 /**
  * Generate SEO keywords for a service
  */
-export async function generateSeoKeywords(serviceName: string, referenceContent?: string): Promise<{
+export async function generateSeoKeywords(serviceName: string, referenceContent?: string, region: string = "USA, Canada"): Promise<{
   primaryKeyword: string;
   secondaryKeywords: string[];
 }> {
   try {
-    const prompt = `Generate SEO keywords for a service page about "${serviceName}".
+    const regions = region ? region.split(',').map(r => r.trim()).filter(Boolean) : ["USA", "Canada"];
+    const regionList = regions.join(", ");
+    
+    const prompt = `Generate SEO keywords for a service page about "${serviceName}" targeting ${regionList} markets.
 ${referenceContent ? `Reference content context: ${referenceContent}` : ''}
 
 Provide:
 1. One primary keyword (2-4 words, high-intent)
 2. 5-7 secondary keywords (related terms, long-tail variations)
 
-Focus on business-oriented, high-intent keywords that potential clients would search for.
+Focus on business-oriented, high-intent keywords that potential clients in ${regionList} would search for.
+Include location-specific variations where appropriate (e.g., "${serviceName} ${regions[0] || 'USA'}", "${serviceName} services ${regions[1] || 'Canada'}").
 
 Return as JSON:
 {

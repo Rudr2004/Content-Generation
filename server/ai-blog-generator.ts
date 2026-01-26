@@ -138,18 +138,21 @@ export async function generateSEOBlog(request: SEOBlogRequest): Promise<SEOBlogR
   }
 }
 
-export async function generateSEOKeywords(blogTitle: string): Promise<string[]> {
+export async function generateSEOKeywords(blogTitle: string, region: string = "USA, Canada"): Promise<string[]> {
   try {
+    const regions = region ? region.split(',').map(r => r.trim()).filter(Boolean) : ["USA", "Canada"];
+    const regionList = regions.join(", ");
+    
     const response = await openai.chat.completions.create({
       model: "gpt-4o",
       messages: [
         {
           role: "system",
-          content: `You are an expert SEO keyword strategist specializing in USA and Canada markets. 
+          content: `You are an expert SEO keyword strategist specializing in ${regionList} markets. 
           Generate high-quality SEO keywords that are:
           
           ✅ Mix of informational and commercial intent keywords
-          ✅ Geographically targeted for USA and Canada
+          ✅ Geographically targeted for ${regionList}
           ✅ Naturally relevant to the blog title
           ✅ Varied in style (question-based, benefit-focused, commercial/buyer-focused)
           ✅ Realistic search terms people actually use
@@ -160,25 +163,25 @@ export async function generateSEOKeywords(blogTitle: string): Promise<string[]> 
           - Long-tail keywords (specific phrases)
           - Question-based keywords (how, what, why, when)
           - Commercial intent keywords (best, top, review, compare)
-          - Location-based keywords (USA, Canada, American, Canadian)
+          - Location-based keywords targeting ${regionList}
           - Benefits-focused keywords (advantages, benefits, solutions)
           
           Generate at least 20-25 keywords. Return as a JSON array of strings.
           
-          Example styles:
-          - "how [topic] works in USA"
-          - "best [topic] solutions Canada"
+          Example styles for ${regionList}:
+          - "how [topic] works in ${regions[0] || 'USA'}"
+          - "best [topic] solutions ${regions[1] || 'Canada'}"
           - "[topic] benefits for businesses"
-          - "top [topic] companies USA"
+          - "top [topic] companies ${regions[0] || 'USA'}"
           - "[topic] implementation guide"
-          - "why [topic] matters for Canadian businesses"
+          - "why [topic] matters for ${regions[regions.length - 1] || 'Canadian'} businesses"
           
           Respond with JSON: {"keywords": ["keyword1", "keyword2", ...]}
           `
         },
         {
           role: "user",
-          content: `Generate SEO keywords for this blog title: "${blogTitle}"`
+          content: `Generate SEO keywords for this blog title: "${blogTitle}" targeting ${regionList} markets.`
         }
       ],
       response_format: { type: "json_object" },
@@ -191,8 +194,8 @@ export async function generateSEOKeywords(blogTitle: string): Promise<string[]> 
   } catch (error: any) {
     console.log("OpenAI API failed for SEO keywords, using fallback keywords:", error.message);
     
-    // Generate fallback SEO keywords based on blog title
-    const fallbackKeywords = generateFallbackSEOKeywords(blogTitle);
+    // Generate fallback SEO keywords based on blog title and region
+    const fallbackKeywords = generateFallbackSEOKeywords(blogTitle, region);
     return fallbackKeywords;
   }
 }
@@ -299,9 +302,12 @@ function generateFallbackTags(primaryKeyword: string, secondaryKeywords: string[
   return [...baseTags, ...keywordTags].slice(0, 5);
 }
 
-function generateFallbackSEOKeywords(blogTitle: string): string[] {
+function generateFallbackSEOKeywords(blogTitle: string, region: string = "USA, Canada"): string[] {
   const titleWords = blogTitle.toLowerCase().split(' ')
     .filter(word => word.length > 2 && !['the', 'and', 'for', 'with', 'you', 'how', 'what', 'why', 'when'].includes(word));
+  
+  const regions = region ? region.split(',').map(r => r.trim()).filter(Boolean) : ["USA", "Canada"];
+  const defaultRegions = ["USA", "Canada"];
   
   const fallbackKeywords = [
     ...titleWords.map(word => `${word} solutions`),
@@ -312,8 +318,8 @@ function generateFallbackSEOKeywords(blogTitle: string): string[] {
     'digital transformation solutions',
     'enterprise technology consulting',
     'business process optimization',
-    'professional services USA',
-    'technology implementation Canada',
+    ...regions.map(r => `professional services ${r}`),
+    ...regions.map(r => `technology implementation ${r}`),
     'business efficiency solutions',
     'digital innovation strategies',
     'enterprise software solutions',

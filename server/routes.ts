@@ -1014,8 +1014,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const { generateSEOKeywords } = await import("./ai-blog-generator");
+      const { resolveRegion } = await import("./region-resolver");
+      const region = await resolveRegion((req.body as any).region);
 
-      const keywords = await generateSEOKeywords(blogTitle);
+      const keywords = await generateSEOKeywords(blogTitle, region);
 
       res.json({ keywords });
     } catch (error) {
@@ -1049,17 +1051,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const { generateHireDeveloperKeywords, generateFallbackHireKeywords } = await import("./ai-hiredev-generator");
-      const keywords = await generateHireDeveloperKeywords(title);
+      const { resolveRegion } = await import("./region-resolver");
+      const region = await resolveRegion((req.body as any).region);
+      const keywords = await generateHireDeveloperKeywords(title, region);
       res.json({ success: true, keywords });
     } catch (error) {
       console.error("Error generating hire developer keywords:", error);
       const errorMessage = error instanceof Error ? error.message : String(error);
       if (errorMessage.includes("insufficient_quota")) {
         const { generateFallbackHireKeywords } = await import("./ai-hiredev-generator");
+        const { resolveRegion } = await import("./region-resolver");
+        const region = await resolveRegion((req.body as any).region);
         res.status(429).json({
           success: false,
           message: "OpenAI quota exceeded. Using fallback keywords.",
-          keywords: generateFallbackHireKeywords((req.body as any).title || '')
+          keywords: generateFallbackHireKeywords((req.body as any).title || '', region)
         });
       } else {
         res.status(500).json({ success: false, message: "Failed to generate keywords" });
@@ -1918,11 +1924,15 @@ Our ${subCategory.toLowerCase()} solutions are designed with future growth in mi
         });
       }
 
+      // Resolve region with priority order
+      const { resolveRegion } = await import("./region-resolver");
+      const resolvedRegion = await resolveRegion((req.body as any).region || location);
+
       const { generateHireDeveloperContent } = await import("./ai-hiredev-generator");
 
       const request = {
         developerType: devType,
-        location: location || 'USA & Canada',
+        location: resolvedRegion,
         primarySkills: primarySkills || primaryKeyword || '',
         experienceLevel: experienceLevel || 'Senior',
         projectTypes: projectTypes || 'Custom Development',
@@ -1989,7 +1999,11 @@ Our ${subCategory.toLowerCase()} solutions are designed with future growth in mi
   // Comprehensive AI Content Generation for Hire Developer Pages
   app.post("/api/ai/generate-comprehensive-hire-content", authenticateToken, authorizeRole(['super_admin', 'user_admin', 'content_admin']), async (req, res) => {
     try {
-      const { developerType, location = "USA & Canada", companySectors = ["startups", "enterprises"] } = req.body;
+      // Resolve region with priority order
+      const { resolveRegion } = await import("./region-resolver");
+      const resolvedRegion = await resolveRegion((req.body as any).region || req.body.location);
+      
+      const { developerType, companySectors = ["startups", "enterprises"] } = req.body;
 
       if (!developerType) {
         return res.status(400).json({
@@ -2009,7 +2023,7 @@ Our ${subCategory.toLowerCase()} solutions are designed with future growth in mi
 
       const content = await generateHireDeveloperContent({
         developerType,
-        location,
+        location: resolvedRegion,
         companySectors
       });
 
@@ -2274,7 +2288,9 @@ Our ${subCategory.toLowerCase()} solutions are designed with future growth in mi
       }
 
       const { generateIndustryKeywords } = await import("./ai-industry-generator");
-      const keywords = await generateIndustryKeywords(title);
+      const { resolveRegion } = await import("./region-resolver");
+      const region = await resolveRegion((req.body as any).region);
+      const keywords = await generateIndustryKeywords(title, region);
 
       // Format response to match form expectations
       const primaryKeyword = keywords[0] || title.toLowerCase();
@@ -3583,6 +3599,11 @@ Focus on creating compelling meta data that will attract business leaders and de
         subCategory: z.string().min(1, "Sub-category is required"),
       }).parse(req.body);
 
+      // Resolve region with priority order
+      const { resolveRegion } = await import("./region-resolver");
+      const region = await resolveRegion((req.body as any).region);
+      const regions = region.split(',').map(r => r.trim()).filter(Boolean);
+
       let keywords = "";
 
       // Try OpenAI first, fallback to predefined keywords if API fails
@@ -3594,7 +3615,7 @@ Focus on creating compelling meta data that will attract business leaders and de
         const OpenAI = (await import("openai")).default;
         const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-        const prompt = `Generate SEO-optimized keywords for a technology service targeting USA and Canada markets:
+        const prompt = `Generate SEO-optimized keywords for a technology service targeting ${region} markets:
 
 Title: ${title}
 Category: ${category}
@@ -3602,14 +3623,14 @@ Sub-category: ${subCategory}
 
 Generate 18-20 highly targeted SEO keywords focusing on:
 - Primary service keywords with high search volume
-- USA and Canada location-based terms (include major cities: New York, Los Angeles, Toronto, Vancouver, Chicago, Montreal)
+- ${region} location-based terms (include major cities from ${regions.join(', ')})
 - Action-oriented keywords (hire, outsource, custom, professional, enterprise)
 - Long-tail keywords for better conversion
 - B2B focused terms (for startups, for enterprises, consulting, solutions)
 - Industry-specific terminology
 - Competitive advantage terms (affordable, top-rated, experienced, certified)
 
-Target audience: Business decision makers in USA and Canada looking for technology services.
+Target audience: Business decision makers in ${region} looking for technology services.
 Return ONLY the keywords separated by commas, no additional text or explanations.`;
 
         const response = await openai.chat.completions.create({
@@ -3633,7 +3654,7 @@ Return ONLY the keywords separated by commas, no additional text or explanations
         console.log("OpenAI API failed, using fallback keywords:", openaiError.message);
 
         // Fallback keyword generation based on category and title
-        const baseKeywords = generateFallbackKeywords(title, category, subCategory);
+        const baseKeywords = generateFallbackKeywords(title, category, subCategory, region);
         keywords = baseKeywords;
       }
 
@@ -3651,8 +3672,8 @@ Return ONLY the keywords separated by commas, no additional text or explanations
     }
   });
 
-  // Enhanced fallback keyword generation function with USA/Canada focus
-  function generateFallbackKeywords(title: string, category: string, subCategory: string): string {
+  // Enhanced fallback keyword generation function with region focus
+  function generateFallbackKeywords(title: string, category: string, subCategory: string, region: string = "USA, Canada"): string {
     const titleWords = title.toLowerCase().split(' ').filter(word => word.length > 2);
     const categoryWords = category.toLowerCase().split(' ').filter(word => word.length > 2);
     const subCategoryWords = subCategory.toLowerCase().split(' ').filter(word => word.length > 2);
@@ -3660,12 +3681,23 @@ Return ONLY the keywords separated by commas, no additional text or explanations
     const baseTerms = Array.from(new Set(titleWords.concat(categoryWords, subCategoryWords)));
     const primaryTerm = baseTerms[0] || "development";
 
-    // USA and Canada focused locations with major cities
-    const locations = [
-      "USA", "Canada", "United States", "North America",
-      "New York", "Toronto", "Los Angeles", "Vancouver",
-      "Chicago", "Montreal", "San Francisco", "Calgary"
-    ];
+    // Use provided region, split and add common cities based on region
+    const regionParts = region.split(',').map(r => r.trim()).filter(Boolean);
+    const locations: string[] = [...regionParts];
+    
+    // Add common cities based on regions
+    if (region.toLowerCase().includes('usa') || region.toLowerCase().includes('united states')) {
+      locations.push("New York", "Los Angeles", "Chicago", "San Francisco");
+    }
+    if (region.toLowerCase().includes('canada')) {
+      locations.push("Toronto", "Vancouver", "Montreal", "Calgary");
+    }
+    if (region.toLowerCase().includes('india')) {
+      locations.push("Mumbai", "Delhi", "Bangalore", "Hyderabad", "Chennai");
+    }
+    if (region.toLowerCase().includes('uk') || region.toLowerCase().includes('united kingdom')) {
+      locations.push("London", "Manchester", "Birmingham", "Edinburgh");
+    }
 
     const serviceTypes = [
       "services", "solutions", "development", "consulting",
@@ -4956,7 +4988,11 @@ Format as JSON with clear section keys. Focus on business value, expertise, and 
   // Generate hire developer content from reference
   app.post("/api/ai/generate-hire-from-reference", authenticateToken, authorizeRole(["super_admin", "user_admin", "content_admin"]), async (req, res) => {
     try {
-      const { referenceContent, developerType, location } = req.body;
+      // Resolve region with priority order
+      const { resolveRegion } = await import("./region-resolver");
+      const resolvedRegion = await resolveRegion((req.body as any).region || req.body.location);
+      
+      const { referenceContent, developerType } = req.body;
 
       if (!referenceContent || !developerType) {
         return res.status(400).json({
@@ -5295,7 +5331,7 @@ CRITICAL INSTRUCTIONS:
   // AI Service Page Content Generation
   app.post("/api/ai-service-pages/generate-content", authenticateToken, authorizeRole(["super_admin", "user_admin", "service_editor"]), async (req, res) => {
     try {
-      const { serviceName, referenceUrl, referenceContent, rawData, category, subCategory } = req.body;
+      const { serviceName, referenceUrl, referenceContent, rawData, category, subCategory, region } = req.body;
 
       // Debug logging
       console.log("Received request body:", {
@@ -5377,7 +5413,9 @@ CRITICAL INSTRUCTIONS:
         // Use original method when we have URL content or raw data
         console.log("Using original method with reference URL or raw data");
         try {
-          const seoKeywords = await generateSeoKeywords(serviceName, urlContent || normalizedRawData);
+          const { resolveRegion } = await import("./region-resolver");
+          const regionParam = await resolveRegion(region);
+          const seoKeywords = await generateSeoKeywords(serviceName, urlContent || normalizedRawData, regionParam);
           content = await generateServicePageContent(
             serviceName,
             urlContent || undefined,

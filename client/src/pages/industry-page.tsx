@@ -13,6 +13,8 @@ import { SEOHead } from "@/components/seo-head";
 import { PerformanceOptimizer } from "@/components/performance-optimizer";
 import { SEOAnalytics } from "@/components/seo-analytics";
 import { useEffect, useState } from "react";
+import { useSiteSettings } from "@/contexts/SiteSettingsContext";
+import { COMPANY_INFO } from "@/lib/constants";
 
 interface IndustryPage {
   id: number;
@@ -164,6 +166,8 @@ export default function IndustryPage() {
   const { slug } = useParams();
   const [, navigate] = useLocation();
   const [scrollY, setScrollY] = useState(0);
+  const { settings } = useSiteSettings();
+  const siteName = settings?.siteName || COMPANY_INFO.name;
 
   // Add scroll listener for parallax effects
   useEffect(() => {
@@ -185,7 +189,7 @@ export default function IndustryPage() {
 
   // Prepare SEO data
   const seoTitle = industryPage?.metaTitle || industryPage?.title || "Industry Solutions";
-  const seoDescription = industryPage?.metaDescription || (industryPage?.title ? `Discover ${industryPage.title} solutions with GreenAppleX` : "Industry solutions with GreenAppleX");
+  const seoDescription = industryPage?.metaDescription || (industryPage?.title ? `Discover ${industryPage.title} solutions with ${siteName}` : `Industry solutions with ${siteName}`);
   const seoKeywords = industryPage?.metaKeywords || "";
   const seoKeywordsArray = seoKeywords.split(',').map(k => k.trim()).filter(Boolean);
   const canonicalUrl = `https://www.greenapplex.com/industry/${slug}`;
@@ -194,7 +198,7 @@ export default function IndustryPage() {
     return (
       <div className="min-h-screen">
         <SEOHead
-          title="Loading... | GreenAppleX"
+          title={`Loading... | ${siteName}`}
           description="Loading industry page"
           canonicalUrl={canonicalUrl}
           keywords={["industry", "solutions", "technology"]}
@@ -229,7 +233,7 @@ export default function IndustryPage() {
     return (
       <div className="min-h-screen">
         <SEOHead
-          title="Page Not Found | GreenAppleX"
+          title={`Page Not Found | ${siteName}`}
           description="The industry page you're looking for doesn't exist"
           canonicalUrl={canonicalUrl}
           keywords={["industry", "solutions", "not found"]}
@@ -802,7 +806,7 @@ export default function IndustryPage() {
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
               <div className="max-w-4xl mx-auto">
                 <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-8 sm:mb-12 text-center px-4" data-testid="text-value-propositions-title">
-                  {industryPage.uniqueValuePropositionsTitle || "Why Choose GreenAppleX"}
+                  {industryPage.uniqueValuePropositionsTitle || `Why Choose ${siteName}`}
                 </h2>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">

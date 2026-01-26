@@ -11,9 +11,12 @@ import { Badge } from "@/components/ui/badge";
 import { LoaderCircle, Search, Copy, X, RefreshCw } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { z } from "zod";
+import { useSiteSettings } from "@/contexts/SiteSettingsContext";
+import { resolveRegion } from "@/lib/region-resolver";
 
 const keywordGeneratorSchema = z.object({
   blogTitle: z.string().min(1, "Blog title is required"),
+  region: z.string().optional(),
 });
 
 interface SEOKeywordGeneratorProps {
@@ -22,6 +25,7 @@ interface SEOKeywordGeneratorProps {
 
 export function SEOKeywordGenerator({ onClose }: SEOKeywordGeneratorProps) {
   const { toast } = useToast();
+  const { settings } = useSiteSettings();
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedKeywords, setGeneratedKeywords] = useState<string[]>([]);
 
@@ -29,6 +33,7 @@ export function SEOKeywordGenerator({ onClose }: SEOKeywordGeneratorProps) {
     resolver: zodResolver(keywordGeneratorSchema),
     defaultValues: {
       blogTitle: "",
+      region: resolveRegion(null, settings?.targetRegions),
     },
   });
 
@@ -42,7 +47,7 @@ export function SEOKeywordGenerator({ onClose }: SEOKeywordGeneratorProps) {
       setGeneratedKeywords(data.keywords);
       toast({
         title: "Keywords Generated Successfully",
-        description: `Generated ${data.keywords.length} SEO-optimized keywords for USA and Canada markets.`,
+        description: `Generated ${data.keywords.length} SEO-optimized keywords for your target markets.`,
       });
     },
     onError: (error: any) => {
@@ -109,7 +114,28 @@ export function SEOKeywordGenerator({ onClose }: SEOKeywordGeneratorProps) {
                       />
                     </FormControl>
                     <p className="text-sm text-gray-600">
-                      Enter your blog title to generate SEO keywords optimized for USA and Canada markets
+                      Enter your blog title to generate SEO keywords optimized for your target markets
+                    </p>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="region"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-lg font-semibold">Target Regions</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="USA, Canada, UK, Germany"
+                        {...field}
+                        className="text-lg"
+                      />
+                    </FormControl>
+                    <p className="text-sm text-gray-600">
+                      Comma-separated list of target regions for SEO keyword generation. Default: USA, Canada
                     </p>
                     <FormMessage />
                   </FormItem>
@@ -173,7 +199,7 @@ export function SEOKeywordGenerator({ onClose }: SEOKeywordGeneratorProps) {
 
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-lg">SEO Keywords (USA & Canada Optimized)</CardTitle>
+                  <CardTitle className="text-lg">SEO Keywords</CardTitle>
                   <p className="text-sm text-gray-600">
                     Mix of informational, commercial, and localized keywords for maximum search visibility
                   </p>

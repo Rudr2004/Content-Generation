@@ -36,6 +36,8 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { RichTextEditor } from "@/components/ui/rich-text-editor";
+import { useSiteSettings } from "@/contexts/SiteSettingsContext";
+import { resolveRegion } from "@/lib/region-resolver";
 
 interface Service {
   id: number;
@@ -118,6 +120,7 @@ const serviceFormSchema = z.object({
   // SEO Keywords
   primaryKeyword: z.string().min(1, "Primary keyword is required"),
   secondaryKeywords: z.string().min(1, "Secondary keywords are required (comma-separated)"),
+  region: z.string().optional(),
 
   // Content
   content: z.string().min(100, "Content must be at least 100 characters"),
@@ -137,6 +140,7 @@ interface ServiceFormProps {
 function ServiceFormComponent({ service, onSuccess, onCancel }: ServiceFormProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { settings } = useSiteSettings();
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [isGeneratingAI, setIsGeneratingAI] = useState(false);
   const [generatingField, setGeneratingField] = useState<string>("");
@@ -158,9 +162,17 @@ function ServiceFormComponent({ service, onSuccess, onCancel }: ServiceFormProps
       secondaryKeywords: "",
       aiTechnologies: "",
       content: "",
+      region: (service as any)?.region || "",
       status: "active",
     },
   });
+
+  // Set region from global settings if not set
+  useEffect(() => {
+    if (!service && settings?.targetRegions && !form.getValues("region")) {
+      form.setValue("region", "");
+    }
+  }, [settings, service, form]);
 
   // AI Content Generation Functions
   const generateAIContent = async (serviceName: string, category: string, subCategory: string) => {
@@ -240,6 +252,7 @@ function ServiceFormComponent({ service, onSuccess, onCancel }: ServiceFormProps
         serviceName: serviceName,
         category: category,
         subCategory: subCategory,
+        region: form.getValues("region") || resolveRegion(null, settings?.targetRegions),
       };
 
       if (hasReferenceUrl) {
@@ -663,6 +676,7 @@ function ServiceFormComponent({ service, onSuccess, onCancel }: ServiceFormProps
         aiTechnologies: aiTechArray,
         referenceUrl: data.referenceUrl || null,
         referenceContent: data.referenceContent || null,
+        region: data.region || null,
         status: data.status,
         startingPrice: "Contact for pricing",
         featured: false,
@@ -751,6 +765,7 @@ function ServiceFormComponent({ service, onSuccess, onCancel }: ServiceFormProps
         aiTechnologies: aiTechArray,
         referenceUrl: data.referenceUrl || null,
         referenceContent: data.referenceContent || null,
+        region: data.region || null,
         status: data.status,
         // Preserve existing fields
         startingPrice: service.startingPrice || "Contact for pricing",
@@ -1061,6 +1076,34 @@ function ServiceFormComponent({ service, onSuccess, onCancel }: ServiceFormProps
           <div className="bg-blue-100 p-3 rounded text-sm text-blue-700">
             <strong>How it works:</strong> When you click "Generate Complete AI Service", the AI will analyze the URL or content you provide and create a comprehensive service page following the proper structure, including hero section, services overview, technology stack, process steps, testimonials, FAQs, and more.
           </div>
+        </div>
+
+        {/* Region Field */}
+        <div className="space-y-4 bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <Label htmlFor="region" className="text-base font-semibold flex items-center gap-2">
+            <span>🌍 Target Regions</span>
+            {settings?.targetRegions && !form.watch("region") && (
+              <Badge variant="outline" className="text-xs bg-blue-100 text-blue-700">
+                Using Global: {settings.targetRegions}
+              </Badge>
+            )}
+          </Label>
+          <Input
+            id="region"
+            {...form.register("region")}
+            placeholder={settings?.targetRegions || "USA, Canada, UK, Germany"}
+            value={form.watch("region") || ""}
+            className="text-base"
+          />
+          <p className="text-xs text-gray-500">
+            {form.watch("region") ? (
+              <>Page-specific region set. Keywords will target: <strong>{form.watch("region")}</strong></>
+            ) : settings?.targetRegions ? (
+              <>Using global default: <strong>{settings.targetRegions}</strong>. Leave empty to use global, or set a page-specific region.</>
+            ) : (
+              <>Comma-separated list of target regions. If not set, will use global default from Site Settings.</>
+            )}
+          </p>
         </div>
 
         {/* SEO Keywords with AI Generation */}

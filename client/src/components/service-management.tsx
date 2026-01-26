@@ -18,6 +18,10 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { safeJsonParse } from "@/lib/markdown-utils";
 import { type Service, type ServiceDetailPage } from "@shared/schema";
+import { useSiteSettings } from "@/contexts/SiteSettingsContext";
+import { resolveRegion } from "@/lib/region-resolver";
+import { Badge } from "@/components/ui/badge";
+import { Badge } from "@/components/ui/badge";
 import { 
   Search, 
   Plus, 
@@ -137,6 +141,7 @@ const serviceFormSchema = z.object({
   secondaryKeywords: z.string().optional(),
   keywords: z.string().optional(),
   canonicalUrl: z.string().optional(),
+  region: z.string().optional(),
   
   // Open Graph
   ogTitle: z.string().optional(),
@@ -184,6 +189,7 @@ interface CaseStudyCategory {
 
 function ServiceForm({ service, onSuccess, onCancel }: ServiceFormProps) {
   const { toast } = useToast();
+  const { settings } = useSiteSettings();
   const queryClient = useQueryClient();
   const [selectedCategory, setSelectedCategory] = useState<string>(service?.category || "");
   const [dynamicCategories, setDynamicCategories] = useState<Record<string, string[]>>(defaultServiceCategories);
@@ -305,24 +311,33 @@ function ServiceForm({ service, onSuccess, onCancel }: ServiceFormProps) {
       techStackDomains: [], // New: Technology stack domains
       
       // SEO Meta Information
-      metaTitle: "",
-      metaDescription: "",
-      primaryKeyword: "",
-      secondaryKeywords: "",
-      keywords: "",
-      canonicalUrl: "",
+      metaTitle: service?.metaTitle || "",
+      metaDescription: service?.metaDescription || "",
+      primaryKeyword: service?.primaryKeyword || "",
+      secondaryKeywords: service?.secondaryKeywords || "",
+      keywords: service?.keywords || "",
+      canonicalUrl: service?.canonicalUrl || "",
+      region: service?.region || resolveRegion(null, settings?.targetRegions),
       
       // Open Graph
-      ogTitle: "",
-      ogDescription: "",
-      ogImage: "",
+      ogTitle: service?.ogTitle || "",
+      ogDescription: service?.ogDescription || "",
+      ogImage: service?.ogImage || "",
       
       // Status and Pricing
-      status: "active",
-      featured: false,
-      startingPrice: "",
+      status: (service?.status as "active" | "draft" | "inactive") || "active",
+      featured: service?.featured || false,
+      startingPrice: service?.startingPrice || "",
     },
   });
+
+  // Update region default when settings load
+  useEffect(() => {
+    if (settings && !service?.region) {
+      const resolvedRegion = resolveRegion(null, settings.targetRegions);
+      form.setValue("region", resolvedRegion);
+    }
+  }, [settings, service?.region, form]);
 
   // Update form values when service prop changes (for editing)
   useEffect(() => {
@@ -441,6 +456,7 @@ function ServiceForm({ service, onSuccess, onCancel }: ServiceFormProps) {
 
     setIsGeneratingKeywords(true);
     try {
+      const region = form.getValues("region") || resolveRegion(null, settings?.targetRegions);
       const response = await fetch("/api/ai/generate-seo-keywords", {
         method: "POST",
         headers: {
@@ -451,6 +467,7 @@ function ServiceForm({ service, onSuccess, onCancel }: ServiceFormProps) {
           title,
           category,
           subCategory,
+          region,
         })
       });
 
@@ -711,6 +728,7 @@ function ServiceForm({ service, onSuccess, onCancel }: ServiceFormProps) {
         features: data.features ? JSON.parse(data.features) : ["Professional Development", "Expert Team", "Quality Assurance"],
         technologies: data.technologies ? JSON.parse(data.technologies) : ["Latest Technologies", "Industry Standards"],
         keywords: `${data.primaryKeyword}, ${data.secondaryKeywords}`, // Maintain backward compatibility
+        region: data.region || resolveRegion(null, settings?.targetRegions),
         // Auto-fill Open Graph fields if not provided
         ogTitle: data.ogTitle || data.metaTitle,
         ogDescription: data.ogDescription || data.metaDescription,
@@ -755,6 +773,7 @@ function ServiceForm({ service, onSuccess, onCancel }: ServiceFormProps) {
         imageAlt: data.imageAlt || service?.imageAlt || "",
         icon: data.icon || service?.icon || "",
         keywords: `${data.primaryKeyword || ''}, ${data.secondaryKeywords || ''}`.replace(/^,\s*|,\s*$/g, ''), // Clean up keywords
+        region: data.region || resolveRegion(null, settings?.targetRegions),
         // Auto-fill Open Graph fields if not provided
         ogTitle: data.ogTitle || data.metaTitle || service?.ogTitle || "",
         ogDescription: data.ogDescription || data.metaDescription || service?.ogDescription || "",
@@ -1034,6 +1053,7 @@ function ServiceForm({ service, onSuccess, onCancel }: ServiceFormProps) {
                   Add canonical tags if needed
                 </p>
               </div>
+
             </div>
 
             {/* 3. Meta Tags */}
@@ -1090,6 +1110,34 @@ function ServiceForm({ service, onSuccess, onCancel }: ServiceFormProps) {
             </div>
 
             <div className="grid grid-cols-1 gap-6">
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <Label htmlFor="region" className="text-sm font-medium text-gray-700 flex items-center gap-2">
+                  <span>🌍 Target Regions</span>
+                  <span className="text-xs text-gray-500">(optional)</span>
+                  {settings?.targetRegions && !form.watch("region") && (
+                    <Badge variant="outline" className="text-xs bg-blue-100 text-blue-700">
+                      Using Global: {settings.targetRegions}
+                    </Badge>
+                  )}
+                </Label>
+                <Input
+                  id="region"
+                  {...form.register("region")}
+                  placeholder={settings?.targetRegions || "USA, Canada, UK, Germany"}
+                  className="w-full mt-2"
+                  value={form.watch("region") || ""}
+                />
+                <p className="text-xs text-gray-500 mt-2">
+                  {form.watch("region") ? (
+                    <>Page-specific region set. Keywords will target: <strong>{form.watch("region")}</strong></>
+                  ) : settings?.targetRegions ? (
+                    <>Using global default: <strong>{settings.targetRegions}</strong>. Leave empty to use global, or set a page-specific region.</>
+                  ) : (
+                    <>Comma-separated list of target regions. If not set, will use global default from Site Settings (currently: USA, Canada)</>
+                  )}
+                </p>
+              </div>
+
               <div>
                 <Label htmlFor="primaryKeyword" className="text-sm font-medium text-gray-700">
                   Primary Target Keyword <span className="text-red-500">*</span>

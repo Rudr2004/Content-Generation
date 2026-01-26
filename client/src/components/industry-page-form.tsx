@@ -16,6 +16,8 @@ import type { IndustryPage } from "@shared/schema";
 import { useState, useEffect } from "react";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
+import { useSiteSettings } from "@/contexts/SiteSettingsContext";
+import { resolveRegion } from "@/lib/region-resolver";
 
 const formSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -25,6 +27,7 @@ const formSchema = z.object({
   metaTitle: z.string().optional(),
   metaDescription: z.string().optional(),
   metaKeywords: z.string().optional(),
+  region: z.string().optional(),
   
   // Hero Section
   heroHeadline: z.string().optional(),
@@ -104,6 +107,7 @@ interface Props {
 
 export function IndustryPageForm({ page, onSuccess, onClose }: Props) {
   const { toast } = useToast();
+  const { settings } = useSiteSettings();
   const queryClient = useQueryClient();
   const [isGeneratingAll, setIsGeneratingAll] = useState(false);
   const [isGeneratingKeywords, setIsGeneratingKeywords] = useState(false);
@@ -123,6 +127,7 @@ export function IndustryPageForm({ page, onSuccess, onClose }: Props) {
       metaTitle: page?.metaTitle || "",
       metaDescription: page?.metaDescription || "",
       metaKeywords: page?.metaKeywords || "",
+      region: page?.region || resolveRegion(null, settings?.targetRegions),
       
       // Hero Section
       heroHeadline: page?.heroHeadline || "",
@@ -213,6 +218,14 @@ export function IndustryPageForm({ page, onSuccess, onClose }: Props) {
       setImagePreview(page.heroBackgroundImage);
     }
   }, [page]);
+
+  // Update region default when settings load
+  useEffect(() => {
+    if (settings && !page?.region) {
+      const resolvedRegion = resolveRegion(null, settings.targetRegions);
+      form.setValue("region", resolvedRegion);
+    }
+  }, [settings, page?.region, form]);
 
   // Enhanced AI Generation Function
   const generateAllContent = async () => {
@@ -512,9 +525,11 @@ export function IndustryPageForm({ page, onSuccess, onClose }: Props) {
 
     setIsGeneratingKeywords(true);
     try {
+      const region = form.getValues("region") || resolveRegion(null, settings?.targetRegions);
       const response = await apiRequest('POST', '/api/ai/generate-industry-keywords', {
         title,
         industryType: title.toLowerCase().replace(/[^a-z0-9\s]/g, ' ').trim(),
+        region,
       });
 
       if (response.ok) {
@@ -1394,6 +1409,40 @@ export function IndustryPageForm({ page, onSuccess, onClose }: Props) {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
+              <FormField
+                control={form.control}
+                name="region"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="flex items-center gap-2">
+                      <span>🌍 Target Regions</span>
+                      {settings?.targetRegions && !field.value && (
+                        <Badge variant="outline" className="text-xs bg-blue-100 text-blue-700">
+                          Using Global: {settings.targetRegions}
+                        </Badge>
+                      )}
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder={settings?.targetRegions || "USA, Canada, UK, Germany"}
+                        {...field}
+                        value={field.value || ""}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      {field.value ? (
+                        <>Page-specific region set. Keywords will target: <strong>{field.value}</strong></>
+                      ) : settings?.targetRegions ? (
+                        <>Using global default: <strong>{settings.targetRegions}</strong>. Leave empty to use global, or set a page-specific region.</>
+                      ) : (
+                        <>Comma-separated list of target regions. If not set, will use global default from Site Settings.</>
+                      )}
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField
                   control={form.control}

@@ -5,6 +5,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
+import { useSiteSettings } from "@/contexts/SiteSettingsContext";
+import { COMPANY_INFO } from "@/lib/constants";
 import { 
   Smartphone, 
   Tablet, 
@@ -27,6 +29,9 @@ const staggerChildren = {
 };
 
 export default function MobileAppDevelopment() {
+  const { settings } = useSiteSettings();
+  const siteName = settings?.siteName || COMPANY_INFO.name;
+  
   return (
     <div className="min-h-screen">
       <Navigation />
@@ -69,7 +74,7 @@ export default function MobileAppDevelopment() {
         </div>
       </section>
 
-      {/* Why Choose GreenAppleX Section */}
+      {/* Why Choose {siteName} Section */}
       <section className="py-20 bg-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div 
@@ -80,7 +85,7 @@ export default function MobileAppDevelopment() {
           >
             <motion.div variants={fadeInUp} className="text-center mb-16">
               <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6 heading-georgia">
-                Why Choose GreenAppleX for Mobile Development?
+                Why Choose {siteName} for Mobile Development?
               </h2>
               <p className="text-xl text-gray-600 max-w-3xl mx-auto text-poppins">
                 We create exceptional mobile experiences with native and cross-platform expertise, delivering apps that users love and businesses rely on.

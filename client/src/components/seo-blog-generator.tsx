@@ -13,6 +13,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { LoaderCircle, Wand2, Plus, X, RefreshCw, Search, Lightbulb, Save, Check, Loader2 } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { z } from "zod";
+import { useSiteSettings } from "@/contexts/SiteSettingsContext";
+import { resolveRegion } from "@/lib/region-resolver";
 
 const seoGeneratorSchema = z.object({
   blogTitle: z.string().min(1, "Blog title is required"),
@@ -34,6 +36,7 @@ interface SEOBlogGeneratorProps {
 
 export function SEOBlogGenerator({ onGenerate, onClose }: SEOBlogGeneratorProps) {
   const { toast } = useToast();
+  const { settings } = useSiteSettings();
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedContent, setGeneratedContent] = useState<any>(null);
   const [isGeneratingKeywords, setIsGeneratingKeywords] = useState(false);
@@ -67,7 +70,8 @@ export function SEOBlogGenerator({ onGenerate, onClose }: SEOBlogGeneratorProps)
   const generateKeywordsMutation = useMutation({
     mutationFn: async (blogTitle: string) => {
       setIsGeneratingKeywords(true);
-      const response = await apiRequest("POST", "/api/generate-seo-keywords", { blogTitle });
+      const region = resolveRegion(null, settings?.targetRegions);
+      const response = await apiRequest("POST", "/api/generate-seo-keywords", { blogTitle, region });
       return response.json();
     },
     onSuccess: (data) => {

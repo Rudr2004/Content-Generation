@@ -16,6 +16,8 @@ import type { HirePage } from "@shared/schema";
 import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { useSiteSettings } from "@/contexts/SiteSettingsContext";
+import { resolveRegion } from "@/lib/region-resolver";
 
 const formSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -40,6 +42,7 @@ const formSchema = z.object({
   secondaryKeywords: z.string().optional(),
   caseStudyCategories: z.string().optional(),
   selectedCaseStudies: z.string().optional(),
+  region: z.string().optional(),
   status: z.enum(["draft", "published"]).default("draft"),
 });
 
@@ -53,6 +56,7 @@ interface Props {
 
 export function HireDeveloperPageForm({ page, onSuccess, onClose }: Props) {
   const { toast } = useToast();
+  const { settings } = useSiteSettings();
   const queryClient = useQueryClient();
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatingField, setGeneratingField] = useState<string>("");
@@ -129,9 +133,18 @@ export function HireDeveloperPageForm({ page, onSuccess, onClose }: Props) {
       secondaryKeywords: page?.secondaryKeywords || "",
       caseStudyCategories: page?.caseStudyCategories || "",
       selectedCaseStudies: page?.selectedCaseStudies || "",
+      region: page?.region || resolveRegion(null, settings?.targetRegions),
       status: (page?.status as "draft" | "published") || "draft",
     },
   });
+
+  // Update region default when settings load
+  useEffect(() => {
+    if (settings && !page?.region) {
+      const resolvedRegion = resolveRegion(null, settings.targetRegions);
+      form.setValue("region", resolvedRegion);
+    }
+  }, [settings, page?.region, form]);
 
   // Auto-generate slug from title
   const title = form.watch("title");
@@ -404,7 +417,7 @@ export function HireDeveloperPageForm({ page, onSuccess, onClose }: Props) {
         body: JSON.stringify({
           referenceContent,
           developerType,
-          location: "USA & Canada"
+          location: form.getValues("region") || resolveRegion(null, settings?.targetRegions) || "USA, Canada"
         })
       });
 
@@ -463,7 +476,7 @@ export function HireDeveloperPageForm({ page, onSuccess, onClose }: Props) {
         },
         body: JSON.stringify({
           developerType,
-          location: "USA & Canada",
+          region: form.getValues("region") || resolveRegion(null, settings?.targetRegions) || "USA & Canada",
           companySectors: ["startups", "enterprises"]
         })
       });
@@ -635,7 +648,7 @@ export function HireDeveloperPageForm({ page, onSuccess, onClose }: Props) {
         credentials: 'include',
         body: JSON.stringify({
           developerType,
-          location: "USA & Canada"
+          location: form.getValues("region") || resolveRegion(null, settings?.targetRegions) || "USA, Canada"
         })
       });
 
@@ -918,6 +931,40 @@ export function HireDeveloperPageForm({ page, onSuccess, onClose }: Props) {
                           {...field}
                         />
                       </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="region"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="flex items-center gap-2">
+                        <span>🌍 Target Regions</span>
+                        {settings?.targetRegions && !field.value && (
+                          <Badge variant="outline" className="text-xs bg-blue-100 text-blue-700">
+                            Using Global: {settings.targetRegions}
+                          </Badge>
+                        )}
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder={settings?.targetRegions || "USA, Canada, UK, Germany"}
+                          {...field}
+                          value={field.value || ""}
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        {field.value ? (
+                          <>Page-specific region set. Keywords will target: <strong>{field.value}</strong></>
+                        ) : settings?.targetRegions ? (
+                          <>Using global default: <strong>{settings.targetRegions}</strong>. Leave empty to use global, or set a page-specific region.</>
+                        ) : (
+                          <>Comma-separated list of target regions. If not set, will use global default from Site Settings.</>
+                        )}
+                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}

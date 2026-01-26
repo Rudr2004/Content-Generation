@@ -611,7 +611,7 @@ export default function AdminPanel() {
             </button>
 
             {/* SEO Configuration section */}
-            <button
+            {/* <button
               onClick={() => setActiveMainSection("seo-configuration")}
               className={`w-full flex items-center px-4 py-3 rounded-lg font-medium transition-all ${activeMainSection === "seo-configuration"
                 ? "bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white shadow-lg"
@@ -620,7 +620,7 @@ export default function AdminPanel() {
             >
               <Settings className="h-5 w-5 mr-3" />
               SEO Configuration
-            </button>
+            </button> */}
 
             {/* Site Settings section */}
             <button

@@ -86,14 +86,17 @@ export interface IndustryContentResponse {
 /**
  * Generate SEO-optimized keywords for industry pages
  */
-export async function generateIndustryKeywords(title: string): Promise<string[]> {
+export async function generateIndustryKeywords(title: string, region: string = "USA, Canada"): Promise<string[]> {
   try {
+    const regions = region ? region.split(',').map(r => r.trim()).filter(Boolean) : ["USA", "Canada"];
+    const regionList = regions.join(", ");
+    
     const response = await openai.chat.completions.create({
       model: "gpt-4o",
       messages: [
         {
           role: "system",
-          content: `You are an expert SEO keyword strategist specializing in industry and business sector keywords.
+          content: `You are an expert SEO keyword strategist specializing in industry and business sector keywords for ${regionList} markets.
 
 CRITICAL: Extract the EXACT industry and focus area from the page title and generate keywords specifically for that combination.
 
@@ -136,7 +139,7 @@ Generate 25-30 highly relevant, industry-specific keywords. Return as JSON: {"ke
         },
         {
           role: "user",
-          content: `Generate SEO keywords for this EXACT industry page title: "${title}"
+          content: `Generate SEO keywords for this EXACT industry page title: "${title}" targeting ${regionList} markets.
 
 CRITICAL REQUIREMENTS:
 - Focus on the EXACT industry mentioned in the title
@@ -157,11 +160,11 @@ Return only the JSON with keywords array.`
     return result.keywords || [];
   } catch (error: any) {
     console.log("OpenAI API failed for industry keywords, using fallback:", error.message);
-    return generateFallbackIndustryKeywords(title);
+    return generateFallbackIndustryKeywords(title, region);
   }
 }
 
-function generateFallbackIndustryKeywords(title: string): string[] {
+function generateFallbackIndustryKeywords(title: string, region: string = "USA, Canada"): string[] {
   const words = title.toLowerCase().split(/\s+/);
   const industry = words[0];
   

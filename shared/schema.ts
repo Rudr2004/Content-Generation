@@ -138,6 +138,7 @@ export const blogPosts = pgTable("blog_posts", {
   metaTitle: text("meta_title"),
   metaDescription: text("meta_description"),
   keywords: text("keywords"),
+  region: text("region").default("USA, Canada"), // Target regions for SEO keywords (comma-separated)
   status: text("status").default("draft").notNull(), // draft, published, scheduled
   authorId: integer("author_id").references(() => authors.id),
   publishedAt: timestamp("published_at"),
@@ -252,6 +253,7 @@ export const services = pgTable("services", {
   ogTitle: text("og_title"),
   ogDescription: text("og_description"),
   ogImage: text("og_image"),
+  region: text("region").default("USA, Canada"), // Target regions for SEO keywords (comma-separated)
   status: text("status").default("active").notNull(),
   startingPrice: text("starting_price"),
   featured: boolean("featured").default(false),
@@ -766,6 +768,7 @@ export const industryPages = pgTable("industry_pages", {
   metaTitle: text("meta_title"),
   metaDescription: text("meta_description"),
   metaKeywords: text("meta_keywords"), // JSON array of keywords
+  region: text("region").default("USA, Canada"), // Target regions for SEO keywords (comma-separated)
 
   // Hero Section
   heroHeadline: text("hero_headline"),
@@ -1046,6 +1049,7 @@ export const caseStudyPages = pgTable("case_study_pages", {
   metaDescription: text("meta_description"),
   metaKeywords: text("meta_keywords"),
   canonicalUrl: text("canonical_url"),
+  region: text("region").default("USA, Canada"), // Target regions for SEO keywords (comma-separated)
 
   // Client Information
   clientName: text("client_name"),
@@ -1273,6 +1277,7 @@ export const aiServicePages = pgTable("ai_service_pages", {
   title: text("title").notNull(),
   slug: text("slug").notNull().unique(),
   content: text("content"),
+  region: text("region").default("USA, Canada"), // Target regions for SEO keywords (comma-separated)
   status: text("status").default("draft").notNull(), // draft, published, archived
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),

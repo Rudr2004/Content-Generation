@@ -148,41 +148,39 @@ export function SiteSettingsForm() {
                             )}
                         />
 
-                        <div className="grid md:grid-cols-2 gap-6">
-                            <FormField
-                                control={form.control}
-                                name="targetRegions"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Target Regions</FormLabel>
-                                        <FormControl>
-                                            <Input placeholder="USA, Canada, UK" {...field} />
-                                        </FormControl>
-                                        <FormDescription>
-                                            Comma-separated list of target regions for dynamic SEO keyword generation.
-                                        </FormDescription>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
+                        <FormField
+                            control={form.control}
+                            name="targetRegions"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Target Regions (Global Default)</FormLabel>
+                                    <FormControl>
+                                        <Input placeholder="USA, Canada, UK, Germany" {...field} />
+                                    </FormControl>
+                                    <FormDescription>
+                                        Comma-separated list of target regions used as default for all pages. This will be used when page-specific regions are not set. Default: USA, Canada
+                                    </FormDescription>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
 
-                            <FormField
-                                control={form.control}
-                                name="industryFocus"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Industry Focus</FormLabel>
-                                        <FormControl>
-                                            <Input placeholder="Technology, AI, Healthcare" {...field} />
-                                        </FormControl>
-                                        <FormDescription>
-                                            Comma-separated list of industries for keyword optimization.
-                                        </FormDescription>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                        </div>
+                        <FormField
+                            control={form.control}
+                            name="industryFocus"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Industry Focus (Global Default)</FormLabel>
+                                    <FormControl>
+                                        <Input placeholder="Technology, AI, Healthcare" {...field} />
+                                    </FormControl>
+                                    <FormDescription>
+                                        Comma-separated list of industries used as default for SEO keyword generation.
+                                    </FormDescription>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
 
                         <Button type="submit" disabled={form.formState.isSubmitting}>
                             {form.formState.isSubmitting && (

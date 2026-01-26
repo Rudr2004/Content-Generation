@@ -4,14 +4,17 @@ import OpenAI from "openai";
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 // Generate SEO keywords for hire developer pages
-export async function generateHireDeveloperKeywords(title: string): Promise<string[]> {
+export async function generateHireDeveloperKeywords(title: string, region: string = "USA, Canada"): Promise<string[]> {
   try {
+    const regions = region ? region.split(',').map(r => r.trim()).filter(Boolean) : ["USA", "Canada"];
+    const regionList = regions.join(", ");
+    
     const response = await openai.chat.completions.create({
       model: "gpt-4o",
       messages: [
         {
           role: "system",
-          content: `You are an expert SEO keyword strategist specializing in hiring and recruitment keywords for USA and Canada markets.
+          content: `You are an expert SEO keyword strategist specializing in hiring and recruitment keywords for ${regionList} markets.
 
 CRITICAL: Extract the EXACT technology and location from the page title and generate keywords specifically for that combination.
 
@@ -20,8 +23,8 @@ For titles like "Hire LLM Developer in Austin" or "Hire React Developers in Toro
 📍 **Location Extraction Rules:**
 - If title contains "in [City]" → use that specific city (e.g., "Austin", "Toronto", "New York")
 - If title contains state/province → include it (e.g., "Austin Texas", "Toronto Ontario")
-- Always include broader location terms (USA, Canada, North America)
-- Generate both city-specific AND country-wide variations
+- Always include broader location terms (${regionList})
+- Generate both city-specific AND country-wide variations for ${regionList}
 
 🔧 **Technology Extraction Rules:**
 - Extract exact technology from title (LLM, React, Python, Blockchain, etc.)
@@ -83,12 +86,12 @@ Focus on the EXACT combination of technology + location from the title.`
     return result.keywords || [];
   } catch (error: any) {
     console.log("OpenAI API failed for hire developer keywords, using fallback:", error.message);
-    return generateFallbackHireKeywords(title);
+    return generateFallbackHireKeywords(title, region);
   }
 }
 
 // Fallback keyword generation for hire developer pages
-export function generateFallbackHireKeywords(title: string): string[] {
+export function generateFallbackHireKeywords(title: string, region: string = "USA, Canada"): string[] {
   const baseTitle = title.toLowerCase();
   
   // Extract technology from title (supports various formats)
@@ -150,14 +153,14 @@ export function generateFallbackHireKeywords(title: string): string[] {
     return [...locationKeywords, ...baseKeywords];
   }
   
-  // Add USA/Canada keywords as default
-  const defaultLocationKeywords = [
-    `hire ${technology} developers USA`,
-    `${technology} developers Canada`,
-    `hire ${technology} developers North America`,
-    `${technology} development services USA`,
-    `${technology} development services Canada`
-  ];
+  // Add region-specific keywords
+  const regions = region ? region.split(',').map(r => r.trim()).filter(Boolean) : ["USA", "Canada"];
+  const defaultLocationKeywords = regions.flatMap(r => [
+    `hire ${technology} developers ${r}`,
+    `${technology} developers ${r}`,
+    `${technology} development services ${r}`,
+    `hire ${technology} developers in ${r}`
+  ]);
   
   return [...defaultLocationKeywords, ...baseKeywords];
 }

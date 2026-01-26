@@ -40,6 +40,8 @@ import {
 } from "lucide-react";
 import { GetInTouchSection } from "@/components/get-in-touch-section";
 import { HomeContactSection } from "@/components/home-contact-section";
+import { useSiteSettings } from "@/contexts/SiteSettingsContext";
+import { COMPANY_INFO } from "@/lib/constants";
 
 // Animation variants
 const fadeInUp = {
@@ -155,7 +157,7 @@ function WhyChooseUsSection() {
         <AnimatedSection>
           <motion.div variants={fadeInUp} className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6 heading-georgia">
-              Why Choose GreenAppleX for AI Development?
+              Why Choose {siteName} for AI Development?
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto text-poppins">
               We combine cutting-edge AI expertise with proven development practices to deliver solutions that transform your business.

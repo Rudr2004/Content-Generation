@@ -15,6 +15,8 @@ import { RichTextEditor } from "@/components/ui/rich-text-editor";
 import { apiRequest } from "@/lib/queryClient";
 import type { HirePage } from "@shared/schema";
 import { useState, useEffect } from "react";
+import { useSiteSettings } from "@/contexts/SiteSettingsContext";
+import { resolveRegion } from "@/lib/region-resolver";
 
 const formSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -28,6 +30,7 @@ const formSchema = z.object({
   secondaryKeywords: z.string().optional(),
   caseStudyCategories: z.string().optional(),
   selectedCaseStudies: z.string().optional(),
+  region: z.string().optional(),
   status: z.enum(["draft", "published"]).default("draft"),
 });
 
@@ -41,6 +44,7 @@ interface Props {
 
 export function HireDeveloperPageFormSimple({ page, onSuccess, onClose }: Props) {
   const { toast } = useToast();
+  const { settings } = useSiteSettings();
   const queryClient = useQueryClient();
   const [isGeneratingAll, setIsGeneratingAll] = useState(false);
   const [isGeneratingKeywords, setIsGeneratingKeywords] = useState(false);
@@ -88,9 +92,18 @@ export function HireDeveloperPageFormSimple({ page, onSuccess, onClose }: Props)
       secondaryKeywords: page?.secondaryKeywords || "",
       caseStudyCategories: page?.caseStudyCategories || "",
       selectedCaseStudies: page?.selectedCaseStudies || "",
+      region: page?.region || resolveRegion(null, settings?.targetRegions),
       status: (page?.status as "draft" | "published") || "draft",
     },
   });
+
+  // Update region default when settings load
+  useEffect(() => {
+    if (settings && !page?.region) {
+      const resolvedRegion = resolveRegion(null, settings.targetRegions);
+      form.setValue("region", resolvedRegion);
+    }
+  }, [settings, page?.region, form]);
 
   // Initialize case study state from page data
   useEffect(() => {
@@ -217,13 +230,14 @@ export function HireDeveloperPageFormSimple({ page, onSuccess, onClose }: Props)
       
       // Always use AI keyword generation to ensure location and city words are never ignored
       try {
+        const region = form.getValues("region") || resolveRegion(null, settings?.targetRegions);
         const keywordResponse = await fetch('/api/generate-hire-developer-keywords', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${localStorage.getItem('authToken')}`
           },
-          body: JSON.stringify({ title: generatedTitle })
+          body: JSON.stringify({ title: generatedTitle, region })
         });
 
         if (keywordResponse.ok) {
@@ -293,13 +307,14 @@ export function HireDeveloperPageFormSimple({ page, onSuccess, onClose }: Props)
 
     setIsGeneratingKeywords(true);
     try {
+      const region = form.getValues("region") || resolveRegion(null, settings?.targetRegions);
       const response = await fetch("/api/generate-hire-developer-keywords", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${localStorage.getItem("authToken")}`
         },
-        body: JSON.stringify({ title })
+        body: JSON.stringify({ title, region })
       });
 
       if (!response.ok) {
@@ -641,6 +656,40 @@ export function HireDeveloperPageFormSimple({ page, onSuccess, onClose }: Props)
                     </FormControl>
                     <FormDescription>
                       Additional SEO keywords, comma-separated
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="region"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="flex items-center gap-2">
+                      <span>🌍 Target Regions</span>
+                      {settings?.targetRegions && !field.value && (
+                        <Badge variant="outline" className="text-xs bg-blue-100 text-blue-700">
+                          Using Global: {settings.targetRegions}
+                        </Badge>
+                      )}
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder={settings?.targetRegions || "USA, Canada, UK, Germany"}
+                        {...field}
+                        value={field.value || ""}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      {field.value ? (
+                        <>Page-specific region set. Keywords will target: <strong>{field.value}</strong></>
+                      ) : settings?.targetRegions ? (
+                        <>Using global default: <strong>{settings.targetRegions}</strong>. Leave empty to use global, or set a page-specific region.</>
+                      ) : (
+                        <>Comma-separated list of target regions. If not set, will use global default from Site Settings.</>
+                      )}
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
