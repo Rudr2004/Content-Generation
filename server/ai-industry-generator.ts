@@ -144,11 +144,11 @@ CRITICAL REQUIREMENTS:
 
 Return only the JSON with keywords array.`
         }
-      ],
-      response_format: { type: "json_object" },
-      temperature: 0.3,
-      max_tokens: 1000
-    });
+      ], {
+        response_format: { type: "json_object" },
+        temperature: 0.3,
+        max_tokens: 1000
+      });
 
     const result = JSON.parse(response.choices[0].message.content!);
     return result.keywords || [];
@@ -215,11 +215,11 @@ Return as JSON array: {"titles": ["title1", "title2", ...]}`
           role: "user",
           content: `Generate industry page titles for: ${industryType} (Market: ${market})`
         }
-      ],
-      response_format: { type: "json_object" },
-      temperature: 0.7,
-      max_tokens: 800
-    });
+      ], {
+        response_format: { type: "json_object" },
+        temperature: 0.7,
+        max_tokens: 800
+      });
 
     const result = JSON.parse(response.choices[0].message.content!);
     return result.titles || [];
@@ -361,11 +361,11 @@ Business Model: ${businessModel || 'B2B services and solutions'}
 
 Create content that positions us as the leading provider of ${primaryFocus} for the ${industryType} industry, highlighting our expertise, proven process, and successful outcomes.`
         }
-      ],
-      response_format: { type: "json_object" },
-      temperature: 0.7,
-      max_tokens: 4500
-    });
+      ], {
+        response_format: { type: "json_object" },
+        temperature: 0.7,
+        max_tokens: 4500
+      });
 
     const result = JSON.parse(contentResponse.choices[0].message.content!);
     return result as IndustryContentResponse;

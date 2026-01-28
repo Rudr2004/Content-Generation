@@ -95,24 +95,16 @@ Please return the content in this JSON format:
 }
 `;
 
-    const response = await openai.chat.completions.create({
-      model: "gpt-4o", // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
-      messages: [
-        {
-          role: "system",
-          content: "You are a senior business and technology content writer specializing in case studies for enterprise software companies. Generate professional, credible content that showcases technical expertise and business outcomes."
-        },
-        {
-          role: "user", 
-          content: prompt
-        }
-      ],
+    const response = await generateChatCompletion([
+      { role: "system", content: "You are a senior business and technology content writer specializing in case studies for enterprise software companies. Generate professional, credible content that showcases technical expertise and business outcomes." },
+      { role: "user", content: prompt }
+    ], {
       response_format: { type: "json_object" },
       temperature: 0.7,
-      max_tokens: 4000,
+      max_tokens: 4000
     });
 
-    const content = JSON.parse(response.choices[0].message.content || "{}");
+    const content = JSON.parse(response.choices[0].message.content!);
     
     // Validate and structure the response
     return {
@@ -156,24 +148,16 @@ Return as a JSON array of strings:
 ["title1", "title2", "title3", ...]
 `;
 
-    const response = await openai.chat.completions.create({
-      model: "gpt-4o", // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
-      messages: [
-        {
-          role: "system",
-          content: "You are a marketing and content strategist for a technology consulting company. Generate compelling, professional titles for case study pages."
-        },
-        {
-          role: "user",
-          content: prompt
-        }
-      ],
+    const response = await generateChatCompletion([
+      { role: "system", content: "You are a marketing and content strategist for a technology consulting company. Generate compelling, professional titles for case study pages." },
+      { role: "user", content: prompt }
+    ], {
       response_format: { type: "json_object" },
       temperature: 0.8,
-      max_tokens: 500,
+      max_tokens: 500
     });
 
-    const result = JSON.parse(response.choices[0].message.content || "{}");
+    const result = JSON.parse(response.choices[0].message.content!);
     return result.titles || [];
     
   } catch (error) {
