@@ -142,18 +142,16 @@ Required JSON Response Structure:
 Return ONLY the JSON structure with content extracted directly from the reference material.`;
 
   try {
-    const response = await getOpenAIClient().chat.completions.create({
-      model: "gpt-4o",
-      messages: [
-        {
-          role: "system",
-          content: "You are an expert B2B service page content creator. Always respond with valid JSON only."
-        },
-        {
-          role: "user",
-          content: prompt
-        }
-      ],
+    const response = await generateChatCompletion([
+      {
+        role: "system",
+        content: "You are an expert B2B service page content creator. Always respond with valid JSON only."
+      },
+      {
+        role: "user",
+        content: prompt
+      }
+    ], {
       response_format: { type: "json_object" },
       temperature: 0.7,
       max_tokens: 4000
@@ -223,18 +221,16 @@ Target: USA/Canada business decision makers searching for this service.
 Return as JSON with fields: metaTitle, metaDescription, primaryKeyword, secondaryKeywords, keywords`;
 
   try {
-    const response = await getOpenAIClient().chat.completions.create({
-      model: "gpt-4o",
-      messages: [
-        {
-          role: "system",
-          content: "You are an SEO expert. Always respond with valid JSON only."
-        },
-        {
-          role: "user",
-          content: prompt
-        }
-      ],
+    const response = await generateChatCompletion([
+      {
+        role: "system",
+        content: "You are an SEO expert. Always respond with valid JSON only."
+      },
+      {
+        role: "user",
+        content: prompt
+      }
+    ], {
       response_format: { type: "json_object" },
       temperature: 0.3,
       max_tokens: 500
@@ -410,18 +406,16 @@ RESPOND WITH JSON IN THIS EXACT FORMAT:
 Return ONLY the JSON object. Do not include any markdown formatting, code blocks, or explanatory text.`;
 
   try {
-    const response = await getOpenAIClient().chat.completions.create({
-      model: "gpt-4o", // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
-      messages: [
-        {
-          role: "system",
-          content: "You are an expert content strategist. Generate comprehensive hire developer content following the exact 4-section structured guidelines. Return only valid JSON without any markdown formatting or explanations."
-        },
-        {
-          role: "user",
-          content: prompt
-        }
-      ],
+    const response = await generateChatCompletion([
+      {
+        role: "system",
+        content: "You are an expert content strategist. Generate comprehensive hire developer content following the exact 4-section structured guidelines. Return only valid JSON without any markdown formatting or explanations."
+      },
+      {
+        role: "user",
+        content: prompt
+      }
+    ], {
       response_format: { type: "json_object" },
       temperature: 0.7,
       max_tokens: 4000
