@@ -42,7 +42,12 @@ export function SEOHead({
 
   useEffect(() => {
     // Set document title
+    // Use the provided title prop (which may include site name)
     document.title = title;
+    
+    // If siteName is explicitly set in settings, ensure it's used
+    // This will be overridden by SiteSettingsContext if siteName changes
+    // But we set it here for initial render
 
     // Helper function to set or update meta tags
     const setMetaTag = (name: string, content: string, property?: boolean) => {

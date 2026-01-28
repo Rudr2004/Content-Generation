@@ -32,11 +32,34 @@ export function SiteSettingsProvider({ children }: { children: React.ReactNode }
     }, [settings?.theme, setTheme]);
 
     // Effect to apply document title (Site Name)
+    // This runs whenever settings change, ensuring the title stays updated
+    // Priority: This should run AFTER other effects to ensure siteName takes precedence
     useEffect(() => {
         if (settings?.siteName) {
+            // Set title immediately
             document.title = settings.siteName;
+            
+            // Set it again after a brief delay to ensure it persists even if other components override it
+            // This is important because SEOHead and other components might set the title
+            const timeoutId1 = setTimeout(() => {
+                if (settings.siteName) {
+                    document.title = settings.siteName;
+                }
+            }, 50);
+            
+            // Set it again after a longer delay to ensure it persists
+            const timeoutId2 = setTimeout(() => {
+                if (settings.siteName) {
+                    document.title = settings.siteName;
+                }
+            }, 200);
+            
+            return () => {
+                clearTimeout(timeoutId1);
+                clearTimeout(timeoutId2);
+            };
         }
-    }, [settings?.siteName]);
+    }, [settings?.siteName, settings]);
 
     // Effect to apply color settings - comprehensive color application
     useEffect(() => {
@@ -291,12 +314,25 @@ export function SiteSettingsProvider({ children }: { children: React.ReactNode }
             // Update query cache - this will trigger the useEffect
             queryClient.setQueryData(["/api/site-settings"], data.settings);
             
+            // CRITICAL: Update document title IMMEDIATELY before any other operations
+            // This ensures the title updates right away, even if other components try to override it
+            if (data.settings.siteName) {
+                document.title = data.settings.siteName;
+            }
+            
             // Force a refetch to ensure all components get the updated data
             await queryClient.invalidateQueries({ queryKey: ["/api/site-settings"] });
 
-            // immediate effect
+            // Apply theme
             if (data.settings.theme) setTheme(data.settings.theme);
-            if (data.settings.siteName) document.title = data.settings.siteName;
+            
+            // Ensure title is set again after refetch (in case it was overridden)
+            if (data.settings.siteName) {
+                // Use setTimeout to ensure this runs after any other effects
+                setTimeout(() => {
+                    document.title = data.settings.siteName;
+                }, 0);
+            }
 
             // Immediately apply ALL color settings after update - comprehensive application
             const root = document.documentElement;
