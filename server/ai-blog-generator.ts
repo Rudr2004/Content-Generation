@@ -1,8 +1,5 @@
-import OpenAI from "openai";
 import { storeImagePermanently } from "./image-storage";
-
-// the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+import { generateChatCompletion } from "./openai-client";
 
 interface SEOBlogRequest {
   blogTitle: string;
@@ -34,65 +31,63 @@ export async function generateSEOBlog(request: SEOBlogRequest): Promise<SEOBlogR
   const regionList = regions.join(", ");
 
   try {
-    // Generate the blog content using OpenAI
-    const blogContentResponse = await openai.chat.completions.create({
-      model: "gpt-4o",
-      messages: [
+    // Generate the blog content using unified AI client
+    const blogContentResponse = await generateChatCompletion([
+      {
+        role: "system",
+        content: `You are an expert SEO content strategist and blog copywriter with 15+ years of experience. 
+        You generate complete SEO-optimized blog content that ranks well on Google for ${regionList} markets.
+        
+        CRITICAL REGION REQUIREMENTS:
+        - Target audience: Readers in ${regionList} markets
+        - Use examples, case studies, and references relevant to ${regionList}
+        - Include location-specific information where appropriate for ${regionList}
+        - DO NOT include USA, Canada, or other regions unless they are in: ${regionList}
+        
+        Follow these guidelines:
+        - Write 1000-1200 words in conversational, engaging style (8th-grade reading level)
+        - Use the blog title as H1
+        - Include primary keyword in first 100 words, H2/H3 headings, and conclusion
+        - Sprinkle secondary keywords naturally throughout
+        - Use short paragraphs (2-3 lines), bullet points, numbered lists
+        - Include FAQ section with 2-3 FAQs targeting secondary keywords
+        - Use clear H2/H3 sub-headings
+        - Include concluding paragraph with CTA
+        - Format content in HTML with proper heading tags
+        - Make content relevant to ${regionList} markets
+        
+        Generate SEO elements:
+        - Slug: SEO-friendly URL (lowercase, hyphens, using primary keyword)
+        - Meta Title: Max 60 characters, include primary keyword
+        - Meta Description: 150-160 characters, compelling, include primary keyword
+        - Excerpt: 30-50 words summarizing the article
+        - Keywords: Primary + secondary keywords as comma-separated string (targeting ${regionList})
+        - Tags: 3-5 relevant tags for categorization
+        
+        Respond with JSON in this exact format:
         {
-          role: "system",
-          content: `You are an expert SEO content strategist and blog copywriter with 15+ years of experience. 
-          You generate complete SEO-optimized blog content that ranks well on Google for ${regionList} markets.
-          
-          CRITICAL REGION REQUIREMENTS:
-          - Target audience: Readers in ${regionList} markets
-          - Use examples, case studies, and references relevant to ${regionList}
-          - Include location-specific information where appropriate for ${regionList}
-          - DO NOT include USA, Canada, or other regions unless they are in: ${regionList}
-          
-          Follow these guidelines:
-          - Write 1000-1200 words in conversational, engaging style (8th-grade reading level)
-          - Use the blog title as H1
-          - Include primary keyword in first 100 words, H2/H3 headings, and conclusion
-          - Sprinkle secondary keywords naturally throughout
-          - Use short paragraphs (2-3 lines), bullet points, numbered lists
-          - Include FAQ section with 2-3 FAQs targeting secondary keywords
-          - Use clear H2/H3 sub-headings
-          - Include concluding paragraph with CTA
-          - Format content in HTML with proper heading tags
-          - Make content relevant to ${regionList} markets
-          
-          Generate SEO elements:
-          - Slug: SEO-friendly URL (lowercase, hyphens, using primary keyword)
-          - Meta Title: Max 60 characters, include primary keyword
-          - Meta Description: 150-160 characters, compelling, include primary keyword
-          - Excerpt: 30-50 words summarizing the article
-          - Keywords: Primary + secondary keywords as comma-separated string (targeting ${regionList})
-          - Tags: 3-5 relevant tags for categorization
-          
-          Respond with JSON in this exact format:
-          {
-            "title": "Blog title",
-            "slug": "seo-friendly-slug",
-            "content": "HTML formatted content",
-            "excerpt": "Brief summary",
-            "metaTitle": "SEO meta title",
-            "metaDescription": "SEO meta description",
-            "keywords": "comma,separated,keywords",
-            "tags": ["tag1", "tag2", "tag3"]
-          }`
-        },
-        {
-          role: "user",
-          content: `Generate a complete SEO-optimized blog post targeting ${regionList} markets:
-          
-          Blog Title: ${blogTitle}
-          Primary Keyword: ${primaryKeyword}
-          Secondary Keywords: ${secondaryKeywords.join(', ')}
-          Target Regions: ${regionList}
-          
-          Please create comprehensive content following all SEO best practices, with examples and references relevant to ${regionList} markets.`
-        }
-      ],
+          "title": "Blog title",
+          "slug": "seo-friendly-slug",
+          "content": "HTML formatted content",
+          "excerpt": "Brief summary",
+          "metaTitle": "SEO meta title",
+          "metaDescription": "SEO meta description",
+          "keywords": "comma,separated,keywords",
+          "tags": ["tag1", "tag2", "tag3"]
+        }`
+      },
+      {
+        role: "user",
+        content: `Generate a complete SEO-optimized blog post targeting ${regionList} markets:
+        
+        Blog Title: ${blogTitle}
+        Primary Keyword: ${primaryKeyword}
+        Secondary Keywords: ${secondaryKeywords.join(', ')}
+        Target Regions: ${regionList}
+        
+        Please create comprehensive content following all SEO best practices, with examples and references relevant to ${regionList} markets.`
+      }
+    ], {
       response_format: { type: "json_object" },
       temperature: 0.7,
       max_tokens: 4000
@@ -100,8 +95,11 @@ export async function generateSEOBlog(request: SEOBlogRequest): Promise<SEOBlogR
 
     const blogContent = JSON.parse(blogContentResponse.choices[0].message.content!);
 
-    // Generate an image using DALL-E
-    const imageResponse = await openai.images.generate({
+    // Generate an image using DALL-E (OpenAI-specific feature)
+    // Note: Image generation remains OpenAI-specific as other models don't support it
+    const OpenAI = (await import('openai')).default;
+    const openaiForImages = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+    const imageResponse = await openaiForImages.images.generate({
       model: "dall-e-3",
       prompt: `Create a professional, modern blog header image for an article titled "${blogTitle}". 
       The image should be clean, corporate, and relevant to ${primaryKeyword}. 
@@ -114,7 +112,10 @@ export async function generateSEOBlog(request: SEOBlogRequest): Promise<SEOBlogR
       quality: "standard",
     });
 
-    const temporaryImageUrl = imageResponse.data[0].url!;
+    const temporaryImageUrl = imageResponse.data?.[0]?.url;
+    if (!temporaryImageUrl) {
+      throw new Error('Failed to generate image');
+    }
     const imageAlt = `${blogTitle} - ${primaryKeyword} illustration`;
 
     // Store the DALL-E generated image permanently in AWS S3 and database
@@ -158,47 +159,45 @@ export async function generateSEOKeywords(blogTitle: string, region: string = "U
     const regions = region ? region.split(',').map(r => r.trim()).filter(Boolean) : ["USA", "Canada"];
     const regionList = regions.join(", ");
     
-    const response = await openai.chat.completions.create({
-      model: "gpt-4o",
-      messages: [
-        {
-          role: "system",
-          content: `You are an expert SEO keyword strategist specializing in ${regionList} markets. 
-          Generate high-quality SEO keywords that are:
-          
-          ✅ Mix of informational and commercial intent keywords
-          ✅ Geographically targeted for ${regionList}
-          ✅ Naturally relevant to the blog title
-          ✅ Varied in style (question-based, benefit-focused, commercial/buyer-focused)
-          ✅ Realistic search terms people actually use
-          
-          Include different types:
-          - Primary keywords (main topic)
-          - Secondary keywords (related concepts)
-          - Long-tail keywords (specific phrases)
-          - Question-based keywords (how, what, why, when)
-          - Commercial intent keywords (best, top, review, compare)
-          - Location-based keywords targeting ${regionList}
-          - Benefits-focused keywords (advantages, benefits, solutions)
-          
-          Generate at least 20-25 keywords. Return as a JSON array of strings.
-          
-          Example styles for ${regionList}:
-          - "how [topic] works in ${regions[0] || 'USA'}"
-          - "best [topic] solutions ${regions[1] || 'Canada'}"
-          - "[topic] benefits for businesses"
-          - "top [topic] companies ${regions[0] || 'USA'}"
-          - "[topic] implementation guide"
-          - "why [topic] matters for ${regions[regions.length - 1] || 'Canadian'} businesses"
-          
-          Respond with JSON: {"keywords": ["keyword1", "keyword2", ...]}
-          `
-        },
-        {
-          role: "user",
-          content: `Generate SEO keywords for this blog title: "${blogTitle}" targeting ${regionList} markets.`
-        }
-      ],
+    const response = await generateChatCompletion([
+      {
+        role: "system",
+        content: `You are an expert SEO keyword strategist specializing in ${regionList} markets. 
+        Generate high-quality SEO keywords that are:
+        
+        ✅ Mix of informational and commercial intent keywords
+        ✅ Geographically targeted for ${regionList}
+        ✅ Naturally relevant to the blog title
+        ✅ Varied in style (question-based, benefit-focused, commercial/buyer-focused)
+        ✅ Realistic search terms people actually use
+        
+        Include different types:
+        - Primary keywords (main topic)
+        - Secondary keywords (related concepts)
+        - Long-tail keywords (specific phrases)
+        - Question-based keywords (how, what, why, when)
+        - Commercial intent keywords (best, top, review, compare)
+        - Location-based keywords targeting ${regionList}
+        - Benefits-focused keywords (advantages, benefits, solutions)
+        
+        Generate at least 20-25 keywords. Return as a JSON array of strings.
+        
+        Example styles for ${regionList}:
+        - "how [topic] works in ${regions[0] || 'USA'}"
+        - "best [topic] solutions ${regions[1] || 'Canada'}"
+        - "[topic] benefits for businesses"
+        - "top [topic] companies ${regions[0] || 'USA'}"
+        - "[topic] implementation guide"
+        - "why [topic] matters for ${regions[regions.length - 1] || 'Canadian'} businesses"
+        
+        Respond with JSON: {"keywords": ["keyword1", "keyword2", ...]}
+        `
+      },
+      {
+        role: "user",
+        content: `Generate SEO keywords for this blog title: "${blogTitle}" targeting ${regionList} markets.`
+      }
+    ], {
       response_format: { type: "json_object" },
       temperature: 0.7,
       max_tokens: 1500
@@ -342,7 +341,7 @@ function generateFallbackSEOKeywords(blogTitle: string, region: string = "USA, C
     'professional consulting services'
   ];
   
-  return [...new Set(fallbackKeywords)].slice(0, 25);
+  return Array.from(new Set(fallbackKeywords)).slice(0, 25);
 }
 
 export async function regenerateContent(blogTitle: string, primaryKeyword: string, secondaryKeywords: string[], region: string = "USA, Canada"): Promise<{ content: string; excerpt: string; metaTitle: string; metaDescription: string; keywords: string; tags: string[] }> {
@@ -353,48 +352,46 @@ export async function regenerateContent(blogTitle: string, primaryKeyword: strin
     const regions = resolvedRegion.split(',').map(r => r.trim()).filter(Boolean);
     const regionList = regions.join(", ");
     
-    const blogContentResponse = await openai.chat.completions.create({
-      model: "gpt-4o",
-      messages: [
-        {
-          role: "system",
-          content: `You are an expert SEO content strategist. Generate fresh, unique blog content that is different from previous versions while maintaining SEO best practices for ${regionList} markets.
-          
-          CRITICAL REGION REQUIREMENTS:
-          - Target audience: Readers in ${regionList} markets
-          - Use examples, case studies, and references relevant to ${regionList}
-          - Include location-specific information where appropriate for ${regionList}
-          - DO NOT include USA, Canada, or other regions unless they are in: ${regionList}
-          
-          Guidelines:
-          - Write 1000-1200 words of engaging, SEO-optimized content
-          - Use HTML formatting with proper H2/H3 headings
-          - Include primary keyword naturally throughout
-          - Incorporate secondary keywords contextually
-          - Create compelling, unique content structure
-          - Add FAQ section with 2-3 relevant questions
-          - Include call-to-action at the end
-          - Format as clean HTML
-          - Make content relevant to ${regionList} markets
-          
-          Generate SEO elements:
-          - Excerpt: 30-50 word summary
-          - Meta Title: Max 60 characters with primary keyword
-          - Meta Description: 150-160 characters, compelling
-          - Keywords: Primary + secondary keywords as comma-separated string (targeting ${regionList})
-          - Tags: 3-5 relevant tags for categorization
-          
-          Return response as JSON with: content, excerpt, metaTitle, metaDescription, keywords, tags`
-        },
-        {
-          role: "user",
-          content: `Generate SEO-optimized blog content for ${regionList} markets:
-          Title: "${blogTitle}"
-          Primary Keyword: "${primaryKeyword}"
-          Secondary Keywords: ${secondaryKeywords.join(", ")}
-          Target Regions: ${regionList}`
-        }
-      ],
+    const blogContentResponse = await generateChatCompletion([
+      {
+        role: "system",
+        content: `You are an expert SEO content strategist. Generate fresh, unique blog content that is different from previous versions while maintaining SEO best practices for ${regionList} markets.
+        
+        CRITICAL REGION REQUIREMENTS:
+        - Target audience: Readers in ${regionList} markets
+        - Use examples, case studies, and references relevant to ${regionList}
+        - Include location-specific information where appropriate for ${regionList}
+        - DO NOT include USA, Canada, or other regions unless they are in: ${regionList}
+        
+        Guidelines:
+        - Write 1000-1200 words of engaging, SEO-optimized content
+        - Use HTML formatting with proper H2/H3 headings
+        - Include primary keyword naturally throughout
+        - Incorporate secondary keywords contextually
+        - Create compelling, unique content structure
+        - Add FAQ section with 2-3 relevant questions
+        - Include call-to-action at the end
+        - Format as clean HTML
+        - Make content relevant to ${regionList} markets
+        
+        Generate SEO elements:
+        - Excerpt: 30-50 word summary
+        - Meta Title: Max 60 characters with primary keyword
+        - Meta Description: 150-160 characters, compelling
+        - Keywords: Primary + secondary keywords as comma-separated string (targeting ${regionList})
+        - Tags: 3-5 relevant tags for categorization
+        
+        Return response as JSON with: content, excerpt, metaTitle, metaDescription, keywords, tags`
+      },
+      {
+        role: "user",
+        content: `Generate SEO-optimized blog content for ${regionList} markets:
+        Title: "${blogTitle}"
+        Primary Keyword: "${primaryKeyword}"
+        Secondary Keywords: ${secondaryKeywords.join(", ")}
+        Target Regions: ${regionList}`
+      }
+    ], {
       response_format: { type: "json_object" },
       temperature: 0.7,
     });
@@ -416,8 +413,11 @@ export async function regenerateContent(blogTitle: string, primaryKeyword: strin
 }
 
 export async function regenerateImage(blogTitle: string, primaryKeyword: string): Promise<{ imageUrl: string; imageAlt: string }> {
-  // Generate image using DALL-E
-  const imageResponse = await openai.images.generate({
+  // Generate image using DALL-E (OpenAI-specific feature)
+  // Note: Image generation remains OpenAI-specific as other models don't support it
+  const OpenAI = (await import('openai')).default;
+  const openaiForImages = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+  const imageResponse = await openaiForImages.images.generate({
     model: "dall-e-3",
     prompt: `Create a professional, modern blog header image for "${blogTitle}". The image should be:
     - Clean, minimalist design
@@ -432,7 +432,7 @@ export async function regenerateImage(blogTitle: string, primaryKeyword: string)
     quality: "standard",
   });
 
-  const temporaryImageUrl = imageResponse.data[0].url || "";
+  const temporaryImageUrl = imageResponse.data?.[0]?.url || "";
   const imageAlt = `Professional illustration representing ${blogTitle} - ${primaryKeyword}`;
   
   // Store the regenerated image permanently in AWS S3 and database
@@ -479,40 +479,38 @@ export async function generateBlogTitles(request: BlogTitleRequest): Promise<{ t
 
     const techName = techTypeMap[techType] || techType;
 
-    const response = await openai.chat.completions.create({
-      model: "gpt-4o",
-      messages: [
-        {
-          role: "system",
-          content: `You are an expert content strategist specializing in creating compelling, SEO-optimized blog titles for technology and business content.
-          
-          Create titles that are:
-          - Attention-grabbing and click-worthy
-          - SEO-friendly with relevant keywords
-          - Professional yet engaging
-          - Targeted at business decision-makers
-          - 50-65 characters for optimal SEO
-          - Unique and avoiding clichés
-          
-          Blog types and their characteristics:
-          - "educational": How-to guides, tutorials, explainers
-          - "thought-leadership": Industry insights, trends, opinions
-          - "case-study": Success stories, implementations, results
-          - "comparison": Product comparisons, alternatives, reviews
-          - "listicle": Top X lists, best practices, tips
-          - "how-to": Step-by-step guides, instructions
-          
-          Consider current market trends: ${marketTrends || "general technology adoption"}
-          Avoid these existing titles: ${existingTitles || "none"}
-          
-          Generate 8 unique, compelling blog titles. Respond with JSON: {"titles": ["title1", "title2", ...]}
-          `
-        },
-        {
-          role: "user",
-          content: `Generate ${blogType} blog titles about ${techName}. Focus on practical, business-oriented content that would appeal to executives and decision-makers.`
-        }
-      ],
+    const response = await generateChatCompletion([
+      {
+        role: "system",
+        content: `You are an expert content strategist specializing in creating compelling, SEO-optimized blog titles for technology and business content.
+        
+        Create titles that are:
+        - Attention-grabbing and click-worthy
+        - SEO-friendly with relevant keywords
+        - Professional yet engaging
+        - Targeted at business decision-makers
+        - 50-65 characters for optimal SEO
+        - Unique and avoiding clichés
+        
+        Blog types and their characteristics:
+        - "educational": How-to guides, tutorials, explainers
+        - "thought-leadership": Industry insights, trends, opinions
+        - "case-study": Success stories, implementations, results
+        - "comparison": Product comparisons, alternatives, reviews
+        - "listicle": Top X lists, best practices, tips
+        - "how-to": Step-by-step guides, instructions
+        
+        Consider current market trends: ${marketTrends || "general technology adoption"}
+        Avoid these existing titles: ${existingTitles || "none"}
+        
+        Generate 8 unique, compelling blog titles. Respond with JSON: {"titles": ["title1", "title2", ...]}
+        `
+      },
+      {
+        role: "user",
+        content: `Generate ${blogType} blog titles about ${techName}. Focus on practical, business-oriented content that would appeal to executives and decision-makers.`
+      }
+    ], {
       response_format: { type: "json_object" },
       temperature: 0.8,
       max_tokens: 800

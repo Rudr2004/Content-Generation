@@ -216,21 +216,18 @@ function assignCorrectGenderOnCreation(testimonialData: any) {
 // AI Description Generation Functions
 async function generateCategoryDescription(categoryName: string): Promise<string> {
   try {
-    const OpenAI = (await import("openai")).default;
-    const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+    const { generateChatCompletion } = await import("./openai-client");
 
-    const response = await openai.chat.completions.create({
-      model: "gpt-4o", // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
-      messages: [
-        {
-          role: "system",
-          content: "You are a business technology expert. Write professional, compelling descriptions for service categories that appeal to business decision makers."
-        },
-        {
-          role: "user",
-          content: `Write a professional 2-3 sentence description for the service category "${categoryName}". Focus on business value, expertise, and solutions. Target audience: CTOs, IT managers, and business leaders looking for technology services.`
-        }
-      ],
+    const response = await generateChatCompletion([
+      {
+        role: "system",
+        content: "You are a business technology expert. Write professional, compelling descriptions for service categories that appeal to business decision makers."
+      },
+      {
+        role: "user",
+        content: `Write a professional 2-3 sentence description for the service category "${categoryName}". Focus on business value, expertise, and solutions. Target audience: CTOs, IT managers, and business leaders looking for technology services.`
+      }
+    ], {
       max_tokens: 150,
       temperature: 0.7,
     });
@@ -243,21 +240,18 @@ async function generateCategoryDescription(categoryName: string): Promise<string
 
 async function generateSubcategoryDescription(subcategoryName: string, categoryName: string): Promise<string> {
   try {
-    const OpenAI = (await import("openai")).default;
-    const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+    const { generateChatCompletion } = await import("./openai-client");
 
-    const response = await openai.chat.completions.create({
-      model: "gpt-4o", // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
-      messages: [
-        {
-          role: "system",
-          content: "You are a business technology expert. Write professional, compelling descriptions for service subcategories that appeal to business decision makers."
-        },
-        {
-          role: "user",
-          content: `Write a professional 2-3 sentence description for the service subcategory "${subcategoryName}" under the category "${categoryName}". Focus on specific capabilities, expertise, and business outcomes. Target audience: CTOs, IT managers, and business leaders.`
-        }
-      ],
+    const response = await generateChatCompletion([
+      {
+        role: "system",
+        content: "You are a business technology expert. Write professional, compelling descriptions for service subcategories that appeal to business decision makers."
+      },
+      {
+        role: "user",
+        content: `Write a professional 2-3 sentence description for the service subcategory "${subcategoryName}" under the category "${categoryName}". Focus on specific capabilities, expertise, and business outcomes. Target audience: CTOs, IT managers, and business leaders.`
+      }
+    ], {
       max_tokens: 150,
       temperature: 0.7,
     });
@@ -1913,18 +1907,17 @@ Our ${subCategory.toLowerCase()} solutions are designed with future growth in mi
         });
       }
 
-      const OpenAI = (await import("openai")).default;
-      const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+      const { generateChatCompletion } = await import("./openai-client");
 
-      const response = await openai.chat.completions.create({
-        model: "gpt-4o",
-        messages: [{ role: "user", content: "Say hello" }],
+      const response = await generateChatCompletion([
+        { role: "user", content: "Say hello" }
+      ], {
         max_tokens: 10
       });
 
       res.json({
         success: true,
-        message: "OpenAI API is working",
+        message: "AI API is working",
         response: response.choices[0].message.content
       });
     } catch (error) {
@@ -2459,18 +2452,13 @@ Our ${subCategory.toLowerCase()} solutions are designed with future growth in mi
 
       console.log("Generating industry meta data for:", { title, primaryKeyword, industryType });
 
-      // Use OpenAI to generate meta data
-      const OpenAI = (await import("openai")).default;
-      const openai = new OpenAI({
-        apiKey: process.env.OPENAI_API_KEY,
-      });
+      // Use unified AI client to generate meta data
+      const { generateChatCompletion } = await import("./openai-client");
 
-      const metaResponse = await openai.chat.completions.create({
-        model: "gpt-4o",
-        messages: [
-          {
-            role: "system",
-            content: `You are an expert SEO meta data generator specializing in industry pages.
+      const metaResponse = await generateChatCompletion([
+        {
+          role: "system",
+          content: `You are an expert SEO meta data generator specializing in industry pages.
 
 Generate compelling, SEO-optimized meta data for industry landing pages.
 
@@ -2492,18 +2480,18 @@ Return as JSON:
   "metaDescription": "Compelling description with benefits",
   "metaKeywords": "keyword1, keyword2, keyword3, ..."
 }`
-          },
-          {
-            role: "user",
-            content: `Generate SEO meta data for this industry page:
+        },
+        {
+          role: "user",
+          content: `Generate SEO meta data for this industry page:
             
 Title: ${title}
 Primary Keyword: ${primaryKeyword || 'not specified'}
 Industry Type: ${industryType || title}
 
 Focus on creating compelling meta data that will attract business leaders and decision makers looking for industry solutions.`
-          }
-        ],
+        }
+      ], {
         response_format: { type: "json_object" },
         temperature: 0.3,
         max_tokens: 500
@@ -3239,12 +3227,12 @@ Focus on creating compelling meta data that will attract business leaders and de
         apiKey: process.env.OPENAI_API_KEY,
       });
 
-      const completion = await openai.chat.completions.create({
-        model: "gpt-4o",
-        messages: [
-          {
-            role: "system",
-            content: `You are an expert case study writer creating comprehensive, structured content for technology companies targeting ${regionList} markets.
+      const { generateChatCompletion } = await import("./openai-client");
+      
+      const completion = await generateChatCompletion([
+        {
+          role: "system",
+          content: `You are an expert case study writer creating comprehensive, structured content for technology companies targeting ${regionList} markets.
 
 CRITICAL REGION COMPLIANCE RULES:
 1. ONLY use regions from the provided list: ${regionList}
@@ -3253,12 +3241,13 @@ CRITICAL REGION COMPLIANCE RULES:
 4. Client location must be from: ${regionList} ONLY
 5. All location references must use ONLY: ${regions.map(r => r.trim()).join(', ')}
 6. Generate detailed JSON content following the exact structure provided, with realistic client information, specific metrics, and professional business outcomes relevant to ${regionList} markets.`
-          },
-          {
-            role: "user",
-            content: prompt
-          }
-        ],
+        },
+        {
+          role: "user",
+          content: prompt
+        }
+      ], {
+        response_format: { type: "json_object" },
         max_tokens: 4000,
         temperature: 0.7,
       });
@@ -3699,8 +3688,7 @@ CRITICAL REGION COMPLIANCE RULES:
           throw new Error("OpenAI API key not configured");
         }
 
-        const OpenAI = (await import("openai")).default;
-        const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+        const { generateChatCompletion } = await import("./openai-client");
 
         const prompt = `Generate SEO-optimized keywords for a technology service targeting ONLY ${region} markets.
 
@@ -4460,8 +4448,7 @@ ${generatedContent.finalCta.button}
         });
       }
 
-      const { default: OpenAI } = await import("openai");
-      const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+      const { generateChatCompletion } = await import("./openai-client");
 
       let prompt = '';
       let response: any = {};
@@ -4480,9 +4467,9 @@ ${generatedContent.finalCta.button}
           
           Return only the title text, nothing else.`;
 
-          const titleResponse = await openai.chat.completions.create({
-            model: "gpt-4o", // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
-            messages: [{ role: "user", content: prompt }],
+          const titleResponse = await generateChatCompletion([
+            { role: "user", content: prompt }
+          ], {
             max_tokens: 100,
             temperature: 0.7,
           });
@@ -4509,9 +4496,9 @@ ${generatedContent.finalCta.button}
             "secondaryKeywords": "keyword1, keyword2, keyword3, keyword4, keyword5"
           }`;
 
-          const keywordResponse = await openai.chat.completions.create({
-            model: "gpt-4o", // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
-            messages: [{ role: "user", content: prompt }],
+          const keywordResponse = await generateChatCompletion([
+            { role: "user", content: prompt }
+          ], {
             max_tokens: 200,
             temperature: 0.5,
             response_format: { type: "json_object" }
@@ -5078,8 +5065,7 @@ Generate 8 unique, high-converting titles that emphasize expertise, reliability,
         });
       }
 
-      const OpenAI = (await import("openai")).default;
-      const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+      const { generateChatCompletion } = await import("./openai-client");
 
       let prompt = "";
 
@@ -5124,18 +5110,16 @@ Create structured content including:
 Format as JSON with clear section keys. Focus on business value, expertise, and results.`;
       }
 
-      const response = await openai.chat.completions.create({
-        model: "gpt-4o", // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
-        messages: [
-          {
-            role: "system",
-            content: "You are an expert copywriter specializing in developer hiring pages. Create professional, conversion-focused content that appeals to business decision makers."
-          },
-          {
-            role: "user",
-            content: prompt
-          }
-        ],
+      const response = await generateChatCompletion([
+        {
+          role: "system",
+          content: "You are an expert copywriter specializing in developer hiring pages. Create professional, conversion-focused content that appeals to business decision makers."
+        },
+        {
+          role: "user",
+          content: prompt
+        }
+      ], {
         response_format: { type: "json_object" },
         max_tokens: 1500,
         temperature: 0.7,
@@ -5183,8 +5167,7 @@ Format as JSON with clear section keys. Focus on business value, expertise, and 
       console.log(`Generating hire developer content from reference for: ${developerType}`);
 
       // Generate content that follows the exact JSON structure from reference
-      const OpenAI = (await import("openai")).default;
-      const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+      const { generateChatCompletion } = await import("./openai-client");
 
       const prompt = `You are a professional content generator for hire developer pages. Generate comprehensive content for hiring ${developerType} developers based on the provided reference content.
 
@@ -5254,9 +5237,9 @@ CRITICAL INSTRUCTIONS:
 5. Keep technical details relevant to ${developerType} development
 6. Return ONLY the JSON structure with no additional text, markdown, or code blocks`;
 
-      const completion = await openai.chat.completions.create({
-        model: "gpt-4o",
-        messages: [{ role: "user", content: prompt }],
+      const completion = await generateChatCompletion([
+        { role: "user", content: prompt }
+      ], {
         response_format: { type: "json_object" },
         temperature: 0.7,
         max_tokens: 4000
@@ -7287,11 +7270,127 @@ CRITICAL INSTRUCTIONS:
   });
 
 
+  // AI Model API Key Validation Routes
+  app.post("/api/ai/validate-api-key", authenticateToken, authorizeRole(['super_admin', 'user_admin']), async (req, res) => {
+    try {
+      const { model, apiKey } = req.body;
+      
+      if (!model || !apiKey) {
+        return res.status(400).json({ 
+          success: false, 
+          message: "Model and API key are required" 
+        });
+      }
+
+      const validModels = ['openai', 'gemini', 'perplexity', 'grok'];
+      if (!validModels.includes(model)) {
+        return res.status(400).json({ 
+          success: false, 
+          message: `Invalid model. Must be one of: ${validModels.join(', ')}` 
+        });
+      }
+
+      // Import dynamically to avoid circular dependencies
+      const { getAIProvider } = await import('./utils/unified-ai-client');
+      const provider = getAIProvider(model as any, apiKey);
+      
+      const isValid = await provider.validateApiKey(apiKey);
+      
+      if (isValid) {
+        res.json({ 
+          success: true, 
+          message: `API key for ${model} is valid` 
+        });
+      } else {
+        res.status(400).json({ 
+          success: false, 
+          message: `API key for ${model} is invalid` 
+        });
+      }
+    } catch (error: any) {
+      console.error("Failed to validate API key:", error);
+      res.status(500).json({ 
+        success: false, 
+        message: error.message || "Failed to validate API key" 
+      });
+    }
+  });
+
+  app.post("/api/ai/test-model", authenticateToken, authorizeRole(['super_admin', 'user_admin']), async (req, res) => {
+    try {
+      // Get the selected model from settings, not from request body
+      const settings = await storage.getSiteSettings();
+      const selectedModel = settings?.aiModelSettings?.selectedModel;
+      
+      if (!selectedModel) {
+        return res.status(400).json({ 
+          success: false, 
+          message: "No model selected. Please select a model in AI Model Settings first." 
+        });
+      }
+
+      const validModels = ['openai', 'gemini', 'perplexity', 'grok'];
+      if (!validModels.includes(selectedModel)) {
+        return res.status(400).json({ 
+          success: false, 
+          message: `Invalid model selected: ${selectedModel}. Must be one of: ${validModels.join(', ')}` 
+        });
+      }
+
+      // Import dynamically to avoid circular dependencies
+      const { getActiveAIProvider } = await import('./utils/ai-settings-manager');
+      const provider = await getActiveAIProvider();
+      
+      // Test with a simple prompt
+      const testPrompt = "Say 'Hello, this is a test' and nothing else.";
+      const response = await provider.generateText(testPrompt, { maxTokens: 20 });
+      
+      if (response && response.length > 0) {
+        res.json({ 
+          success: true, 
+          message: `Model ${selectedModel} is working correctly`,
+          testResponse: response,
+          model: selectedModel
+        });
+      } else {
+        res.status(400).json({ 
+          success: false, 
+          message: `Model ${selectedModel} test failed - no response received`,
+          testResponse: response 
+        });
+      }
+    } catch (error: any) {
+      console.error("Failed to test model:", error);
+      res.status(500).json({ 
+        success: false, 
+        message: error.message || "Failed to test model. Make sure the API key is configured and valid." 
+      });
+    }
+  });
+
   // Site Settings Routes
   app.get("/api/site-settings", async (req, res) => {
     try {
       const settings = await storage.getSiteSettings();
-      res.json(settings);
+      
+      // Mask API keys for security (never send decrypted keys to client)
+      const { maskApiKey } = await import('./utils/api-key-encryption');
+      const cleanSettings = {
+        ...settings,
+        id: settings.id,
+      };
+      
+      if (cleanSettings.aiModelSettings?.apiKeys) {
+        const maskedKeys: Record<string, string> = {};
+        for (const [model, encryptedKey] of Object.entries(cleanSettings.aiModelSettings.apiKeys)) {
+          if (encryptedKey && typeof encryptedKey === 'string') {
+            maskedKeys[model] = maskApiKey(encryptedKey);
+          }
+        }
+        cleanSettings.aiModelSettings.apiKeys = maskedKeys;
+      }
+      
+      res.json(cleanSettings);
     } catch (error) {
       console.error("Failed to get site settings:", error);
       res.status(500).json({ success: false, message: "Failed to retrieve site settings" });
@@ -7300,13 +7399,67 @@ CRITICAL INSTRUCTIONS:
 
   app.post("/api/site-settings", authenticateToken, authorizeRole(['super_admin', 'user_admin']), async (req, res) => {
     try {
-      const updates = insertSiteSettingsSchema.parse(req.body);
+      console.log('Received site settings update:', JSON.stringify(req.body, null, 2)); // Debug log
+      
+      // Parse and validate the updates
+      const parsed = insertSiteSettingsSchema.safeParse(req.body);
+      if (!parsed.success) {
+        console.error('Validation errors:', parsed.error.errors);
+        return res.status(400).json({ 
+          success: false, 
+          message: "Invalid settings data", 
+          errors: parsed.error.errors 
+        });
+      }
+      
+      const updates = parsed.data;
+      console.log('Parsed updates:', JSON.stringify(updates, null, 2)); // Debug log
+      
+      // Ensure pageTitle is explicitly included if provided (even if empty string)
+      if (req.body.pageTitle !== undefined) {
+        // Always set pageTitle if provided, even if empty string
+        updates.pageTitle = req.body.pageTitle;
+      }
+      
+      // Encrypt API keys if they are being updated
+      if (updates.aiModelSettings?.apiKeys) {
+        const { encryptApiKey, isEncrypted } = await import('./utils/api-key-encryption');
+        const encryptedKeys: Record<string, string> = {};
+        
+        for (const [model, apiKey] of Object.entries(updates.aiModelSettings.apiKeys)) {
+          if (apiKey && typeof apiKey === 'string') {
+            // Only encrypt if not already encrypted
+            if (isEncrypted(apiKey)) {
+              encryptedKeys[model] = apiKey; // Keep existing encrypted key
+            } else {
+              encryptedKeys[model] = encryptApiKey(apiKey);
+            }
+          }
+        }
+        
+        updates.aiModelSettings.apiKeys = encryptedKeys;
+      }
+      
       const settings = await storage.updateSiteSettings(updates);
-      // Clean up the response
+      
+      // Clean up the response - mask API keys for security
+      const { maskApiKey } = await import('./utils/api-key-encryption');
       const cleanSettings = {
         ...settings,
         id: settings.id,
       };
+      
+      // Mask API keys in response
+      if (cleanSettings.aiModelSettings?.apiKeys) {
+        const maskedKeys: Record<string, string> = {};
+        for (const [model, encryptedKey] of Object.entries(cleanSettings.aiModelSettings.apiKeys)) {
+          if (encryptedKey && typeof encryptedKey === 'string') {
+            maskedKeys[model] = maskApiKey(encryptedKey);
+          }
+        }
+        cleanSettings.aiModelSettings.apiKeys = maskedKeys;
+      }
+      
       res.json({ success: true, settings: cleanSettings });
     } catch (error) {
       if (error instanceof z.ZodError) {

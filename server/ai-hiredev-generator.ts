@@ -1,7 +1,4 @@
-import OpenAI from "openai";
-
-// the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+import { generateChatCompletion } from "./openai-client";
 
 // Generate SEO keywords for hire developer pages
 export async function generateHireDeveloperKeywords(title: string, region: string = "USA, Canada"): Promise<string[]> {
@@ -9,12 +6,10 @@ export async function generateHireDeveloperKeywords(title: string, region: strin
     const regions = region ? region.split(',').map(r => r.trim()).filter(Boolean) : ["USA", "Canada"];
     const regionList = regions.join(", ");
     
-    const response = await openai.chat.completions.create({
-      model: "gpt-4o",
-      messages: [
-        {
-          role: "system",
-          content: `You are an expert SEO keyword strategist specializing in hiring and recruitment keywords for ${regionList} markets.
+    const response = await generateChatCompletion([
+      {
+        role: "system",
+        content: `You are an expert SEO keyword strategist specializing in hiring and recruitment keywords for ${regionList} markets.
 
 CRITICAL: Extract the EXACT technology and location from the page title and generate keywords specifically for that combination.
 
@@ -75,8 +70,8 @@ CRITICAL REQUIREMENTS:
 5. Generate 25-30 keywords that match the title's specific format
 
 Focus on the EXACT combination of technology + location from the title.`
-        }
-      ],
+      }
+    ], {
       response_format: { type: "json_object" },
       temperature: 0.7,
       max_tokens: 1000
@@ -228,9 +223,6 @@ export async function generateHireDeveloperTitles(
   targetMarket: string = "USA & Canada"
 ): Promise<string[]> {
   try {
-    const OpenAI = (await import("openai")).default;
-    const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-
     const prompt = `Generate 8 professional, SEO-optimized page titles for hiring ${developerType} developers targeting ${targetMarket} market.
 
 Requirements:
@@ -248,9 +240,9 @@ Examples for reference:
 
 Generate 8 unique, professional titles in JSON format: {"titles": ["title1", "title2", ...]}`;
 
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o", // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
-      messages: [{ role: "user", content: prompt }],
+    const completion = await generateChatCompletion([
+      { role: "user", content: prompt }
+    ], {
       response_format: { type: "json_object" },
       temperature: 0.8,
       max_tokens: 800,
@@ -281,12 +273,10 @@ export async function generateHireDeveloperContent(request: HireDeveloperRequest
   } = request;
 
   // Generate content following the NEW structured guidelines exactly
-  const contentResponse = await openai.chat.completions.create({
-    model: "gpt-4o",
-    messages: [
-      {
-        role: "system",
-        content: `You are an expert content generator for the Hire Developer CMS following the comprehensive structured guidelines.
+  const contentResponse = await generateChatCompletion([
+    {
+      role: "system",
+      content: `You are an expert content generator for the Hire Developer CMS following the comprehensive structured guidelines.
 
 🎯 **CRITICAL REQUIREMENT**: Generate COMPLETE content with ALL required arrays fully populated. Every section must be comprehensive and professional.
 
@@ -457,11 +447,11 @@ ${referenceContent}
         
         Generate the complete structured content following the exact JSON format specified above.`
       }
-    ],
-    response_format: { type: "json_object" },
-    temperature: 0.7,
-    max_tokens: 8000
-  });
+    ], {
+      response_format: { type: "json_object" },
+      temperature: 0.7,
+      max_tokens: 8000
+    });
 
   const generatedContent = JSON.parse(contentResponse.choices[0].message.content!);
 
@@ -621,12 +611,10 @@ export async function regenerateHireDeveloperContent(
   primarySkills: string
 ): Promise<{ content: string; metaTitle: string; metaDescription: string; keywords: string; skills: string[] }> {
   try {
-    const contentResponse = await openai.chat.completions.create({
-      model: "gpt-4o",
-      messages: [
-        {
-          role: "system",
-          content: `You are an expert SEO content strategist specializing in developer hiring pages.
+    const contentResponse = await generateChatCompletion([
+      {
+        role: "system",
+        content: `You are an expert SEO content strategist specializing in developer hiring pages.
           Create conversion-focused, SEO-optimized content that convinces clients to hire developers.
           
           Follow these guidelines:
@@ -637,16 +625,16 @@ export async function regenerateHireDeveloperContent(
           - Include strong CTAs and trust signals
           - Format content in HTML with proper heading tags
           
-          Return response as JSON with: content, metaTitle, metaDescription, keywords, skills`
-        },
-        {
-          role: "user",
-          content: `Generate hire developer content for:
-          Developer Type: ${developerType}
-          Location: ${location}
-          Primary Skills: ${primarySkills}`
-        }
-      ],
+        Return response as JSON with: content, metaTitle, metaDescription, keywords, skills`
+      },
+      {
+        role: "user",
+        content: `Generate hire developer content for:
+        Developer Type: ${developerType}
+        Location: ${location}
+        Primary Skills: ${primarySkills}`
+      }
+    ], {
       response_format: { type: "json_object" },
       temperature: 0.7,
     });

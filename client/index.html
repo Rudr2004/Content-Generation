@@ -31,15 +31,15 @@
   </script>
 
   <!-- ✅ SEO Meta -->
-  <title>Green Apple - Enterprise AI Development & Custom Software Solutions</title>
-  <meta name="title" content="Green Apple - Enterprise AI Development & Custom Software Solutions" />
+  <title id="dynamic-title">BootSolo - AI Development</title>
+  <meta name="title" id="dynamic-meta-title" content="BootSolo - AI Development" />
   <meta name="description"
     content="Leading North American AI development company delivering custom software solutions, enterprise AI automation, generative AI, and digital transformation services. 500+ projects delivered with 98% client satisfaction." />
   <meta name="keywords"
     content="AI development services, enterprise AI solutions, custom software development, generative AI development, machine learning consulting, AI automation services, digital transformation, custom AI development company" />
   <meta name="robots" content="index, follow" />
   <meta name="language" content="English" />
-  <meta name="author" content="GreenAppleX" />
+  <meta name="author" content="BootSolo" />
 
   <!-- ✅ Open Graph -->
   <meta property="og:type" content="website" />
@@ -105,6 +105,35 @@
   </noscript>
 
   <div id="root"></div>
+  
+  <!-- Script to load page title immediately on hard refresh -->
+  <script>
+    (function() {
+      // Fetch site settings and update title immediately (before React loads)
+      fetch('/api/site-settings')
+        .then(res => res.json())
+        .then(data => {
+          if (data && data.pageTitle) {
+            document.title = data.pageTitle;
+            const titleEl = document.querySelector('title');
+            if (titleEl) titleEl.textContent = data.pageTitle;
+            const metaTitle = document.querySelector('meta[name="title"]');
+            if (metaTitle) metaTitle.setAttribute('content', data.pageTitle);
+          } else if (data && data.siteName) {
+            document.title = data.siteName;
+            const titleEl = document.querySelector('title');
+            if (titleEl) titleEl.textContent = data.siteName;
+            const metaTitle = document.querySelector('meta[name="title"]');
+            if (metaTitle) metaTitle.setAttribute('content', data.siteName);
+          }
+        })
+        .catch(err => {
+          console.log('Could not load site settings for title:', err);
+          // Keep default title if fetch fails
+        });
+    })();
+  </script>
+  
   <script type="module" src="/src/main.tsx"></script>
 
   <!-- ✅ Replit dev banner (optional) -->

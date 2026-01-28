@@ -1,6 +1,4 @@
-import OpenAI from "openai";
-
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+import { generateChatCompletion } from "./openai-client";
 
 // Website context and knowledge base
 const WEBSITE_CONTEXT = `

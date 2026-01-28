@@ -24,10 +24,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Loader2, Palette } from "lucide-react";
 import { useEffect } from "react";
 import { ColorThemeManager } from "@/components/color-theme-manager";
+import { AIModelSettings } from "@/components/ai-model-settings";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const formSchema = z.object({
     siteName: z.string().min(2, "Site name must be at least 2 characters"),
+    pageTitle: z.string().min(5, "Page title must be at least 5 characters").optional(),
     theme: z.enum(["light", "dark", "system"]),
     logoUrl: z.string().optional(),
     targetRegions: z.string().optional(),
@@ -41,6 +43,7 @@ export function SiteSettingsForm() {
         resolver: zodResolver(formSchema),
         defaultValues: {
             siteName: "",
+            pageTitle: "",
             theme: "light",
             logoUrl: "",
             targetRegions: "",
@@ -52,6 +55,7 @@ export function SiteSettingsForm() {
         if (settings) {
             form.reset({
                 siteName: settings.siteName,
+                pageTitle: settings.pageTitle || "",
                 theme: (settings.theme as "light" | "dark" | "system") || "light",
                 logoUrl: settings.logoUrl || "",
                 targetRegions: settings.targetRegions || "",
@@ -62,9 +66,24 @@ export function SiteSettingsForm() {
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         try {
-            await updateSettings(values);
+            // Prepare submit data - always include pageTitle if it exists in form
+            const submitData: any = {
+                siteName: values.siteName,
+                theme: values.theme,
+            };
+            
+            // Always include pageTitle - send it even if empty (backend will handle defaults)
+            submitData.pageTitle = values.pageTitle?.trim() || values.pageTitle || "";
+            
+            // Include optional fields if they have values
+            if (values.logoUrl) submitData.logoUrl = values.logoUrl;
+            if (values.targetRegions) submitData.targetRegions = values.targetRegions;
+            if (values.industryFocus) submitData.industryFocus = values.industryFocus;
+            
+            console.log('Submitting site settings:', submitData); // Debug log
+            await updateSettings(submitData);
         } catch (error) {
-            console.error(error);
+            console.error('Error updating site settings:', error);
         }
     };
 
@@ -100,7 +119,24 @@ export function SiteSettingsForm() {
                                         <Input placeholder="My Website" {...field} />
                                     </FormControl>
                                     <FormDescription>
-                                        This is the name that appears in the browser tab and navigation.
+                                        This is the internal site name used for branding.
+                                    </FormDescription>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name="pageTitle"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Page Title (Browser Tab Title)</FormLabel>
+                                    <FormControl>
+                                        <Input placeholder="Green Apple - Enterprise AI Development & Custom Software Solutions" {...field} />
+                                    </FormControl>
+                                    <FormDescription>
+                                        This is the title that appears in the browser tab. It will update immediately when you save changes.
                                     </FormDescription>
                                     <FormMessage />
                                 </FormItem>
@@ -201,15 +237,19 @@ export function SiteSettingsPage() {
     return (
         <div className="space-y-6">
             <Tabs defaultValue="general" className="w-full">
-                <TabsList className="grid w-full grid-cols-2">
+                <TabsList className="grid w-full grid-cols-3">
                     <TabsTrigger value="general">General Settings</TabsTrigger>
                     <TabsTrigger value="colors">Color & Theme</TabsTrigger>
+                    <TabsTrigger value="ai-model">AI Model Settings</TabsTrigger>
                 </TabsList>
                 <TabsContent value="general" className="mt-6">
                     <SiteSettingsForm />
                 </TabsContent>
                 <TabsContent value="colors" className="mt-6">
                     <ColorThemeManager />
+                </TabsContent>
+                <TabsContent value="ai-model" className="mt-6">
+                    <AIModelSettings />
                 </TabsContent>
             </Tabs>
         </div>

@@ -1,4 +1,4 @@
-import OpenAI from 'openai';
+import { generateChatCompletion } from './openai-client';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 
@@ -24,14 +24,6 @@ const getServiceStructure = () => {
     };
   }
 };
-
-// the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
-function getOpenAIClient(): OpenAI {
-  if (!process.env.OPENAI_API_KEY) {
-    throw new Error('OPENAI_API_KEY environment variable is not configured');
-  }
-  return new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-}
 
 export interface GeneratedServiceContent {
   heroSection: {

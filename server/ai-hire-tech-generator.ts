@@ -1,4 +1,4 @@
-import { getOpenAIClient, isOpenAIAvailable } from './openai-client';
+import { generateChatCompletion, isOpenAIAvailable } from './openai-client';
 
 export interface TechnologyStack {
   frontend: string[];
@@ -34,7 +34,6 @@ export async function generateHireTechContent(technology: string): Promise<HireT
       return generateFallbackContent(technology);
     }
 
-    const openai = getOpenAIClient();
     const prompt = `You are generating content for a "Hire ${technology} Developer" landing page.
 
 1. Technology Stack:
@@ -96,18 +95,17 @@ Return the response in this exact JSON format:
   ]
 }`;
 
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o",
-      messages: [
-        {
-          role: "system",
-          content: "You are an expert technical recruiter and developer hiring consultant. Generate realistic, specific technology stacks and authentic client testimonials for developer hiring pages. Always return valid JSON."
-        },
-        {
-          role: "user", 
-          content: prompt
-        }
-      ],
+    const completion = await generateChatCompletion([
+      {
+        role: "system",
+        content: "You are an expert technical recruiter and developer hiring consultant. Generate realistic, specific technology stacks and authentic client testimonials for developer hiring pages. Always return valid JSON."
+      },
+      {
+        role: "user", 
+        content: prompt
+      }
+    ], {
+      response_format: { type: "json_object" },
       temperature: 0.7,
       max_tokens: 1500,
     });

@@ -648,12 +648,14 @@ export type InsertLinkValidation = z.infer<typeof insertLinkValidationSchema>;
 export const siteSettings = pgTable("site_settings", {
   id: serial("id").primaryKey(),
   siteName: text("site_name").default("GreenAppleX").notNull(),
+  pageTitle: text("page_title").default("Green Apple - Enterprise AI Development & Custom Software Solutions"), // Browser tab title
   theme: text("theme").default("light").notNull(), // light, dark, system
   primaryColor: text("primary_color").default("blue"), // optional: for improved theming
   logoUrl: text("logo_url"), // optional: if they want to change logo too
   targetRegions: text("target_regions").default("USA, Canada"), // Comma separated list of regions
   industryFocus: text("industry_focus").default("Technology, AI"), // Comma separated list of industries
   colorSettings: jsonb("color_settings"), // JSON field for color configurations
+  aiModelSettings: jsonb("ai_model_settings"), // JSON field for AI model selection and encrypted API keys
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
