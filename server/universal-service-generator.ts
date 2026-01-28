@@ -1,18 +1,4 @@
-import OpenAI from "openai";
-
-// The newest OpenAI model is "gpt-4o" which was released May 13, 2024. Do not change this unless explicitly requested by the user
-let openai: OpenAI | null = null;
-
-// Initialize OpenAI client only when needed and if API key is available
-function getOpenAIClient(): OpenAI {
-  if (!openai && process.env.OPENAI_API_KEY) {
-    openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-  }
-  if (!openai) {
-    throw new Error('OPENAI_API_KEY is not configured. AI features are disabled.');
-  }
-  return openai;
-}
+import { generateChatCompletion } from "./openai-client";
 
 // Universal Service Page Content Interface
 export interface UniversalServiceContent {

@@ -1,8 +1,4 @@
-import OpenAI from "openai";
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+import { generateChatCompletion } from "./openai-client";
 
 export interface IndustryContentRequest {
   industryType: string;
@@ -91,12 +87,10 @@ export async function generateIndustryKeywords(title: string, region: string = "
     const regions = region ? region.split(',').map(r => r.trim()).filter(Boolean) : ["USA", "Canada"];
     const regionList = regions.join(", ");
     
-    const response = await openai.chat.completions.create({
-      model: "gpt-4o",
-      messages: [
-        {
-          role: "system",
-          content: `You are an expert SEO keyword strategist specializing in industry and business sector keywords for ${regionList} markets.
+    const response = await generateChatCompletion([
+      {
+        role: "system",
+        content: `You are an expert SEO keyword strategist specializing in industry and business sector keywords for ${regionList} markets.
 
 CRITICAL: Extract the EXACT industry and focus area from the page title and generate keywords specifically for that combination.
 
@@ -136,10 +130,10 @@ For titles like "Fintech Solutions" or "Healthcare Technology", generate keyword
 - "fintech startup solutions"
 
 Generate 25-30 highly relevant, industry-specific keywords. Return as JSON: {"keywords": ["keyword1", "keyword2", ...]}`
-        },
-        {
-          role: "user",
-          content: `Generate SEO keywords for this EXACT industry page title: "${title}" targeting ${regionList} markets.
+      },
+      {
+        role: "user",
+        content: `Generate SEO keywords for this EXACT industry page title: "${title}" targeting ${regionList} markets.
 
 CRITICAL REQUIREMENTS:
 - Focus on the EXACT industry mentioned in the title
@@ -192,12 +186,10 @@ function generateFallbackIndustryKeywords(title: string, region: string = "USA, 
  */
 export async function generateIndustryTitles(industryType: string, market: string = "Global"): Promise<string[]> {
   try {
-    const response = await openai.chat.completions.create({
-      model: "gpt-4o",
-      messages: [
-        {
-          role: "system",
-          content: `You are an expert content strategist specializing in B2B industry page titles.
+    const response = await generateChatCompletion([
+      {
+        role: "system",
+        content: `You are an expert content strategist specializing in B2B industry page titles.
 
 Generate 20 compelling, SEO-optimized title variations for industry pages targeting the ${market} market.
 
@@ -259,12 +251,10 @@ export async function generateIndustryContent(request: IndustryContentRequest): 
   } = request;
 
   try {
-    const contentResponse = await openai.chat.completions.create({
-      model: "gpt-4o",
-      messages: [
-        {
-          role: "system",
-          content: `You are an expert B2B content generator for industry solution pages following comprehensive structured guidelines.
+    const contentResponse = await generateChatCompletion([
+      {
+        role: "system",
+        content: `You are an expert B2B content generator for industry solution pages following comprehensive structured guidelines.
 
 🎯 **CRITICAL REQUIREMENT**: Generate COMPLETE content with ALL required arrays fully populated. Every section must be comprehensive and professional.
 
@@ -390,12 +380,10 @@ Create content that positions us as the leading provider of ${primaryFocus} for 
  */
 export async function generateIndustryTechContent(industryType: string): Promise<any> {
   try {
-    const response = await openai.chat.completions.create({
-      model: "gpt-4o",
-      messages: [
-        {
-          role: "system",
-          content: `You are an expert technology consultant specializing in industry-specific technology stacks and solutions.
+    const response = await generateChatCompletion([
+      {
+        role: "system",
+        content: `You are an expert technology consultant specializing in industry-specific technology stacks and solutions.
 
 Generate comprehensive technology stack and testimonial content for the ${industryType} industry.
 
@@ -428,9 +416,9 @@ Return JSON format:
         },
         {
           role: "user",
-          content: `Generate technology stack and testimonials for the ${industryType} industry.`
-        }
-      ],
+        content: `Generate technology stack and testimonials for the ${industryType} industry.`
+      }
+    ], {
       response_format: { type: "json_object" },
       temperature: 0.7,
       max_tokens: 1500

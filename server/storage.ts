@@ -188,15 +188,45 @@ export interface ColorSettings {
   };
 }
 
+export interface AIModelSettings {
+  selectedModel: "openai" | "gemini" | "perplexity" | "grok" | null;
+  apiKeys?: {
+    openai?: string; // Encrypted
+    gemini?: string; // Encrypted
+    perplexity?: string; // Encrypted
+    grok?: string; // Encrypted
+  };
+  modelConfig?: {
+    openai?: {
+      model: string;
+      temperature?: number;
+    };
+    gemini?: {
+      model: string;
+      temperature?: number;
+    };
+    perplexity?: {
+      model: string;
+      temperature?: number;
+    };
+    grok?: {
+      model: string;
+      temperature?: number;
+    };
+  };
+}
+
 export interface SiteSettings {
   id: string;
   siteName: string;
+  pageTitle?: string;
   theme: string;
   primaryColor?: string;
   logoUrl?: string;
   targetRegions?: string;
   industryFocus?: string;
   colorSettings?: ColorSettings;
+  aiModelSettings?: AIModelSettings;
   updatedAt: Date;
 }
 
@@ -2823,22 +2853,50 @@ export const storage = {
     if (!doc) {
       doc = await SiteSettingModel.create({
         siteName: "GreenAppleX",
+        pageTitle: "Green Apple - Enterprise AI Development & Custom Software Solutions",
         theme: "light",
       });
       doc = doc.toObject();
+    } else {
+      // Ensure pageTitle exists (for existing documents that don't have it)
+      if (!doc.pageTitle) {
+        doc.pageTitle = "Green Apple - Enterprise AI Development & Custom Software Solutions";
+      }
     }
     return { ...doc, id: (doc as any)._id.toString() } as unknown as SiteSettings;
   },
 
   updateSiteSettings: async (updates: Partial<SiteSettings>) => {
     await connectMongo();
-    // Maintain a single document approach
+    console.log('Storage: Updating site settings with:', JSON.stringify(updates, null, 2)); // Debug log
+    
+    // Build update object - ensure all fields are included
+    const updateObj: any = {
+      updatedAt: new Date(),
+    };
+    
+    // Copy all updates to updateObj
+    Object.keys(updates).forEach(key => {
+      if (updates[key as keyof SiteSettings] !== undefined) {
+        updateObj[key] = updates[key as keyof SiteSettings];
+      }
+    });
+    
+    // Explicitly ensure pageTitle is set if provided (even if empty string)
+    if ('pageTitle' in updates && updates.pageTitle !== undefined) {
+      updateObj.pageTitle = updates.pageTitle === "" ? "" : updates.pageTitle;
+    }
+    
+    console.log('Storage: Update object:', JSON.stringify(updateObj, null, 2)); // Debug log
+    
+    // Maintain a single document approach - use $set to ensure fields are added/updated
     let doc = await SiteSettingModel.findOneAndUpdate(
       {}, // matches any document (we assume only one exists)
-      { ...updates, updatedAt: new Date() },
-      { new: true, upsert: true } // upsert: true creates it if not found
+      { $set: updateObj }, // Use $set to ensure fields are added/updated even if they don't exist
+      { new: true, upsert: true, setDefaultsOnInsert: true } // setDefaultsOnInsert ensures defaults are applied
     ).lean().exec();
 
+    console.log('Storage: Updated document:', JSON.stringify(doc, null, 2)); // Debug log
     return { ...doc, id: (doc as any)._id.toString() } as unknown as SiteSettings;
   },
 };

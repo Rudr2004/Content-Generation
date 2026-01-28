@@ -1,7 +1,5 @@
-import OpenAI from "openai";
+import { generateChatCompletion } from "./openai-client";
 import type { IndividualCaseStudy, CaseStudyTestimonial } from "@shared/schema";
-
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 export async function generateCaseStudyContent(
   title: string,

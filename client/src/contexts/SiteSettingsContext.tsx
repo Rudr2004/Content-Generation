@@ -22,6 +22,8 @@ export function SiteSettingsProvider({ children }: { children: React.ReactNode }
     const { data: settings, isLoading } = useQuery<SiteSettings>({
         queryKey: ["/api/site-settings"],
         // Default query function from queryClient will handle the fetch with auth headers
+        staleTime: 0, // Always refetch to get latest title
+        refetchOnMount: true, // Refetch when component mounts
     });
 
     // Effect to apply theme when settings load
@@ -31,35 +33,53 @@ export function SiteSettingsProvider({ children }: { children: React.ReactNode }
         }
     }, [settings?.theme, setTheme]);
 
-    // Effect to apply document title (Site Name)
+    // Effect to apply document title (Page Title or Site Name)
     // This runs whenever settings change, ensuring the title stays updated
-    // Priority: This should run AFTER other effects to ensure siteName takes precedence
+    // Priority: pageTitle > siteName > default
     useEffect(() => {
-        if (settings?.siteName) {
+        const title = settings?.pageTitle || settings?.siteName || "Green Apple - Enterprise AI Development & Custom Software Solutions";
+        
+        if (title) {
+            // Function to update title
+            const updateTitle = () => {
+                document.title = title;
+                const titleElement = document.querySelector('title');
+                if (titleElement) {
+                    titleElement.textContent = title;
+                }
+                const metaTitle = document.querySelector('meta[name="title"]');
+                if (metaTitle) {
+                    metaTitle.setAttribute('content', title);
+                }
+            };
+            
             // Set title immediately
-            document.title = settings.siteName;
+            updateTitle();
             
-            // Set it again after a brief delay to ensure it persists even if other components override it
+            // Set it again after brief delays to ensure it persists even if other components override it
             // This is important because SEOHead and other components might set the title
-            const timeoutId1 = setTimeout(() => {
-                if (settings.siteName) {
-                    document.title = settings.siteName;
-                }
-            }, 50);
+            const timeoutId1 = setTimeout(updateTitle, 50);
+            const timeoutId2 = setTimeout(updateTitle, 200);
+            const timeoutId3 = setTimeout(updateTitle, 500);
+            const timeoutId4 = setTimeout(updateTitle, 1000);
             
-            // Set it again after a longer delay to ensure it persists
-            const timeoutId2 = setTimeout(() => {
-                if (settings.siteName) {
-                    document.title = settings.siteName;
+            // Also update on visibility change (when user switches tabs back)
+            const handleVisibilityChange = () => {
+                if (!document.hidden) {
+                    updateTitle();
                 }
-            }, 200);
+            };
+            document.addEventListener('visibilitychange', handleVisibilityChange);
             
             return () => {
                 clearTimeout(timeoutId1);
                 clearTimeout(timeoutId2);
+                clearTimeout(timeoutId3);
+                clearTimeout(timeoutId4);
+                document.removeEventListener('visibilitychange', handleVisibilityChange);
             };
         }
-    }, [settings?.siteName, settings]);
+    }, [settings?.pageTitle, settings?.siteName, settings]);
 
     // Effect to apply color settings - comprehensive color application
     useEffect(() => {
@@ -315,9 +335,19 @@ export function SiteSettingsProvider({ children }: { children: React.ReactNode }
             queryClient.setQueryData(["/api/site-settings"], data.settings);
             
             // CRITICAL: Update document title IMMEDIATELY before any other operations
-            // This ensures the title updates right away, even if other components try to override it
-            if (data.settings.siteName) {
-                document.title = data.settings.siteName;
+            // Priority: pageTitle > siteName > default
+            const title = data.settings.pageTitle || data.settings.siteName || "Green Apple - Enterprise AI Development & Custom Software Solutions";
+            if (title) {
+                document.title = title;
+                const titleElement = document.querySelector('title');
+                if (titleElement) {
+                    titleElement.textContent = title;
+                }
+                // Also update meta title
+                const metaTitle = document.querySelector('meta[name="title"]');
+                if (metaTitle) {
+                    metaTitle.setAttribute('content', title);
+                }
             }
             
             // Force a refetch to ensure all components get the updated data

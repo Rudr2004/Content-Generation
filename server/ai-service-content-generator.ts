@@ -1,21 +1,4 @@
-import OpenAI from 'openai';
-
-// Initialize OpenAI client only when needed and API key is available
-let openai: OpenAI | null = null;
-
-function getOpenAIClient(): OpenAI {
-  if (!process.env.OPENAI_API_KEY) {
-    throw new Error('OPENAI_API_KEY environment variable is not configured');
-  }
-  
-  if (!openai) {
-    openai = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY,
-    });
-  }
-  
-  return openai;
-}
+import { generateChatCompletion } from './openai-client';
 
 export interface ServicePageContent {
   heroSection: {
@@ -87,9 +70,9 @@ export async function scrapeAndSummarizeUrl(url: string): Promise<string> {
     
     Focus on extracting the main service or product offering that would be relevant for content generation.`;
 
-    const response = await getOpenAIClient().chat.completions.create({
-      model: 'gpt-4o',
-      messages: [{ role: 'user', content: summaryPrompt }],
+    const response = await generateChatCompletion([
+      { role: 'user', content: summaryPrompt }
+    ], {
       max_tokens: 200,
       temperature: 0.3
     });
@@ -147,12 +130,10 @@ Return as JSON:
   "secondaryKeywords": ["keyword1", "keyword2", "keyword3", "keyword4", "keyword5"]
 }`;
 
-    const response = await getOpenAIClient().chat.completions.create({
-      model: 'gpt-4o',
-      messages: [
-        {
-          role: 'system',
-          content: `You are an SEO expert specializing in generating region-specific keywords for technology services.
+    const response = await generateChatCompletion([
+      {
+        role: 'system',
+        content: `You are an SEO expert specializing in generating region-specific keywords for technology services.
 
 CRITICAL REGION COMPLIANCE RULES:
 1. ONLY use regions from the provided list: ${regionList}
@@ -164,9 +145,11 @@ CRITICAL REGION COMPLIANCE RULES:
         },
         { role: 'user', content: prompt }
       ],
-      max_tokens: 300,
-      temperature: 0.3
-    });
+      {
+        max_tokens: 300,
+        temperature: 0.3
+      }
+    );
 
     const content = response.choices[0].message.content;
     if (!content) throw new Error('No response from OpenAI');
@@ -633,9 +616,9 @@ Return as JSON:
   "metaDescription": "description here"
 }`;
 
-    const response = await getOpenAIClient().chat.completions.create({
-      model: 'gpt-4o',
-      messages: [{ role: 'user', content: prompt }],
+    const response = await generateChatCompletion([
+      { role: 'user', content: prompt }
+    ], {
       max_tokens: 200,
       temperature: 0.3
     });
