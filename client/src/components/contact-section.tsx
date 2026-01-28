@@ -128,12 +128,12 @@ export function ContactSection() {
                       name="firstName"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-gray-700 font-medium text-poppins">First Name</FormLabel>
+                          <FormLabel className="font-medium text-poppins">First Name</FormLabel>
                           <FormControl>
                             <Input
                               placeholder="John"
                               {...field}
-                              className="bg-gray-50 border-gray-200 text-gray-900 placeholder-gray-500 focus:ring-1 focus:ring-purple-500 h-12"
+                              className="focus:ring-1 focus:ring-purple-500 h-12"
                             />
                           </FormControl>
                           <FormMessage />
@@ -145,12 +145,12 @@ export function ContactSection() {
                       name="lastName"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-gray-700 font-medium text-poppins">Last Name</FormLabel>
+                          <FormLabel className="font-medium text-poppins">Last Name</FormLabel>
                           <FormControl>
                             <Input
                               placeholder="Doe"
                               {...field}
-                              className="bg-gray-50 border-gray-200 text-gray-900 placeholder-gray-500 focus:ring-1 focus:ring-purple-500 h-12"
+                              className="focus:ring-1 focus:ring-purple-500 h-12"
                             />
                           </FormControl>
                           <FormMessage />
@@ -165,13 +165,13 @@ export function ContactSection() {
                       name="email"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-gray-700 font-medium text-poppins">Email Address</FormLabel>
+                          <FormLabel className="font-medium text-poppins">Email Address</FormLabel>
                           <FormControl>
                             <Input
                               placeholder="john@company.com"
                               type="email"
                               {...field}
-                              className="bg-gray-50 border-gray-200 text-gray-900 placeholder-gray-500 focus:ring-1 focus:ring-purple-500 h-12"
+                              className="focus:ring-1 focus:ring-purple-500 h-12"
                             />
                           </FormControl>
                           <FormMessage />
@@ -183,7 +183,7 @@ export function ContactSection() {
                       name="phone"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-gray-700 font-medium text-poppins">Phone Number</FormLabel>
+                          <FormLabel className="font-medium text-poppins">Phone Number</FormLabel>
                           <FormControl>
                             <Input
                               placeholder="+1 (555) 123-4567"
@@ -203,12 +203,12 @@ export function ContactSection() {
                     name="company"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-gray-700 font-medium text-poppins">Company</FormLabel>
+                        <FormLabel className="font-medium text-poppins">Company</FormLabel>
                         <FormControl>
                           <Input
                             placeholder="Your Company"
                             {...field}
-                            className="bg-gray-50 border-gray-200 text-gray-900 placeholder-gray-500 focus:ring-1 focus:ring-purple-500 h-12"
+                            className="focus:ring-1 focus:ring-purple-500 h-12"
                           />
                         </FormControl>
                         <FormMessage />
@@ -221,10 +221,10 @@ export function ContactSection() {
                     name="service"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-gray-700 font-medium text-poppins">Service Interested In</FormLabel>
+                        <FormLabel className="font-medium text-poppins">Service Interested In</FormLabel>
                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                           <FormControl>
-                            <SelectTrigger className="bg-gray-50 border-gray-200 text-gray-900 h-12 focus:ring-1 focus:ring-purple-500">
+                            <SelectTrigger className="h-12 focus:ring-1 focus:ring-purple-500">
                               <SelectValue placeholder="Select a service" />
                             </SelectTrigger>
                           </FormControl>
@@ -250,12 +250,12 @@ export function ContactSection() {
                     name="message"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-gray-700 font-medium text-poppins">Project Details</FormLabel>
+                        <FormLabel className="font-medium text-poppins">Project Details</FormLabel>
                         <FormControl>
                           <Textarea
                             placeholder="Tell us about your project requirements..."
                             {...field}
-                            className="bg-gray-50 border-gray-200 text-gray-900 placeholder-gray-500 focus:ring-1 focus:ring-purple-500 min-h-[120px] resize-none"
+                            className="focus:ring-1 focus:ring-purple-500 min-h-[120px] resize-none"
                           />
                         </FormControl>
                         <FormMessage />
@@ -266,7 +266,16 @@ export function ContactSection() {
                   <Button
                     type="submit"
                     disabled={contactMutation.isPending}
-                    className="w-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 hover:from-blue-600 hover:via-purple-600 hover:to-pink-600 text-white font-semibold py-3 px-8 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl text-poppins border-0"
+                    className="w-full text-white font-semibold py-3 px-8 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl text-poppins border-0"
+                    style={{
+                      background: 'linear-gradient(to right, var(--gradient-start, #3b82f6), var(--gradient-middle, #8b5cf6), var(--gradient-end, #ec4899))'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.filter = 'brightness(0.9)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.filter = 'none';
+                    }}
                     style={{ color: "white" }}
                   >
                     {contactMutation.isPending ? "Sending..." : "Submit"}

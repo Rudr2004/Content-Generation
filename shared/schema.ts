@@ -1,4 +1,4 @@
-import { pgTable, text, serial, timestamp, boolean, integer, unique } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, timestamp, boolean, integer, unique, jsonb } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -653,6 +653,7 @@ export const siteSettings = pgTable("site_settings", {
   logoUrl: text("logo_url"), // optional: if they want to change logo too
   targetRegions: text("target_regions").default("USA, Canada"), // Comma separated list of regions
   industryFocus: text("industry_focus").default("Technology, AI"), // Comma separated list of industries
+  colorSettings: jsonb("color_settings"), // JSON field for color configurations
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });

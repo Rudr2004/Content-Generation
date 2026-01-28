@@ -165,12 +165,12 @@ export function HomeContactSection() {
                     name="firstName"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-gray-700 font-medium text-poppins">First Name</FormLabel>
+                        <FormLabel className="font-medium text-poppins">First Name</FormLabel>
                         <FormControl>
                           <Input
                             placeholder="John"
                             {...field}
-                            className="h-10 sm:h-12 bg-gray-50 border-gray-200 placeholder-gray-500 text-gray-900"
+                            className="h-10 sm:h-12"
                           />
                         </FormControl>
                         <FormMessage />
@@ -184,12 +184,12 @@ export function HomeContactSection() {
                     name="lastName"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-gray-700 font-medium text-poppins">Last Name</FormLabel>
+                        <FormLabel className="font-medium text-poppins">Last Name</FormLabel>
                         <FormControl>
                           <Input
                             placeholder="Doe"
                             {...field}
-                            className="h-10 sm:h-12 bg-gray-50 border-gray-200 placeholder-gray-500 text-gray-900"
+                            className="h-10 sm:h-12"
                           />
                         </FormControl>
                         <FormMessage />
@@ -224,13 +224,13 @@ export function HomeContactSection() {
                     name="phone"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-gray-700 font-medium text-poppins">Phone Number</FormLabel>
+                        <FormLabel className="font-medium text-poppins">Phone Number</FormLabel>
                         <FormControl>
                           <Input
                             type="tel"
                             placeholder="+1 (555) 123-4567"
                             {...field}
-                            className="h-10 sm:h-12 bg-gray-50 border-gray-200 placeholder-gray-500 text-gray-900"
+                            className="h-10 sm:h-12"
                           />
                         </FormControl>
                         <FormMessage />
@@ -245,12 +245,12 @@ export function HomeContactSection() {
                   name="company"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-gray-700 font-medium text-poppins">Company</FormLabel>
+                      <FormLabel className="font-medium text-poppins">Company</FormLabel>
                       <FormControl>
                         <Input
                           placeholder="Your Company"
                           {...field}
-                          className="h-10 sm:h-12 bg-gray-50 border-gray-200 placeholder-gray-500 text-gray-900"
+                          className="h-10 sm:h-12"
                         />
                       </FormControl>
                       <FormMessage />
@@ -264,10 +264,10 @@ export function HomeContactSection() {
                   name="service"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-gray-700 font-medium text-poppins">Service Interested In</FormLabel>
+                      <FormLabel className="font-medium text-poppins">Service Interested In</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
-                          <SelectTrigger className="h-10 sm:h-12 bg-gray-50 border-gray-200 text-gray-900">
+                          <SelectTrigger className="h-10 sm:h-12">
                             <SelectValue placeholder="Select a service" />
                           </SelectTrigger>
                         </FormControl>
@@ -290,12 +290,12 @@ export function HomeContactSection() {
                   name="message"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-gray-700 font-medium text-poppins">Project Details</FormLabel>
+                      <FormLabel className="font-medium text-poppins">Project Details</FormLabel>
                       <FormControl>
                         <Textarea
                           placeholder="Tell us about your project requirements..."
                           {...field}
-                          className="min-h-[100px] sm:min-h-[120px] resize-none bg-gray-50 border-gray-200 placeholder-gray-500 text-gray-900"
+                          className="min-h-[100px] sm:min-h-[120px] resize-none"
                         />
                       </FormControl>
                       <FormMessage />
@@ -307,7 +307,16 @@ export function HomeContactSection() {
                 <Button
                   type="submit"
                   disabled={contactMutation.isPending}
-                  className="w-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 hover:from-blue-600 hover:via-purple-600 hover:to-pink-600 text-white font-semibold py-2.5 sm:py-3 px-6 sm:px-8 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl"
+                  className="w-full text-white font-semibold py-2.5 sm:py-3 px-6 sm:px-8 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl"
+                  style={{
+                    background: 'linear-gradient(to right, var(--gradient-start, #3b82f6), var(--gradient-middle, #8b5cf6), var(--gradient-end, #ec4899))'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.filter = 'brightness(0.9)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.filter = 'none';
+                  }}
                 >
                   {contactMutation.isPending ? "Sending..." : "Submit"}
                 </Button>

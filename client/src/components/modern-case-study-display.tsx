@@ -215,13 +215,21 @@ export function ModernCaseStudyDisplay({ caseStudy }: ModernCaseStudyDisplayProp
 
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+    <div 
+      className="min-h-screen"
+      style={{
+        background: 'linear-gradient(to bottom right, var(--casestudy-card-bg, #f8fafc), var(--casestudy-card-bg, #e0e7ff), var(--casestudy-card-bg, #e0e7ff))'
+      }}
+    >
       {/* Hero Section */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
-        className="relative bg-gradient-to-r from-slate-900 via-blue-900 to-indigo-900 text-white overflow-hidden"
+        className="relative text-white overflow-hidden"
+        style={{
+          background: 'linear-gradient(to right, var(--casestudy-hero-start, #1e3a8a), var(--casestudy-hero-middle, #581c87), var(--casestudy-hero-end, #312e81))'
+        }}
       >
         <div className="absolute inset-0 bg-black/20"></div>
         <div className="relative max-w-7xl mx-auto px-4 py-20">
@@ -283,7 +291,17 @@ export function ModernCaseStudyDisplay({ caseStudy }: ModernCaseStudyDisplayProp
             <Button
               size="lg"
               onClick={scrollToContact}
-              className="bg-white text-blue-600 hover:bg-gray-100 text-lg px-8 py-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+              className="hover:bg-gray-100 text-lg px-8 py-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+              style={{
+                backgroundColor: 'var(--casestudy-card-bg, #ffffff)',
+                color: 'var(--casestudy-text, #2563eb)'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = 'var(--casestudy-card-bg, #f3f4f6)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'var(--casestudy-card-bg, #ffffff)';
+              }}
             >
               Start Your Project
               <ArrowRight className="ml-3 h-6 w-6" />
@@ -313,7 +331,12 @@ export function ModernCaseStudyDisplay({ caseStudy }: ModernCaseStudyDisplayProp
                 initial="rest"
                 whileHover="hover"
               >
-                <Card className="border-0 shadow-xl bg-gradient-to-r from-white to-blue-50/50 backdrop-blur-sm">
+                <Card 
+                  className="border-0 shadow-xl backdrop-blur-sm"
+                  style={{
+                    background: 'linear-gradient(to right, var(--casestudy-card-bg, #ffffff), rgba(59, 130, 246, 0.05))'
+                  }}
+                >
                   <CardHeader className="pb-6">
                     <CardTitle className="flex items-center text-2xl text-gray-900">
                       <Building2 className="h-7 w-7 mr-3 text-blue-600" />

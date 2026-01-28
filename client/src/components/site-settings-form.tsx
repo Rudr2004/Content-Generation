@@ -23,6 +23,8 @@ import {
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2, Palette } from "lucide-react";
 import { useEffect } from "react";
+import { ColorThemeManager } from "@/components/color-theme-manager";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const formSchema = z.object({
     siteName: z.string().min(2, "Site name must be at least 2 characters"),
@@ -192,5 +194,24 @@ export function SiteSettingsForm() {
                 </Form>
             </CardContent>
         </Card>
+    );
+}
+
+export function SiteSettingsPage() {
+    return (
+        <div className="space-y-6">
+            <Tabs defaultValue="general" className="w-full">
+                <TabsList className="grid w-full grid-cols-2">
+                    <TabsTrigger value="general">General Settings</TabsTrigger>
+                    <TabsTrigger value="colors">Color & Theme</TabsTrigger>
+                </TabsList>
+                <TabsContent value="general" className="mt-6">
+                    <SiteSettingsForm />
+                </TabsContent>
+                <TabsContent value="colors" className="mt-6">
+                    <ColorThemeManager />
+                </TabsContent>
+            </Tabs>
+        </div>
     );
 }

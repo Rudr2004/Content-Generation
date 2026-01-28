@@ -7,6 +7,10 @@ const siteSettingSchema = new mongoose.Schema({
     logoUrl: String,
     targetRegions: { type: String, default: "USA, Canada" },
     industryFocus: { type: String, default: "Technology, AI" },
+    colorSettings: { 
+        type: mongoose.Schema.Types.Mixed, 
+        default: {} 
+    },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },
 });

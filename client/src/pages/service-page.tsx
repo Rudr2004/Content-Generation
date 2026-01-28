@@ -621,10 +621,13 @@ export default function ServicePage() {
   return (
     <>
       {/* Reading Progress Bar */}
-      <div className="fixed top-0 left-0 w-full h-1 bg-gray-200 z-50">
+      <div className="fixed top-0 left-0 w-full h-1 z-50" style={{ backgroundColor: 'var(--form-input-border, #e5e7eb)' }}>
         <div 
-          className="h-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 transition-all duration-300 ease-out"
-          style={{ width: `${readingProgress}%` }}
+          className="h-full transition-all duration-300 ease-out"
+          style={{ 
+            width: `${readingProgress}%`,
+            background: 'linear-gradient(to right, var(--service-gradient-start, #3b82f6), var(--service-gradient-middle, #8b5cf6), var(--service-gradient-end, #ec4899))'
+          }}
         />
       </div>
 

@@ -21,7 +21,7 @@ import { HireDeveloperManagement } from "@/components/hire-developer-management"
 import { IndustryManagement } from "@/components/industry-management";
 import AiServicePages from "@/pages/admin/AiServicePages";
 import { SEODashboard } from "@/components/seo-dashboard";
-import { SiteSettingsForm } from "@/components/site-settings-form";
+import { SiteSettingsForm, SiteSettingsPage } from "@/components/site-settings-form";
 import { SEOConfigurationForm } from "@/components/seo-configuration-form";
 import { useSiteSettings } from "@/contexts/SiteSettingsContext";
 import { COMPANY_INFO } from "@/lib/constants";
@@ -664,7 +664,7 @@ export default function AdminPanel() {
           {activeMainSection === "seo" && <SEODashboard />}
           {activeMainSection === "seo-configuration" && <SEOConfigurationForm />}
 
-          {activeMainSection === "settings" && <SiteSettingsForm />}
+          {activeMainSection === "settings" && <SiteSettingsPage />}
           {activeMainSection === "users" && renderUsersSection()}
         </div>
       </div>

@@ -43,7 +43,14 @@ function BlogCard({ post, onPostClick }: { post: any, onPostClick: () => void })
   });
 
   return (
-    <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={onPostClick}>
+    <Card 
+      className="hover:shadow-lg transition-shadow cursor-pointer" 
+      onClick={onPostClick}
+      style={{
+        backgroundColor: 'var(--blog-card-bg, #ffffff)',
+        borderColor: 'var(--blog-border, #e5e7eb)'
+      }}
+    >
       {post.imageUrl && (
         <div className="aspect-video overflow-hidden rounded-t-lg bg-gray-100 flex items-center justify-center">
           <img
@@ -76,7 +83,8 @@ function BlogCard({ post, onPostClick }: { post: any, onPostClick: () => void })
           ))}
         </div>
         <h3
-          className="text-xl font-bold text-gray-900 mb-3 heading-georgia line-clamp-2"
+          className="text-xl font-bold mb-3 heading-georgia line-clamp-2"
+          style={{ color: 'var(--blog-text, #111827)' }}
           onClick={(e) => {
             // Stop propagation if clicking a link inside the title
             if ((e.target as HTMLElement).closest('a')) {
@@ -88,7 +96,8 @@ function BlogCard({ post, onPostClick }: { post: any, onPostClick: () => void })
           }}
         />
         <p
-          className="text-gray-600 mb-4 text-poppins line-clamp-3 leading-relaxed"
+          className="mb-4 text-poppins line-clamp-3 leading-relaxed"
+          style={{ color: 'var(--blog-text, #4b5563)' }}
           dangerouslySetInnerHTML={{
             __html: parseMarkdownToHtml(post.excerpt || post.content?.replace(/<[^>]*>/g, '').substring(0, 150) + '...' || '')
           }}
@@ -252,12 +261,20 @@ function BlogPostView({ post }: { post: any }) {
       {/* Reading Progress Bar */}
       <div className="fixed top-0 left-0 w-full h-1 bg-gray-200 z-50">
         <div
-          className="h-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 transition-all duration-300 ease-out"
-          style={{ width: `${readingProgress}%` }}
+          className="h-full transition-all duration-300 ease-out"
+          style={{
+            background: 'linear-gradient(to right, var(--gradient-start, #3b82f6), var(--gradient-middle, #8b5cf6), var(--gradient-end, #ec4899))',
+            width: `${readingProgress}%`
+          }}
         />
       </div>
 
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
+      <div 
+        className="min-h-screen"
+        style={{
+          background: 'linear-gradient(to bottom right, var(--blog-card-bg, #f8fafc), var(--blog-card-bg, #ffffff), var(--blog-card-bg, #eff6ff))'
+        }}
+      >
         {/* Header Section */}
         <div className="bg-white border-b border-gray-200 pt-20 pb-8">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -364,8 +381,19 @@ function BlogPostView({ post }: { post: any }) {
                           <a
                             key={item.id}
                             href={`#${item.id}`}
-                            className="block text-sm text-gray-600 hover:text-blue-600 transition-colors py-1 border-l-2 border-transparent hover:border-blue-500"
-                            style={{ paddingLeft: `${(item.level - 1) * 12 + 8}px` }}
+                            className="block text-sm transition-colors py-1 border-l-2 border-transparent"
+                            style={{
+                              color: 'var(--blog-text, #4b5563)',
+                              paddingLeft: `${(item.level - 1) * 12 + 8}px`
+                            }}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.color = 'var(--blog-link, #2563eb)';
+                              e.currentTarget.style.borderLeftColor = 'var(--blog-link, #2563eb)';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.color = 'var(--blog-text, #4b5563)';
+                              e.currentTarget.style.borderLeftColor = 'transparent';
+                            }}
                             onClick={(e) => {
                               e.preventDefault();
                               const element = document.getElementById(item.id);

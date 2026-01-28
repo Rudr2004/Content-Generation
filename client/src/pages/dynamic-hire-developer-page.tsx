@@ -42,7 +42,12 @@ export default function DynamicHireDeveloperPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+      <div 
+        className="min-h-screen"
+        style={{
+          background: 'linear-gradient(to bottom right, var(--hiredev-hero-bg, #eff6ff), var(--hiredev-hero-bg, #dbeafe))'
+        }}
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
           <div className="animate-pulse space-y-8">
             <div className="h-12 bg-gray-200 rounded w-3/4"></div>
@@ -146,7 +151,12 @@ export default function DynamicHireDeveloperPage() {
         <Navigation />
 
         {/* Hero Section */}
-        <div className="relative bg-gradient-to-br from-slate-900 via-blue-900 to-purple-900 text-white overflow-hidden">
+        <div 
+          className="relative text-white overflow-hidden"
+          style={{
+            background: 'linear-gradient(to bottom right, var(--hiredev-hero-bg, #0f172a), var(--hiredev-hero-bg, #1e3a8a), var(--hiredev-hero-bg, #581c87))'
+          }}
+        >
           <div className="absolute inset-0 bg-black/20"></div>
 
           <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-24">
@@ -196,7 +206,18 @@ export default function DynamicHireDeveloperPage() {
                   <Button
                     onClick={scrollToContact}
                     size="lg"
-                    className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-4 sm:px-6 md:px-8 py-3 sm:py-4 text-sm sm:text-base md:text-lg rounded-full w-full sm:w-auto max-w-xs sm:max-w-none"
+                    className="text-white px-4 sm:px-6 md:px-8 py-3 sm:py-4 text-sm sm:text-base md:text-lg rounded-full w-full sm:w-auto max-w-xs sm:max-w-none"
+                    style={{
+                      background: 'linear-gradient(to right, var(--hiredev-button-bg, #2563eb), var(--hiredev-button-bg, #9333ea))'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = 'linear-gradient(to right, var(--gradient-start, #2563eb), var(--gradient-middle, #9333ea), var(--gradient-end, #db2777))';
+                      e.currentTarget.style.filter = 'brightness(0.9)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = 'linear-gradient(to right, var(--hiredev-button-bg, #2563eb), var(--hiredev-button-bg, #9333ea))';
+                      e.currentTarget.style.filter = 'none';
+                    }}
                   >
                     <span className="truncate">Hire Developer</span>
                     <ArrowRight className="ml-1 sm:ml-2 h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" />
@@ -654,7 +675,10 @@ export default function DynamicHireDeveloperPage() {
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           transition={{ duration: 0.8 }}
-          className="py-20 bg-gradient-to-r from-blue-600 to-purple-600"
+          className="py-20"
+          style={{
+            background: 'linear-gradient(to right, var(--hiredev-button-bg, #2563eb), var(--hiredev-button-bg, #9333ea))'
+          }}
         >
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <motion.div variants={fadeInUp}>
@@ -667,7 +691,17 @@ export default function DynamicHireDeveloperPage() {
               <Button
                 onClick={scrollToContact}
                 size="lg"
-                className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-4 text-lg rounded-full font-semibold"
+                className="hover:bg-gray-100 px-8 py-4 text-lg rounded-full font-semibold"
+                style={{
+                  backgroundColor: 'var(--hiredev-card-bg, #ffffff)',
+                  color: 'var(--hiredev-button-bg, #2563eb)'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = 'var(--hiredev-card-bg, #f3f4f6)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'var(--hiredev-card-bg, #ffffff)';
+                }}
               >
                 Hire Developer
               </Button>

@@ -946,7 +946,12 @@ export function UniversalServiceDisplay({
       <ReadingProgressBar />
       
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-blue-900 via-blue-800 to-purple-900 text-white py-24 lg:py-32 overflow-hidden">
+      <section 
+        className="relative text-white py-24 lg:py-32 overflow-hidden"
+        style={{
+          background: 'linear-gradient(to bottom right, var(--service-gradient-start, #1e3a8a), var(--service-gradient-middle, #6b21a8), var(--service-gradient-end, #9f1239))'
+        }}
+      >
         <div className="absolute inset-0 bg-black/20"></div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.h1
@@ -966,7 +971,8 @@ export function UniversalServiceDisplay({
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-xl md:text-2xl mb-8 text-blue-100 max-w-4xl mx-auto"
+            className="text-xl md:text-2xl mb-8 max-w-4xl mx-auto"
+            style={{ color: 'rgba(255, 255, 255, 0.9)' }}
           >
             {(() => {
               const subheading = sanitizeServiceContent(data.heroSection?.subheading || 
@@ -984,18 +990,19 @@ export function UniversalServiceDisplay({
             <div className="flex justify-center w-full px-4">
               <Button
                 onClick={scrollToContact}
-                className="
-      bg-gradient-to-r from-blue-600 to-purple-600 
-      hover:from-blue-700 hover:to-purple-700 
-      text-white font-semibold rounded-full shadow-2xl hover:shadow-3xl 
-      transform hover:scale-105 transition-all duration-300
-      flex items-center justify-center text-center
-      whitespace-normal break-words
-      px-4 py-2 text-sm              /* Mobile default */
-      sm:px-6 sm:py-3 sm:text-base   /* Small screens */
-      md:px-8 md:py-4 md:text-lg     /* Desktop */
-      max-w-full
-    "
+                className="font-semibold rounded-full shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300 flex items-center justify-center text-center whitespace-normal break-words px-4 py-2 text-sm sm:px-6 sm:py-3 sm:text-base md:px-8 md:py-4 md:text-lg max-w-full"
+                style={{
+                  background: 'linear-gradient(to right, var(--service-gradient-start, #2563eb), var(--service-gradient-middle, #9333ea), var(--service-gradient-end, #db2777))',
+                  color: 'var(--btn-primary-text, #ffffff)'
+                }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = 'linear-gradient(to right, var(--gradient-start, #2563eb), var(--gradient-middle, #9333ea), var(--gradient-end, #db2777))';
+                      e.currentTarget.style.filter = 'brightness(0.9)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = 'linear-gradient(to right, var(--service-gradient-start, #2563eb), var(--service-gradient-middle, #9333ea), var(--service-gradient-end, #db2777))';
+                      e.currentTarget.style.filter = 'none';
+                    }}
               >
                 {data.heroSection?.ctaButton ||
                   "Get Started with Ethereum dApp Development"}
@@ -1007,25 +1014,50 @@ export function UniversalServiceDisplay({
       </section>
 
       {/* Intro Overview */}
-      <section className="py-20 bg-gradient-to-b from-gray-50 to-white relative">
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-50/30 via-transparent to-purple-50/30"></div>
+      <section 
+        className="py-20 relative"
+        style={{
+          background: 'linear-gradient(to bottom, var(--service-card-bg, #f9fafb), var(--service-card-bg, #ffffff))'
+        }}
+      >
+        <div 
+          className="absolute inset-0"
+          style={{
+            background: 'linear-gradient(to right, rgba(59, 130, 246, 0.1), transparent, rgba(139, 92, 246, 0.1))'
+          }}
+        ></div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
               Explore Development Services
             </h2>
-            <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-600 mx-auto rounded-full"></div>
+            <div 
+              className="w-24 h-1 mx-auto rounded-full"
+              style={{
+                background: 'linear-gradient(to right, var(--service-gradient-start, #3b82f6), var(--service-gradient-end, #ec4899))'
+              }}
+            ></div>
           </div>
 
           <div className="max-w-5xl mx-auto">
-            <div className="bg-white rounded-2xl shadow-xl p-8 md:p-12 border border-gray-100">
-              <h3 className="text-2xl font-semibold text-center text-gray-900 mb-8">
+            <div 
+              className="rounded-2xl shadow-xl p-8 md:p-12 border"
+              style={{
+                backgroundColor: 'var(--service-card-bg, #ffffff)',
+                borderColor: 'var(--service-card-bg, #e5e7eb)'
+              }}
+            >
+              <h3 
+                className="text-2xl font-semibold text-center mb-8"
+                style={{ color: 'var(--service-text, #111827)' }}
+              >
                 Comprehensive Solutions
               </h3>
 
               <div className="mb-6 last:mb-0">
                 <p 
-                  className="text-lg text-gray-700 leading-relaxed text-center max-w-4xl mx-auto"
+                  className="text-lg leading-relaxed text-center max-w-4xl mx-auto"
+                  style={{ color: 'var(--service-text, #374151)' }}
                   dangerouslySetInnerHTML={{
                     __html: parseMarkdownToHtml(Array.isArray(data.introOverview?.paragraphs) 
                       ? data.introOverview.paragraphs.join(' ') 
@@ -1109,10 +1141,23 @@ export function UniversalServiceDisplay({
       </section>
 
       {/* Trusted Partners */}
-      <section className="py-24 bg-gradient-to-b from-white to-gray-50 border-t border-gray-100">
+      <section 
+        className="py-24 border-t"
+        style={{
+          background: 'linear-gradient(to bottom, var(--service-card-bg, #ffffff), var(--service-card-bg, #f9fafb))',
+          borderColor: 'var(--service-card-bg, #e5e7eb)'
+        }}
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-20">
-            <div className="inline-flex items-center px-6 py-3 rounded-full bg-gradient-to-r from-blue-50 to-purple-50 text-blue-600 text-sm font-semibold mb-6 border border-blue-100">
+            <div 
+              className="inline-flex items-center px-6 py-3 rounded-full text-sm font-semibold mb-6 border"
+              style={{
+                background: 'linear-gradient(to right, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1))',
+                color: 'var(--service-gradient-start, #2563eb)',
+                borderColor: 'var(--service-gradient-start, #bfdbfe)'
+              }}
+            >
               <Building className="w-5 h-5 mr-2" />
               Trusted Partners
             </div>
@@ -1579,7 +1624,19 @@ export function UniversalServiceDisplay({
 
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6">
                   <button
-                    className="group w-full sm:w-auto px-6 sm:px-8 lg:px-10 py-3 sm:py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 hover:scale-105 relative overflow-hidden"
+                    className="group w-full sm:w-auto px-6 sm:px-8 lg:px-10 py-3 sm:py-4 font-bold rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 hover:scale-105 relative overflow-hidden"
+                    style={{
+                      background: 'linear-gradient(to right, var(--service-gradient-start, #2563eb), var(--service-gradient-middle, #9333ea), var(--service-gradient-end, #db2777))',
+                      color: 'var(--btn-primary-text, #ffffff)'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = 'linear-gradient(to right, var(--gradient-start, #2563eb), var(--gradient-middle, #9333ea), var(--gradient-end, #db2777))';
+                      e.currentTarget.style.filter = 'brightness(0.9)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = 'linear-gradient(to right, var(--service-gradient-start, #2563eb), var(--service-gradient-middle, #9333ea), var(--service-gradient-end, #db2777))';
+                      e.currentTarget.style.filter = 'none';
+                    }}
                     onClick={scrollToContact}
                   >
                     <span className="relative z-10 flex items-center justify-center">

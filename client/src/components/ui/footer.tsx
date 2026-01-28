@@ -10,7 +10,14 @@ export function Footer() {
   const siteName = settings?.siteName || COMPANY_INFO.name;
 
   return (
-    <footer className="bg-white border-t border-gray-200 py-16">
+    <footer 
+      className="border-t py-16"
+      style={{
+        backgroundColor: 'var(--footer-bg, #ffffff)',
+        borderColor: 'var(--footer-border, #e5e7eb)',
+        color: 'var(--footer-text, #4b5563)'
+      }}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12">
           {/* Company Info */}
@@ -21,11 +28,20 @@ export function Footer() {
               </div>
 
               <div>
-                <span className="text-2xl font-normal bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent transition-all duration-300 heading-georgia">{settings?.siteName || COMPANY_INFO.name}</span>
-                <p className="text-xs text-gray-500 font-medium">{COMPANY_INFO.tagline}</p>
+                <span 
+                  className="text-2xl font-normal bg-clip-text text-transparent transition-all duration-300 heading-georgia"
+                  style={{
+                    background: 'linear-gradient(to right, var(--gradient-start, #3b82f6), var(--gradient-middle, #8b5cf6), var(--gradient-end, #ec4899))',
+                    WebkitBackgroundClip: 'text',
+                    backgroundClip: 'text'
+                  }}
+                >
+                  {settings?.siteName || COMPANY_INFO.name}
+                </span>
+                <p className="text-xs font-medium" style={{ color: 'var(--footer-text, #6b7280)' }}>{COMPANY_INFO.tagline}</p>
               </div>
             </div>
-            <p className="text-gray-600 mb-6 leading-relaxed">{COMPANY_INFO.description}</p>
+            <p className="mb-6 leading-relaxed" style={{ color: 'var(--footer-text, #4b5563)' }}>{COMPANY_INFO.description}</p>
             <div className="flex space-x-4">
               <a
                 href={COMPANY_INFO.social.linkedin}
@@ -48,54 +64,104 @@ export function Footer() {
 
           {/* Services */}
           <div>
-            <h4 className="font-bold mb-6 text-gray-900 text-lg">Services</h4>
-            <ul className="space-y-3 text-gray-600">
+            <h4 className="font-bold mb-6 text-lg" style={{ color: 'var(--footer-text, #111827)' }}>Services</h4>
+            <ul className="space-y-3" style={{ color: 'var(--footer-link, #4b5563)' }}>
               <li>
                 <div className="relative overflow-hidden rounded-md">
                   <motion.div
-                    className="absolute inset-0 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full"
+                    className="absolute inset-0 rounded-full"
                     initial={{ scaleX: 0, opacity: 0 }}
                     whileHover={{ scaleX: 1, opacity: 0.1 }}
                     transition={{ duration: 0.3, ease: "easeOut" }}
-                    style={{ originX: 0 }}
+                    style={{ 
+                      originX: 0,
+                      background: 'linear-gradient(to right, var(--gradient-start, #3b82f6), var(--gradient-middle, #8b5cf6), var(--gradient-end, #ec4899))'
+                    }}
                   />
-                  <Link href="/services/expert-llm-development-services-for-us-enterprises" className="relative block py-1 px-2 hover:text-gray-900 transition-colors duration-300">AI & Data Services</Link>
+                  <Link 
+                    href="/services/expert-llm-development-services-for-us-enterprises" 
+                    className="relative block py-1 px-2 transition-colors duration-300"
+                    style={{ 
+                      color: 'var(--footer-link, #4b5563)'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.color = 'var(--footer-hover, #111827)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.color = 'var(--footer-link, #4b5563)';
+                    }}
+                  >
+                    AI & Data Services
+                  </Link>
                 </div>
               </li>
               <li>
                 <div className="relative overflow-hidden rounded-md">
                   <motion.div
-                    className="absolute inset-0 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full"
+                    className="absolute inset-0 rounded-full"
                     initial={{ scaleX: 0, opacity: 0 }}
                     whileHover={{ scaleX: 1, opacity: 0.1 }}
                     transition={{ duration: 0.3, ease: "easeOut" }}
-                    style={{ originX: 0 }}
+                    style={{ 
+                      originX: 0,
+                      background: 'linear-gradient(to right, var(--gradient-start, #3b82f6), var(--gradient-middle, #8b5cf6), var(--gradient-end, #ec4899))'
+                    }}
                   />
-                  <Link href="/services/blockchain-development-services-in-the-usa" className="relative block py-1 px-2 hover:text-gray-900 transition-colors duration-300">Blockchain & Web3</Link>
+                  <Link 
+                    href="/services/blockchain-development-services-in-the-usa" 
+                    className="relative block py-1 px-2 transition-colors duration-300"
+                    style={{ color: 'var(--footer-link, #4b5563)' }}
+                    onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--footer-hover, #111827)'; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--footer-link, #4b5563)'; }}
+                  >
+                    Blockchain & Web3
+                  </Link>
                 </div>
               </li>
               <li>
                 <div className="relative overflow-hidden rounded-md">
                   <motion.div
-                    className="absolute inset-0 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full"
+                    className="absolute inset-0 rounded-full"
                     initial={{ scaleX: 0, opacity: 0 }}
                     whileHover={{ scaleX: 1, opacity: 0.1 }}
                     transition={{ duration: 0.3, ease: "easeOut" }}
-                    style={{ originX: 0 }}
+                    style={{ 
+                      originX: 0,
+                      background: 'linear-gradient(to right, var(--gradient-start, #3b82f6), var(--gradient-middle, #8b5cf6), var(--gradient-end, #ec4899))'
+                    }}
                   />
-                  <Link href="/services/ai-automation-for-customer-support-in-the-usa" className="relative block py-1 px-2 hover:text-gray-900 transition-colors duration-300">Web & Software Development</Link>
+                  <Link 
+                    href="/services/ai-automation-for-customer-support-in-the-usa" 
+                    className="relative block py-1 px-2 transition-colors duration-300"
+                    style={{ color: 'var(--footer-link, #4b5563)' }}
+                    onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--footer-hover, #111827)'; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--footer-link, #4b5563)'; }}
+                  >
+                    Web & Software Development
+                  </Link>
                 </div>
               </li>
               <li>
                 <div className="relative overflow-hidden rounded-md">
                   <motion.div
-                    className="absolute inset-0 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full"
+                    className="absolute inset-0 rounded-full"
                     initial={{ scaleX: 0, opacity: 0 }}
                     whileHover={{ scaleX: 1, opacity: 0.1 }}
                     transition={{ duration: 0.3, ease: "easeOut" }}
-                    style={{ originX: 0 }}
+                    style={{ 
+                      originX: 0,
+                      background: 'linear-gradient(to right, var(--gradient-start, #3b82f6), var(--gradient-middle, #8b5cf6), var(--gradient-end, #ec4899))'
+                    }}
                   />
-                  <Link href="/services/ai-for-e-commerce-automation-in-the-usa" className="relative block py-1 px-2 hover:text-gray-900 transition-colors duration-300">E-commerce Solutions</Link>
+                  <Link 
+                    href="/services/ai-for-e-commerce-automation-in-the-usa" 
+                    className="relative block py-1 px-2 transition-colors duration-300"
+                    style={{ color: 'var(--footer-link, #4b5563)' }}
+                    onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--footer-hover, #111827)'; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--footer-link, #4b5563)'; }}
+                  >
+                    E-commerce Solutions
+                  </Link>
                 </div>
               </li>
               <li>
@@ -105,18 +171,29 @@ export function Footer() {
 
           {/* Company */}
           <div>
-            <h4 className="font-bold mb-6 text-gray-900 text-lg">Company</h4>
-            <ul className="space-y-3 text-gray-600">
+            <h4 className="font-bold mb-6 text-lg" style={{ color: 'var(--footer-text, #111827)' }}>Company</h4>
+            <ul className="space-y-3" style={{ color: 'var(--footer-link, #4b5563)' }}>
               <li>
                 <div className="relative overflow-hidden rounded-md">
                   <motion.div
-                    className="absolute inset-0 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full"
+                    className="absolute inset-0 rounded-full"
                     initial={{ scaleX: 0, opacity: 0 }}
                     whileHover={{ scaleX: 1, opacity: 0.1 }}
                     transition={{ duration: 0.3, ease: "easeOut" }}
-                    style={{ originX: 0 }}
+                    style={{ 
+                      originX: 0,
+                      background: 'linear-gradient(to right, var(--gradient-start, #3b82f6), var(--gradient-middle, #8b5cf6), var(--gradient-end, #ec4899))'
+                    }}
                   />
-                  <Link href="/about" className="relative block py-1 px-2 hover:text-gray-900 transition-colors duration-300">About Us</Link>
+                  <Link 
+                    href="/about" 
+                    className="relative block py-1 px-2 transition-colors duration-300"
+                    style={{ color: 'var(--footer-link, #4b5563)' }}
+                    onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--footer-hover, #111827)'; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--footer-link, #4b5563)'; }}
+                  >
+                    About Us
+                  </Link>
                 </div>
               </li>
               <li>
@@ -124,37 +201,62 @@ export function Footer() {
               <li>
                 <div className="relative overflow-hidden rounded-md">
                   <motion.div
-                    className="absolute inset-0 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full"
+                    className="absolute inset-0 rounded-full"
                     initial={{ scaleX: 0, opacity: 0 }}
                     whileHover={{ scaleX: 1, opacity: 0.1 }}
                     transition={{ duration: 0.3, ease: "easeOut" }}
-                    style={{ originX: 0 }}
+                    style={{ 
+                      originX: 0,
+                      background: 'linear-gradient(to right, var(--gradient-start, #3b82f6), var(--gradient-middle, #8b5cf6), var(--gradient-end, #ec4899))'
+                    }}
                   />
-                  <span className="relative block py-1 px-2 text-gray-600">Careers</span>
+                  <span className="relative block py-1 px-2" style={{ color: 'var(--footer-link, #4b5563)' }}>Careers</span>
                 </div>
               </li>
               <li>
                 <div className="relative overflow-hidden rounded-md">
                   <motion.div
-                    className="absolute inset-0 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full"
+                    className="absolute inset-0 rounded-full"
                     initial={{ scaleX: 0, opacity: 0 }}
                     whileHover={{ scaleX: 1, opacity: 0.1 }}
                     transition={{ duration: 0.3, ease: "easeOut" }}
-                    style={{ originX: 0 }}
+                    style={{ 
+                      originX: 0,
+                      background: 'linear-gradient(to right, var(--gradient-start, #3b82f6), var(--gradient-middle, #8b5cf6), var(--gradient-end, #ec4899))'
+                    }}
                   />
-                  <Link href="/case-studies" className="relative block py-1 px-2 hover:text-gray-900 transition-colors duration-300">Case Studies</Link>
+                  <Link 
+                    href="/case-studies" 
+                    className="relative block py-1 px-2 transition-colors duration-300"
+                    style={{ color: 'var(--footer-link, #4b5563)' }}
+                    onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--footer-hover, #111827)'; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--footer-link, #4b5563)'; }}
+                  >
+                    Case Studies
+                  </Link>
                 </div>
               </li>
               <li>
                 <div className="relative overflow-hidden rounded-md">
                   <motion.div
-                    className="absolute inset-0 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full"
+                    className="absolute inset-0 rounded-full"
                     initial={{ scaleX: 0, opacity: 0 }}
                     whileHover={{ scaleX: 1, opacity: 0.1 }}
                     transition={{ duration: 0.3, ease: "easeOut" }}
-                    style={{ originX: 0 }}
+                    style={{ 
+                      originX: 0,
+                      background: 'linear-gradient(to right, var(--gradient-start, #3b82f6), var(--gradient-middle, #8b5cf6), var(--gradient-end, #ec4899))'
+                    }}
                   />
-                  <Link href="/blog" className="relative block py-1 px-2 hover:text-gray-900 transition-colors duration-300">Blog</Link>
+                  <Link 
+                    href="/blog" 
+                    className="relative block py-1 px-2 transition-colors duration-300"
+                    style={{ color: 'var(--footer-link, #4b5563)' }}
+                    onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--footer-hover, #111827)'; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--footer-link, #4b5563)'; }}
+                  >
+                    Blog
+                  </Link>
                 </div>
               </li>
             </ul>
@@ -162,8 +264,8 @@ export function Footer() {
 
           {/* Contact */}
           <div>
-            <h4 className="font-bold mb-6 text-gray-900 text-lg">Contact</h4>
-            <ul className="space-y-4 text-gray-600">
+            <h4 className="font-bold mb-6 text-lg" style={{ color: 'var(--footer-text, #111827)' }}>Contact</h4>
+            <ul className="space-y-4" style={{ color: 'var(--footer-text, #4b5563)' }}>
               <li className="flex items-start">
                 <svg className="w-5 h-5 text-green-apple mr-3 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
@@ -187,20 +289,34 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-gray-200 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-gray-600 text-sm">
+        <div 
+          className="border-t mt-12 pt-8 flex flex-col md:flex-row justify-between items-center"
+          style={{ borderColor: 'var(--footer-border, #e5e7eb)' }}
+        >
+          <p className="text-sm" style={{ color: 'var(--footer-text, #4b5563)' }}>
             © 2025 {settings?.siteName || COMPANY_INFO.name} - {COMPANY_INFO.tagline}. All rights reserved.
           </p>
           <div className="flex space-x-8 mt-4 md:mt-0">
             <div className="relative overflow-hidden rounded-md">
               <motion.div
-                className="absolute inset-0 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full"
+                className="absolute inset-0 rounded-full"
                 initial={{ scaleX: 0, opacity: 0 }}
                 whileHover={{ scaleX: 1, opacity: 0.1 }}
                 transition={{ duration: 0.3, ease: "easeOut" }}
-                style={{ originX: 0 }}
+                style={{ 
+                  originX: 0,
+                  background: 'linear-gradient(to right, var(--gradient-start, #3b82f6), var(--gradient-middle, #8b5cf6), var(--gradient-end, #ec4899))'
+                }}
               />
-              <Link to="/privacy-policy" className="relative text-gray-600 hover:text-gray-900 text-sm transition-colors duration-300 py-1 px-2 block">Privacy Policy</Link>
+              <Link 
+                to="/privacy-policy" 
+                className="relative text-sm transition-colors duration-300 py-1 px-2 block"
+                style={{ color: 'var(--footer-link, #4b5563)' }}
+                onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--footer-hover, #111827)'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--footer-link, #4b5563)'; }}
+              >
+                Privacy Policy
+              </Link>
             </div>
           </div>
         </div>

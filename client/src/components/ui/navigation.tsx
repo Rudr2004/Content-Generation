@@ -328,12 +328,12 @@ function ModalContactForm() {
               name="firstName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-gray-700 font-medium text-poppins">First Name *</FormLabel>
+                  <FormLabel className="font-medium text-poppins">First Name *</FormLabel>
                   <FormControl>
                     <Input
                       placeholder="John"
                       {...field}
-                      className="h-10 sm:h-12 bg-gray-50 border-gray-200 placeholder-gray-500 text-gray-900  "
+                      className="h-10 sm:h-12"
                     />
                   </FormControl>
                   <FormMessage />
@@ -347,12 +347,12 @@ function ModalContactForm() {
               name="lastName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-gray-700 font-medium text-poppins">Last Name *</FormLabel>
+                  <FormLabel className="font-medium text-poppins">Last Name *</FormLabel>
                   <FormControl>
                     <Input
                       placeholder="Doe"
                       {...field}
-                      className="h-10 sm:h-12 bg-gray-50 border-gray-200 placeholder-gray-500 text-gray-900  "
+                      className="h-10 sm:h-12"
                     />
                   </FormControl>
                   <FormMessage />
@@ -368,13 +368,13 @@ function ModalContactForm() {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-gray-700 font-medium text-poppins">Email Address *</FormLabel>
+                  <FormLabel className="font-medium text-poppins">Email Address *</FormLabel>
                   <FormControl>
                     <Input
                       type="email"
                       placeholder="john@company.com"
                       {...field}
-                      className="h-10 sm:h-12 bg-gray-50 border-gray-200 placeholder-gray-500 text-gray-900  "
+                      className="h-10 sm:h-12"
                     />
                   </FormControl>
                   <FormMessage />
@@ -387,13 +387,13 @@ function ModalContactForm() {
               name="phone"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-gray-700 font-medium text-poppins">Phone Number</FormLabel>
+                  <FormLabel className="font-medium text-poppins">Phone Number</FormLabel>
                   <FormControl>
                     <Input
                       type="tel"
                       placeholder="+1 (555) 123-4567"
                       {...field}
-                      className="h-10 sm:h-12 bg-gray-50 border-gray-200 placeholder-gray-500 text-gray-900  "
+                      className="h-10 sm:h-12"
                     />
                   </FormControl>
                   <FormMessage />
@@ -408,12 +408,12 @@ function ModalContactForm() {
             name="company"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-gray-700 font-medium text-poppins">Company</FormLabel>
+                <FormLabel className="font-medium text-poppins">Company</FormLabel>
                 <FormControl>
                   <Input
                     placeholder="Your Company"
                     {...field}
-                    className="h-10 sm:h-12 bg-gray-50 border-gray-200 placeholder-gray-500 text-gray-900  "
+                    className="h-10 sm:h-12"
                   />
                 </FormControl>
                 <FormMessage />
@@ -427,10 +427,10 @@ function ModalContactForm() {
             name="service"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-gray-700 font-medium text-poppins">Service Interested In</FormLabel>
+                <FormLabel className="font-medium text-poppins">Service Interested In</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
-                    <SelectTrigger className="h-10 sm:h-12 bg-gray-50 border-gray-200 text-gray-900">
+                    <SelectTrigger className="h-10 sm:h-12">
                       <SelectValue placeholder="Select a service" />
                     </SelectTrigger>
                   </FormControl>
@@ -457,12 +457,12 @@ function ModalContactForm() {
             name="message"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-gray-700 font-medium text-poppins">Project Details *</FormLabel>
+                <FormLabel className="font-medium text-poppins">Project Details *</FormLabel>
                 <FormControl>
                   <Textarea
                     placeholder="Tell us about your project requirements..."
                     {...field}
-                    className="min-h-[100px] sm:min-h-[120px] resize-none bg-gray-50 border-gray-200 placeholder-gray-500 text-gray-900 "
+                    className="min-h-[100px] sm:min-h-[120px] resize-none"
                   />
                 </FormControl>
                 <FormMessage />
@@ -474,7 +474,18 @@ function ModalContactForm() {
           <Button
             type="submit"
             disabled={contactMutation.isPending}
-            className="w-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 hover:from-blue-600 hover:via-purple-600 hover:to-pink-600 text-white font-semibold py-2.5 sm:py-3 px-6 sm:px-8 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl"
+            className="w-full font-semibold py-2.5 sm:py-3 px-6 sm:px-8 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl"
+            style={{
+              background: 'linear-gradient(to right, var(--gradient-start, #3b82f6), var(--gradient-middle, #8b5cf6), var(--gradient-end, #ec4899))',
+              color: 'var(--btn-primary-text, #ffffff)'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'linear-gradient(to right, var(--gradient-start, #2563eb), var(--gradient-middle, #9333ea), var(--gradient-end, #db2777))';
+              e.currentTarget.style.filter = 'brightness(0.9)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'linear-gradient(to right, var(--gradient-start, #3b82f6), var(--gradient-middle, #8b5cf6), var(--gradient-end, #ec4899))';
+            }}
           >
             {contactMutation.isPending ? "Sending..." : "Submit"}
           </Button>
@@ -689,10 +700,15 @@ export function Navigation() {
 
   return (
     <motion.nav
-      className={`bg-white border-b border-gray-100 fixed w-full top-0 z-50 transition-all duration-300 ${isScrolled ? 'shadow-lg' : 'shadow-sm'}`}
+      className={`border-b fixed w-full top-0 z-50 transition-all duration-300 ${isScrolled ? 'shadow-lg' : 'shadow-sm'}`}
+      style={{
+        backgroundColor: 'var(--navbar-bg, #ffffff)',
+        borderColor: 'var(--navbar-border, #f3f4f6)',
+        color: 'var(--navbar-text, #4b5563)'
+      }}
       animate={{
         height: isScrolled ? 60 : 80,
-        backgroundColor: isScrolled ? 'rgba(255, 255, 255, 0.98)' : 'rgba(255, 255, 255, 1)'
+        backgroundColor: isScrolled ? 'var(--navbar-bg, rgba(255, 255, 255, 0.98))' : 'var(--navbar-bg, rgba(255, 255, 255, 1))'
       }}
       transition={{ duration: 0.3, ease: "easeInOut" }}
     >
@@ -730,7 +746,13 @@ export function Navigation() {
                   if (parent) {
                     parent.innerHTML = `
                       <div class="flex items-center justify-center w-full h-full">
-                        <div class="w-8 h-8 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-lg flex items-center justify-center text-white font-bold">
+                        <div 
+                          class="w-8 h-8 rounded-lg flex items-center justify-center font-bold"
+                          style={{
+                            background: 'linear-gradient(to right, var(--gradient-start, #3b82f6), var(--gradient-middle, #8b5cf6), var(--gradient-end, #ec4899))',
+                            color: 'var(--btn-primary-text, #ffffff)'
+                          }}
+                        >
                           GA
                         </div>
                       </div>
@@ -747,7 +769,16 @@ export function Navigation() {
               }}
               transition={{ duration: 0.3, ease: "easeInOut" }}
             >
-              <span className="text-lg sm:text-xl lg:text-2xl font-normal bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent transition-all duration-300 heading-georgia">{siteName}</span>
+              <span 
+                className="text-lg sm:text-xl lg:text-2xl font-normal bg-clip-text text-transparent transition-all duration-300 heading-georgia"
+                style={{
+                  background: 'linear-gradient(to right, var(--gradient-start, #3b82f6), var(--gradient-middle, #8b5cf6), var(--gradient-end, #ec4899))',
+                  WebkitBackgroundClip: 'text',
+                  backgroundClip: 'text'
+                }}
+              >
+                {siteName}
+              </span>
             </motion.div>
           </Link>
 
@@ -801,8 +832,29 @@ export function Navigation() {
                   {item.href ? (
                     <Link
                       href={item.href}
-                      className={`flex items-center space-x-1 text-gray-700 hover:bg-gradient-to-r hover:from-blue-500 hover:via-purple-500 hover:to-pink-500 hover:bg-clip-text hover:text-transparent transition-colors font-medium text-base lg:text-lg text-poppins ${location === item.href ? "bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent" : ""
-                        }`}
+                      className={`flex items-center space-x-1 transition-colors font-medium text-base lg:text-lg text-poppins ${location === item.href ? "bg-clip-text text-transparent" : ""}`}
+                      style={{
+                        color: location === item.href ? 'transparent' : 'var(--navbar-text, #374151)',
+                        background: location === item.href 
+                          ? 'linear-gradient(to right, var(--gradient-start, #3b82f6), var(--gradient-middle, #8b5cf6), var(--gradient-end, #ec4899))'
+                          : 'transparent',
+                        WebkitBackgroundClip: location === item.href ? 'text' : 'initial',
+                        backgroundClip: location === item.href ? 'text' : 'initial'
+                      }}
+                      onMouseEnter={(e) => {
+                        if (location !== item.href) {
+                          e.currentTarget.style.background = 'linear-gradient(to right, var(--gradient-start, #3b82f6), var(--gradient-middle, #8b5cf6), var(--gradient-end, #ec4899))';
+                          e.currentTarget.style.WebkitBackgroundClip = 'text';
+                          e.currentTarget.style.backgroundClip = 'text';
+                          e.currentTarget.style.color = 'transparent';
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (location !== item.href) {
+                          e.currentTarget.style.background = 'transparent';
+                          e.currentTarget.style.color = 'var(--navbar-text, #374151)';
+                        }
+                      }}
                     >
                       <span>{item.label}</span>
                       {item.hasDropdown && (
@@ -829,11 +881,13 @@ export function Navigation() {
                       <div className="absolute top-full left-0 w-[900px] xl:w-[1200px] h-2 z-40" style={{ transform: "translateX(-25%)" }} />
 
                       <div
-                        className={`absolute top-full left-0 mt-2 bg-white rounded-lg shadow-lg border border-gray-200 z-50 hover:cursor-pointer ${item.label === "Hire Developers"
+                        className={`absolute top-full left-0 mt-2 rounded-lg shadow-lg border z-50 hover:cursor-pointer ${item.label === "Hire Developers"
                           ? "w-[250px] -translate-x-1/2"
                           : "w-[900px] xl:w-[1200px]"
                           }`}
                         style={{
+                          backgroundColor: 'var(--navbar-bg, #ffffff)',
+                          borderColor: 'var(--navbar-border, #e5e7eb)',
                           boxShadow: item.label === "Hire Developers" ? "0 4px 20px -2px rgba(0, 0, 0, 0.1)" : "0 25px 50px -12px rgba(0, 0, 0, 0.15)",
                           transform: item.label === "Hire Developers" ? "translateX(-50%)" : "translateX(-25%)"
                         }}
@@ -855,9 +909,26 @@ export function Navigation() {
                                 <Link
                                   key={subIndex}
                                   href={subItem.href}
-                                  className="group block px-3 py-2.5 text-sm text-gray-700 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 hover:text-blue-700 border-b border-gray-100 last:border-b-0 relative overflow-hidden transition-all duration-300"
+                                  className="group block px-3 py-2.5 text-sm border-b last:border-b-0 relative overflow-hidden transition-all duration-300"
+                                  style={{
+                                    color: 'var(--navbar-text, #374151)',
+                                    borderColor: 'var(--navbar-border, #f3f4f6)'
+                                  }}
+                                  onMouseEnter={(e) => {
+                                    e.currentTarget.style.background = 'linear-gradient(to right, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1))';
+                                    e.currentTarget.style.color = 'var(--navbar-active, #2563eb)';
+                                  }}
+                                  onMouseLeave={(e) => {
+                                    e.currentTarget.style.background = 'transparent';
+                                    e.currentTarget.style.color = 'var(--navbar-text, #374151)';
+                                  }}
                                 >
-                                  <div className="absolute inset-0 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 opacity-0 group-hover:opacity-5 transition-opacity duration-300"></div>
+                                  <div 
+                                    className="absolute inset-0 opacity-0 group-hover:opacity-5 transition-opacity duration-300"
+                                    style={{
+                                      background: 'linear-gradient(to right, var(--gradient-start, #3b82f6), var(--gradient-middle, #8b5cf6), var(--gradient-end, #ec4899))'
+                                    }}
+                                  ></div>
                                   <div className="relative flex items-center justify-between">
                                     <span className="font-medium group-hover:font-semibold transition-all duration-200">
                                       {subItem.label}
@@ -954,7 +1025,29 @@ export function Navigation() {
                       {!item.hasDropdown ? (
                         <Link
                           href={item.href}
-                          className={`block text-lg sm:text-xl text-gray-700 hover:bg-gradient-to-r hover:from-blue-500 hover:via-purple-500 hover:to-pink-500 hover:bg-clip-text hover:text-transparent transition-colors font-medium text-poppins px-2 py-1 rounded-lg ${location === item.href ? "bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent" : ""}`}
+                          className={`block text-lg sm:text-xl transition-colors font-medium text-poppins px-2 py-1 rounded-lg ${location === item.href ? "bg-clip-text text-transparent" : ""}`}
+                          style={{
+                            color: location === item.href ? 'transparent' : 'var(--navbar-text, #374151)',
+                            background: location === item.href 
+                              ? 'linear-gradient(to right, var(--gradient-start, #3b82f6), var(--gradient-middle, #8b5cf6), var(--gradient-end, #ec4899))'
+                              : 'transparent',
+                            WebkitBackgroundClip: location === item.href ? 'text' : 'initial',
+                            backgroundClip: location === item.href ? 'text' : 'initial'
+                          }}
+                          onMouseEnter={(e) => {
+                            if (location !== item.href) {
+                              e.currentTarget.style.background = 'linear-gradient(to right, var(--gradient-start, #3b82f6), var(--gradient-middle, #8b5cf6), var(--gradient-end, #ec4899))';
+                              e.currentTarget.style.WebkitBackgroundClip = 'text';
+                              e.currentTarget.style.backgroundClip = 'text';
+                              e.currentTarget.style.color = 'transparent';
+                            }
+                          }}
+                          onMouseLeave={(e) => {
+                            if (location !== item.href) {
+                              e.currentTarget.style.background = 'transparent';
+                              e.currentTarget.style.color = 'var(--navbar-text, #374151)';
+                            }
+                          }}
                           onClick={() => setMobileMenuOpen(false)}
                         >
                           {item.label}
@@ -963,7 +1056,27 @@ export function Navigation() {
                         <div>
                           <button
                             onClick={() => setMobileActiveDropdown(mobileActiveDropdown === item.label ? null : item.label)}
-                            className={`w-full flex items-center justify-between px-3 py-2 sm:px-4 sm:py-3 rounded-lg text-lg sm:text-xl text-gray-700 font-medium transition-all duration-300 text-poppins ${mobileActiveDropdown === item.label ? "bg-blue-50 text-blue-600" : "hover:bg-blue-50 hover:text-blue-600"} ${location === item.href ? "bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent" : ""}`}
+                            className={`w-full flex items-center justify-between px-3 py-2 sm:px-4 sm:py-3 rounded-lg text-lg sm:text-xl font-medium transition-all duration-300 text-poppins ${location === item.href ? "bg-clip-text text-transparent" : ""}`}
+                            style={{
+                              color: location === item.href ? 'transparent' : (mobileActiveDropdown === item.label ? 'var(--navbar-active, #2563eb)' : 'var(--navbar-text, #374151)'),
+                              background: location === item.href 
+                                ? 'linear-gradient(to right, var(--gradient-start, #3b82f6), var(--gradient-middle, #8b5cf6), var(--gradient-end, #ec4899))'
+                                : (mobileActiveDropdown === item.label ? 'var(--navbar-hover, #eff6ff)' : 'transparent'),
+                              WebkitBackgroundClip: location === item.href ? 'text' : 'initial',
+                              backgroundClip: location === item.href ? 'text' : 'initial'
+                            }}
+                            onMouseEnter={(e) => {
+                              if (location !== item.href && mobileActiveDropdown !== item.label) {
+                                e.currentTarget.style.background = 'var(--navbar-hover, #eff6ff)';
+                                e.currentTarget.style.color = 'var(--navbar-active, #2563eb)';
+                              }
+                            }}
+                            onMouseLeave={(e) => {
+                              if (location !== item.href && mobileActiveDropdown !== item.label) {
+                                e.currentTarget.style.background = 'transparent';
+                                e.currentTarget.style.color = 'var(--navbar-text, #374151)';
+                              }
+                            }}
                           >
                             <span className="transition-colors duration-300">{item.label}</span>
                             <ChevronDown className={`w-4 h-4 sm:w-5 sm:h-5 transition-all duration-300 ${mobileActiveDropdown === item.label ? "rotate-180 text-blue-500" : ""}`} />
@@ -1127,7 +1240,17 @@ export function Navigation() {
                         setMobileMenuOpen(false);
                         setContactModalOpen(true);
                       }}
-                      className="w-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 hover:from-blue-600 hover:via-purple-600 hover:to-pink-600 text-white py-2.5 sm:py-3 font-normal rounded-full shadow-lg hover:shadow-xl transition-all duration-300 text-sm sm:text-base" style={{ fontFamily: 'Poppins, sans-serif' }}
+                      className="w-full text-white py-2.5 sm:py-3 font-normal rounded-full shadow-lg hover:shadow-xl transition-all duration-300 text-sm sm:text-base" 
+                      style={{ 
+                        fontFamily: 'Poppins, sans-serif',
+                        background: 'linear-gradient(to right, var(--gradient-start, #3b82f6), var(--gradient-middle, #8b5cf6), var(--gradient-end, #ec4899))'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.filter = 'brightness(0.9)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.filter = 'none';
+                      }}
                     >
                       Let's Connect
                     </Button>

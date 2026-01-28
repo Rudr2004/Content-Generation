@@ -82,24 +82,24 @@
   background-size: 20px 20px;
 }
 
-/* Enhanced prose styles for blog content */
+/* Enhanced prose styles for blog content - Now uses dynamic CSS variables */
 .prose-blue {
-  --tw-prose-body: rgb(55 65 81);
-  --tw-prose-headings: rgb(17 24 39);
-  --tw-prose-lead: rgb(75 85 99);
-  --tw-prose-links: rgb(37 99 235);
-  --tw-prose-bold: rgb(17 24 39);
-  --tw-prose-counters: rgb(75 85 99);
-  --tw-prose-bullets: rgb(156 163 175);
-  --tw-prose-hr: rgb(209 213 219);
-  --tw-prose-quotes: rgb(55 65 81);
-  --tw-prose-quote-borders: rgb(59 130 246);
-  --tw-prose-captions: rgb(107 114 128);
-  --tw-prose-code: rgb(17 24 39);
+  --tw-prose-body: var(--blog-text, rgb(55 65 81));
+  --tw-prose-headings: var(--blog-text, rgb(17 24 39));
+  --tw-prose-lead: var(--blog-text, rgb(75 85 99));
+  --tw-prose-links: var(--blog-link, rgb(37 99 235));
+  --tw-prose-bold: var(--blog-text, rgb(17 24 39));
+  --tw-prose-counters: var(--blog-text, rgb(75 85 99));
+  --tw-prose-bullets: var(--blog-text, rgb(156 163 175));
+  --tw-prose-hr: var(--blog-border, rgb(209 213 219));
+  --tw-prose-quotes: var(--blog-text, rgb(55 65 81));
+  --tw-prose-quote-borders: var(--blog-link, rgb(59 130 246));
+  --tw-prose-captions: var(--blog-text, rgb(107 114 128));
+  --tw-prose-code: var(--blog-text, rgb(17 24 39));
   --tw-prose-pre-code: rgb(229 231 235);
   --tw-prose-pre-bg: rgb(17 24 39);
-  --tw-prose-th-borders: rgb(209 213 219);
-  --tw-prose-td-borders: rgb(229 231 235);
+  --tw-prose-th-borders: var(--blog-border, rgb(209 213 219));
+  --tw-prose-td-borders: var(--blog-border, rgb(229 231 235));
 }
 
 /* Enhanced blog typography */
@@ -378,6 +378,74 @@ h1, h2, h3, h4, h5, h6 {
   --ai-gradient-start: #3b82f6; /* blue-500 */
   --ai-gradient-middle: #8b5cf6; /* purple-500 */
   --ai-gradient-end: #ec4899; /* pink-500 */
+  
+  /* Dynamic color variables - can be overridden by admin settings */
+  --header-bg: #ffffff;
+  --header-text: #1a1a1a;
+  --header-border: #e5e7eb;
+  --footer-bg: #ffffff;
+  --footer-text: #4b5563;
+  --footer-border: #e5e7eb;
+  --footer-link: #4b5563;
+  --footer-hover: #111827;
+  --navbar-bg: #ffffff;
+  --navbar-text: #4b5563;
+  --navbar-active: #22c55e;
+  --navbar-hover: #f3f4f6;
+  --navbar-border: #f3f4f6;
+  --btn-primary-bg: #22c55e;
+  --btn-primary-text: #ffffff;
+  --btn-primary-hover: #16a34a;
+  --btn-secondary-bg: #f3f4f6;
+  --btn-secondary-text: #1a1a1a;
+  --btn-secondary-hover: #e5e7eb;
+  --gradient-start: #3b82f6;
+  --gradient-middle: #8b5cf6;
+  --gradient-end: #ec4899;
+  --homepage-hero-start: #3b82f6;
+  --homepage-hero-middle: #8b5cf6;
+  --homepage-hero-end: #ec4899;
+  --homepage-hero-bg: #ffffff;
+  --homepage-hero-overlay-start: rgba(59, 130, 246, 0.3);
+  --homepage-hero-overlay-middle: rgba(255, 255, 255, 1);
+  --homepage-hero-overlay-end: rgba(34, 197, 94, 0.2);
+  --blog-card-bg: #ffffff;
+  --blog-text: #374151;
+  --blog-link: #2563eb;
+  --blog-border: #e5e7eb;
+  --service-card-bg: #ffffff;
+  --service-gradient-start: #3b82f6;
+  --service-gradient-middle: #8b5cf6;
+  --service-gradient-end: #ec4899;
+  --service-text: #1a1a1a;
+  --industry-primary-bg: #eff6ff;
+  --industry-accent-bg: #eef2ff;
+  --industry-button-bg: #2563eb;
+  --industry-text: #1a1a1a;
+  --casestudy-hero-bg: #1e3a8a;
+  --casestudy-hero-start: #1e3a8a;
+  --casestudy-hero-middle: #581c87;
+  --casestudy-hero-end: #312e81;
+  --casestudy-card-bg: #ffffff;
+  --casestudy-text: #1a1a1a;
+  --casestudy-border: #e5e7eb;
+  --hiredev-hero-bg: #eff6ff;
+  --hiredev-card-bg: #ffffff;
+  --hiredev-button-bg: #2563eb;
+  --hiredev-text: #1a1a1a;
+  --form-input-bg: #ffffff;
+  --form-input-border: #d1d5db;
+  --form-input-text: #1a1a1a;
+  --form-input-placeholder: #6b7280;
+  --form-label-text: #374151;
+  --form-error-text: #dc2626;
+}
+
+/* Form input placeholder color */
+input::placeholder,
+textarea::placeholder {
+  color: var(--form-input-placeholder, #6b7280);
+  opacity: 1;
 }
 
 .dark {
@@ -458,6 +526,139 @@ h1, h2, h3, h4, h5, h6 {
   /* Poppins for all other text */
   .text-poppins {
     font-family: 'Poppins', sans-serif;
+  }
+
+  /* Dynamic color utility classes - use CSS variables with fallbacks */
+  .bg-header {
+    background-color: var(--header-bg, #ffffff);
+  }
+  
+  .text-header {
+    color: var(--header-text, #1a1a1a);
+  }
+  
+  .border-header {
+    border-color: var(--header-border, #e5e7eb);
+  }
+  
+  .bg-footer {
+    background-color: var(--footer-bg, #ffffff);
+  }
+  
+  .text-footer {
+    color: var(--footer-text, #4b5563);
+  }
+  
+  .border-footer {
+    border-color: var(--footer-border, #e5e7eb);
+  }
+  
+  .bg-navbar {
+    background-color: var(--navbar-bg, #ffffff);
+  }
+  
+  .text-navbar {
+    color: var(--navbar-text, #4b5563);
+  }
+  
+  .bg-gradient-dynamic {
+    background: linear-gradient(to right, 
+      var(--gradient-start, #3b82f6), 
+      var(--gradient-middle, #8b5cf6), 
+      var(--gradient-end, #ec4899)
+    );
+  }
+  
+  .text-gradient-dynamic {
+    background: linear-gradient(to right, 
+      var(--gradient-start, #3b82f6), 
+      var(--gradient-middle, #8b5cf6), 
+      var(--gradient-end, #ec4899)
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .bg-btn-primary {
+    background-color: var(--btn-primary-bg, #22c55e);
+  }
+  
+  .text-btn-primary {
+    color: var(--btn-primary-text, #ffffff);
+  }
+  
+  .hover\:bg-btn-primary:hover {
+    background: linear-gradient(to right, var(--gradient-start, #2563eb), var(--gradient-middle, #9333ea), var(--gradient-end, #db2777));
+    filter: brightness(0.9);
+  }
+  
+  .bg-blog-card {
+    background-color: var(--blog-card-bg, #ffffff);
+  }
+  
+  .text-blog {
+    color: var(--blog-text, #374151);
+  }
+  
+  .text-blog-link {
+    color: var(--blog-link, #2563eb);
+  }
+  
+  .border-blog {
+    border-color: var(--blog-border, #e5e7eb);
+  }
+  
+  .bg-service-card {
+    background-color: var(--service-card-bg, #ffffff);
+  }
+  
+  .bg-service-gradient {
+    background: linear-gradient(to right, 
+      var(--service-gradient-start, #3b82f6), 
+      var(--service-gradient-middle, #8b5cf6), 
+      var(--service-gradient-end, #ec4899)
+    );
+  }
+  
+  .bg-industry-primary {
+    background-color: var(--industry-primary-bg, #eff6ff);
+  }
+  
+  .bg-industry-button {
+    background-color: var(--industry-button-bg, #2563eb);
+  }
+  
+  .bg-casestudy-card {
+    background-color: var(--casestudy-card-bg, #ffffff);
+  }
+  
+  .bg-hiredev-hero {
+    background-color: var(--hiredev-hero-bg, #eff6ff);
+  }
+  
+  .bg-hiredev-button {
+    background-color: var(--hiredev-button-bg, #2563eb);
+  }
+  
+  .bg-form-input {
+    background-color: var(--form-input-bg, #ffffff);
+  }
+  
+  .border-form-input {
+    border-color: var(--form-input-border, #d1d5db);
+  }
+  
+  .text-form-input {
+    color: var(--form-input-text, #1a1a1a);
+  }
+  
+  .text-form-label {
+    color: var(--form-label-text, #374151);
+  }
+  
+  .text-form-error {
+    color: var(--form-error-text, #dc2626);
   }
 
   /* Send Message Button Hover Effect */
