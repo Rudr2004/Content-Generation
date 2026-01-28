@@ -144,14 +144,17 @@ export function HomeContactSection() {
                       name="firstName"
                       render={({ field }) => (
                         <FormItem className="space-y-2">
-                          <FormLabel className="text-sm sm:text-base font-medium text-gray-700 text-poppins block text-left">
+                          <FormLabel className="text-sm sm:text-base font-medium text-poppins block text-left">
                             First Name *
                           </FormLabel>
                           <FormControl>
                             <Input
                               placeholder="John"
                               {...field}
-                              className="h-11 sm:h-12 bg-gray-50 border-gray-200 placeholder-gray-500 text-gray-900 w-full rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base"
+                              className="h-11 sm:h-12 w-full rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base"
+                              style={{
+                                '::placeholder': { color: 'var(--form-input-text, #6b7280)' }
+                              } as any}
                             />
                           </FormControl>
                           <FormMessage className="text-sm" />
@@ -163,14 +166,14 @@ export function HomeContactSection() {
                       name="lastName"
                       render={({ field }) => (
                         <FormItem className="space-y-2">
-                          <FormLabel className="text-sm sm:text-base font-medium text-gray-700 text-poppins block text-left">
+                          <FormLabel className="text-sm sm:text-base font-medium text-poppins block text-left">
                             Last Name *
                           </FormLabel>
                           <FormControl>
                             <Input
                               placeholder="Doe"
                               {...field}
-                              className="h-11 sm:h-12 bg-gray-50 border-gray-200 placeholder-gray-500 text-gray-900 w-full rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base"
+                              className="h-11 sm:h-12 w-full rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base"
                             />
                           </FormControl>
                           <FormMessage className="text-sm" />
@@ -186,7 +189,7 @@ export function HomeContactSection() {
                       name="email"
                       render={({ field }) => (
                         <FormItem className="space-y-2">
-                          <FormLabel className="text-sm sm:text-base font-medium text-gray-700 text-poppins block text-left">
+                          <FormLabel className="text-sm sm:text-base font-medium text-poppins block text-left">
                             Email Address *
                           </FormLabel>
                           <FormControl>
@@ -194,7 +197,7 @@ export function HomeContactSection() {
                               type="email"
                               placeholder="john@company.com"
                               {...field}
-                              className="h-11 sm:h-12 bg-gray-50 border-gray-200 placeholder-gray-500 text-gray-900 w-full rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base"
+                              className="h-11 sm:h-12 w-full rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base"
                             />
                           </FormControl>
                           <FormMessage className="text-sm" />
@@ -206,7 +209,7 @@ export function HomeContactSection() {
                       name="phone"
                       render={({ field }) => (
                         <FormItem className="space-y-2">
-                          <FormLabel className="text-sm sm:text-base font-medium text-gray-700 text-poppins block text-left">
+                          <FormLabel className="text-sm sm:text-base font-medium text-poppins block text-left">
                             Phone Number
                           </FormLabel>
                           <FormControl>
@@ -214,7 +217,7 @@ export function HomeContactSection() {
                               type="tel"
                               placeholder="+1 (555) 123-4567"
                               {...field}
-                              className="h-11 sm:h-12 bg-gray-50 border-gray-200 placeholder-gray-500 text-gray-900 w-full rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base"
+                              className="h-11 sm:h-12 w-full rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base"
                             />
                           </FormControl>
                           <FormMessage className="text-sm" />
@@ -229,14 +232,14 @@ export function HomeContactSection() {
                     name="company"
                     render={({ field }) => (
                       <FormItem className="space-y-2">
-                        <FormLabel className="text-sm sm:text-base font-medium text-gray-700 text-poppins block text-left">
+                        <FormLabel className="text-sm sm:text-base font-medium text-poppins block text-left">
                           Company
                         </FormLabel>
                         <FormControl>
                           <Input
                             placeholder="Your Company"
                             {...field}
-                            className="h-11 sm:h-12 bg-gray-50 border-gray-200 placeholder-gray-500 text-gray-900 w-full rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base"
+                            className="h-11 sm:h-12 w-full rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base"
                           />
                         </FormControl>
                         <FormMessage className="text-sm" />
@@ -250,13 +253,13 @@ export function HomeContactSection() {
                     name="service"
                     render={({ field }) => (
                       <FormItem className="space-y-2">
-                        <FormLabel className="text-sm sm:text-base font-medium text-gray-700 text-poppins block text-left">
+                        <FormLabel className="text-sm sm:text-base font-medium text-poppins block text-left">
                           Service Interested In
                         </FormLabel>
                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                           <FormControl>
-                            <SelectTrigger className="h-11 sm:h-12 bg-gray-50 border-gray-200 text-gray-900 w-full rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base">
-                              <SelectValue placeholder="Select a service" className="text-gray-500" />
+                            <SelectTrigger className="h-11 sm:h-12 w-full rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base">
+                              <SelectValue placeholder="Select a service" />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent className="bg-white border-gray-200 rounded-md shadow-lg">
@@ -282,14 +285,19 @@ export function HomeContactSection() {
                     name="message"
                     render={({ field }) => (
                       <FormItem className="space-y-2">
-                        <FormLabel className="text-sm sm:text-base font-medium text-gray-700 text-poppins block text-left">
+                        <FormLabel className="text-sm sm:text-base font-medium text-poppins block text-left">
                           Project Details *
                         </FormLabel>
                         <FormControl>
                           <Textarea
                             placeholder="Tell us about your project requirements..."
                             {...field}
-                            className="min-h-[110px] sm:min-h-[130px] resize-none bg-gray-50 border-gray-200 placeholder-gray-500 text-gray-900 w-full rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base leading-relaxed p-3"
+                            className="min-h-[110px] sm:min-h-[130px] resize-none w-full rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base leading-relaxed p-3"
+                            style={{
+                              backgroundColor: 'var(--form-input-bg, #ffffff)',
+                              borderColor: 'var(--form-input-border, #d1d5db)',
+                              color: 'var(--form-input-text, #1a1a1a)'
+                            }}
                           />
                         </FormControl>
                         <FormMessage className="text-sm" />
@@ -302,7 +310,18 @@ export function HomeContactSection() {
                     <Button
                       type="submit"
                       disabled={contactMutation.isPending}
-                      className="w-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 hover:from-blue-600 hover:via-purple-600 hover:to-pink-600 text-white font-semibold py-3 sm:py-4 px-6 sm:px-8 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="w-full text-white font-semibold py-3 sm:py-4 px-6 sm:px-8 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed"
+                      style={{
+                        background: 'linear-gradient(to right, var(--gradient-start, #3b82f6), var(--gradient-middle, #8b5cf6), var(--gradient-end, #ec4899))'
+                      }}
+                      onMouseEnter={(e) => {
+                        if (!e.currentTarget.disabled) {
+                          e.currentTarget.style.filter = 'brightness(0.9)';
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.filter = 'none';
+                      }}
                     >
                       {contactMutation.isPending ? "Sending..." : "Submit"}
                     </Button>

@@ -73,12 +73,12 @@ export function ContactForm() {
                 name="firstName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-gray-700 font-medium text-poppins">First Name</FormLabel>
+                    <FormLabel className="font-medium text-poppins">First Name</FormLabel>
                     <FormControl>
                       <Input
                         placeholder="John"
                         {...field}
-                        className="h-10 sm:h-12 bg-gray-50 border-gray-200 placeholder-gray-500 text-gray-900"
+                        className="h-10 sm:h-12"
                       />
                     </FormControl>
                     <FormMessage />
@@ -91,12 +91,12 @@ export function ContactForm() {
                 name="lastName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-gray-700 font-medium text-poppins">Last Name</FormLabel>
+                    <FormLabel className="font-medium text-poppins">Last Name</FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Doe"
                         {...field}
-                        className="h-10 sm:h-12 bg-gray-50 border-gray-200 placeholder-gray-500 text-gray-900"
+                        className="h-10 sm:h-12"
                       />
                     </FormControl>
                     <FormMessage />
@@ -113,13 +113,13 @@ export function ContactForm() {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-gray-700 font-medium text-poppins">Email Address</FormLabel>
+                    <FormLabel className="font-medium text-poppins">Email Address</FormLabel>
                     <FormControl>
                       <Input
                         type="email"
                         placeholder="john@company.com"
                         {...field}
-                        className="h-10 sm:h-12 bg-gray-50 border-gray-200 placeholder-gray-500 text-gray-900"
+                        className="h-10 sm:h-12"
                       />
                     </FormControl>
                     <FormMessage />
@@ -153,12 +153,12 @@ export function ContactForm() {
               name="company"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-gray-700 font-medium text-poppins">Company</FormLabel>
+                  <FormLabel className="font-medium text-poppins">Company</FormLabel>
                   <FormControl>
                     <Input
                       placeholder="Your Company"
                       {...field}
-                      className="h-10 sm:h-12 bg-gray-50 border-gray-200 placeholder-gray-500 text-gray-900"
+                      className="h-10 sm:h-12"
                     />
                   </FormControl>
                   <FormMessage />
@@ -202,12 +202,12 @@ export function ContactForm() {
               name="message"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-gray-700 font-medium text-poppins">Project Details</FormLabel>
+                  <FormLabel className="font-medium text-poppins">Project Details</FormLabel>
                   <FormControl>
                     <Textarea
                       placeholder="Tell us about your project requirements..."
                       {...field}
-                      className="min-h-[100px] sm:min-h-[120px] resize-none bg-gray-50 border-gray-200 placeholder-gray-500 text-gray-900"
+                      className="min-h-[100px] sm:min-h-[120px] resize-none"
                     />
                   </FormControl>
                   <FormMessage />
@@ -219,7 +219,16 @@ export function ContactForm() {
             <Button
               type="submit"
               disabled={contactMutation.isPending}
-              className="w-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 hover:from-blue-600 hover:via-purple-600 hover:to-pink-600 text-white font-semibold py-2.5 sm:py-3 px-6 sm:px-8 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl"
+              className="w-full text-white font-semibold py-2.5 sm:py-3 px-6 sm:px-8 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl"
+              style={{
+                background: 'linear-gradient(to right, var(--gradient-start, #3b82f6), var(--gradient-middle, #8b5cf6), var(--gradient-end, #ec4899))'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.filter = 'brightness(0.9)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.filter = 'none';
+              }}
             >
               {contactMutation.isPending ? "Sending..." : "Submit"}
             </Button>

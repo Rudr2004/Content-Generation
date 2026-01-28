@@ -136,7 +136,12 @@ function ServiceHireDeveloperPage() {
 
   if (error || !page) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+      <div 
+        className="min-h-screen"
+        style={{
+          background: 'linear-gradient(to bottom right, var(--hiredev-hero-bg, #eff6ff), var(--hiredev-hero-bg, #dbeafe))'
+        }}
+      >
         <Navigation />
         <div className="flex items-center justify-center min-h-[60vh]">
           <div className="text-center">
@@ -217,7 +222,14 @@ function ServiceHireDeveloperPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
             >
-              <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-700 bg-clip-text text-transparent mb-6 leading-tight">
+              <h1 
+                className="text-4xl md:text-6xl font-bold bg-clip-text text-transparent mb-6 leading-tight"
+                style={{
+                  background: 'linear-gradient(to right, var(--hiredev-button-bg, #2563eb), var(--hiredev-button-bg, #9333ea), var(--hiredev-button-bg, #4f46e5))',
+                  WebkitBackgroundClip: 'text',
+                  backgroundClip: 'text'
+                }}
+              >
                 <InlineMarkdown>
                   {heroSection.headline || page.heroTitle || page.title || ''}
                 </InlineMarkdown>
@@ -234,7 +246,19 @@ function ServiceHireDeveloperPage() {
                 <Button
                   size="lg"
                   onClick={scrollToContact}
-                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-4 sm:px-6 md:px-8 py-3 sm:py-4 text-sm sm:text-base md:text-lg font-semibold rounded-full shadow-lg hover:shadow-xl transform transition-all duration-300 hover:scale-105 w-full sm:w-auto max-w-xs sm:max-w-none whitespace-nowrap overflow-hidden text-ellipsis"
+                  className="text-white px-4 sm:px-6 md:px-8 py-3 sm:py-4 text-sm sm:text-base md:text-lg font-semibold rounded-full shadow-lg hover:shadow-xl transform transition-all duration-300 hover:scale-105 w-full sm:w-auto max-w-xs sm:max-w-none whitespace-nowrap overflow-hidden text-ellipsis"
+                  style={{
+                    background: 'linear-gradient(to right, var(--hiredev-button-bg, #2563eb), var(--hiredev-button-bg, #9333ea))',
+                    color: 'var(--btn-primary-text, #ffffff)'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'linear-gradient(to right, var(--gradient-start, #2563eb), var(--gradient-middle, #9333ea), var(--gradient-end, #db2777))';
+                    e.currentTarget.style.filter = 'brightness(0.9)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'linear-gradient(to right, var(--hiredev-button-bg, #2563eb), var(--hiredev-button-bg, #9333ea))';
+                    e.currentTarget.style.filter = 'none';
+                  }}
                 >
                   <span className="truncate">
                     {heroSection.primary_cta || page.heroCtaText || "Hire Developers"}
@@ -302,7 +326,14 @@ function ServiceHireDeveloperPage() {
                   <Star className="w-4 h-4 mr-2" />
                   Industry Leading Expertise
                 </div>
-                <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-8">
+                <h2 
+                  className="text-4xl md:text-5xl font-bold bg-clip-text text-transparent mb-8"
+                  style={{
+                    background: 'linear-gradient(to right, var(--hiredev-button-bg, #2563eb), var(--hiredev-button-bg, #9333ea), var(--hiredev-button-bg, #db2777))',
+                    WebkitBackgroundClip: 'text',
+                    backgroundClip: 'text'
+                  }}
+                >
                   Why Choose Our Expert Developers?
                 </h2>
                 <div className="max-w-4xl mx-auto">
@@ -375,7 +406,12 @@ function ServiceHireDeveloperPage() {
 
                   return (
                     <motion.div key={index} variants={fadeUp}>
-                      <Card className="h-full hover:shadow-xl transition-all duration-300 hover:scale-105 border-0 shadow-lg group bg-gradient-to-br from-white to-gray-50">
+                      <Card 
+                        className="h-full hover:shadow-xl transition-all duration-300 hover:scale-105 border-0 shadow-lg group"
+                        style={{
+                          background: 'linear-gradient(to bottom right, var(--hiredev-card-bg, #ffffff), var(--hiredev-card-bg, #f9fafb))'
+                        }}
+                      >
                         <CardContent className="p-6">
                           <div className="flex items-start space-x-4">
                             <div className={`flex-shrink-0 w-12 h-12 bg-gradient-to-r from-${color}-500 to-${color}-600 rounded-xl flex items-center justify-center group-hover:rotate-6 transition-transform duration-300`}>
@@ -852,7 +888,18 @@ function ServiceHireDeveloperPage() {
                   </p>
                   <Button
                     size="lg"
-                    className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+                    className="text-white px-8 py-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+                    style={{
+                      background: 'linear-gradient(to right, var(--hiredev-button-bg, #2563eb), var(--hiredev-button-bg, #9333ea))'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = 'linear-gradient(to right, var(--gradient-start, #2563eb), var(--gradient-middle, #9333ea), var(--gradient-end, #db2777))';
+                      e.currentTarget.style.filter = 'brightness(0.9)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = 'linear-gradient(to right, var(--hiredev-button-bg, #2563eb), var(--hiredev-button-bg, #9333ea))';
+                      e.currentTarget.style.filter = 'none';
+                    }}
                   >
                     Start Hiring Process
                     <ArrowRight className="ml-2 h-5 w-5" />

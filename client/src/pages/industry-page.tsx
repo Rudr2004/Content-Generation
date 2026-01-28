@@ -308,7 +308,12 @@ export default function IndustryPage() {
       <Navigation />
       <main id="main-content">
         {/* Hero Section */}
-        <section className={`relative min-h-[60vh] sm:min-h-[70vh] lg:min-h-screen flex items-center py-12 sm:py-16 lg:py-32 ${industryPage.heroBackgroundImage ? 'bg-gray-900' : `bg-gradient-to-br ${colors.primary}`} overflow-hidden`}>
+        <section 
+          className={`relative min-h-[60vh] sm:min-h-[70vh] lg:min-h-screen flex items-center py-12 sm:py-16 lg:py-32 overflow-hidden`}
+          style={industryPage.heroBackgroundImage ? { backgroundColor: '#111827' } : {
+            background: `linear-gradient(to bottom right, var(--industry-primary-bg, #eff6ff), var(--industry-accent-bg, #eef2ff))`
+          }}
+        >
           {/* Background Image (if available) */}
           {industryPage.heroBackgroundImage && (
             <div className="absolute inset-0">
@@ -401,7 +406,18 @@ export default function IndustryPage() {
                 <div className="flex justify-center">
                   <Button
                     size="lg"
-                    className="group relative px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl sm:rounded-2xl shadow-2xl hover:shadow-3xl transition-all duration-500 transform hover:scale-105 border-0"
+                    className="group relative px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold text-white rounded-xl sm:rounded-2xl shadow-2xl hover:shadow-3xl transition-all duration-500 transform hover:scale-105 border-0"
+                    style={{
+                      background: 'linear-gradient(to right, var(--industry-button-bg, #2563eb), var(--industry-button-bg, #9333ea))'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = 'linear-gradient(to right, var(--gradient-start, #2563eb), var(--gradient-middle, #9333ea), var(--gradient-end, #db2777))';
+                      e.currentTarget.style.filter = 'brightness(0.9)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = 'linear-gradient(to right, var(--industry-button-bg, #2563eb), var(--industry-button-bg, #9333ea))';
+                      e.currentTarget.style.filter = 'none';
+                    }}
                     data-testid="button-hero-cta"
                     onClick={() => {
                       const contactSection = document.getElementById('contact-section');
@@ -523,7 +539,15 @@ export default function IndustryPage() {
                       ? [Brain, Monitor, FileText, Microscope, Heart, Stethoscope][index % 6]
                       : Shield;
                     return (
-                      <Card key={index} className="group relative p-6 sm:p-8 rounded-2xl sm:rounded-3xl bg-gradient-to-br from-white/60 to-gray-50/30 dark:from-gray-800/60 dark:to-gray-900/30 backdrop-blur-xl border border-white/30 dark:border-gray-700/30 shadow-2xl hover:shadow-3xl transition-all duration-500 transform hover:scale-105 hover:-translate-y-3 overflow-hidden" data-testid={`card-industry-${index}`}>
+                      <Card 
+                        key={index} 
+                        className="group relative p-6 sm:p-8 rounded-2xl sm:rounded-3xl backdrop-blur-xl shadow-2xl hover:shadow-3xl transition-all duration-500 transform hover:scale-105 hover:-translate-y-3 overflow-hidden" 
+                        style={{
+                          background: 'linear-gradient(to bottom right, var(--industry-accent-bg, rgba(255, 255, 255, 0.6)), var(--industry-primary-bg, rgba(249, 250, 251, 0.3)))',
+                          borderColor: 'var(--casestudy-border, rgba(255, 255, 255, 0.3))'
+                        }}
+                        data-testid={`card-industry-${index}`}
+                      >
                         <CardHeader className="pb-6 relative z-10">
                           {isHealthcare && (
                             <div className="flex justify-center mb-6">

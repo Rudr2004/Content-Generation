@@ -24,8 +24,13 @@ import { getOrganizationStructuredData, getWebsiteStructuredData, getServiceStru
 
 export default function Home() {
   const seoData = SEO_PAGES.home;
-  const { settings } = useSiteSettings();
+  const { settings, isLoading } = useSiteSettings();
   const siteName = settings?.siteName || COMPANY_INFO.name;
+  
+  // Handle loading state gracefully
+  if (isLoading && !settings) {
+    return <div className="min-h-screen" />;
+  }
 
 
   const combinedStructuredData = {

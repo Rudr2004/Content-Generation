@@ -148,6 +148,46 @@ export interface CaseStudyCategory {
   updatedAt: Date;
 }
 
+export interface ColorSettings {
+  general?: {
+    header?: {
+      backgroundColor?: string;
+      textColor?: string;
+      borderColor?: string;
+    };
+    footer?: {
+      backgroundColor?: string;
+      textColor?: string;
+      borderColor?: string;
+    };
+    navbar?: {
+      backgroundColor?: string;
+      textColor?: string;
+      activeColor?: string;
+      hoverColor?: string;
+    };
+  };
+  buttons?: {
+    primary?: {
+      backgroundColor?: string;
+      textColor?: string;
+      hoverColor?: string;
+    };
+    secondary?: {
+      backgroundColor?: string;
+      textColor?: string;
+      hoverColor?: string;
+    };
+  };
+  pages?: {
+    [pageName: string]: {
+      [componentName: string]: {
+        [property: string]: string;
+      };
+    };
+  };
+}
+
 export interface SiteSettings {
   id: string;
   siteName: string;
@@ -156,6 +196,7 @@ export interface SiteSettings {
   logoUrl?: string;
   targetRegions?: string;
   industryFocus?: string;
+  colorSettings?: ColorSettings;
   updatedAt: Date;
 }
 
