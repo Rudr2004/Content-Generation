@@ -136,3 +136,9 @@ export function isEncrypted(apiKey: string): boolean {
     }
   });
 }
+
+/** True if string looks like a masked key (e.g. "AIza...x2I" or "pLrp...FZg="). Never treat as plaintext. */
+export function isMaskedKey(value: string): boolean {
+  if (!value || typeof value !== 'string') return false;
+  return value.includes('...');
+}

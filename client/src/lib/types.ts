@@ -32,12 +32,16 @@ export type AIModel = 'openai' | 'gemini' | 'perplexity' | 'grok';
 
 export interface AIModelSettings {
     selectedModel: AIModel | null;
-    apiKeys: {
-        openai?: string; // Encrypted
-        gemini?: string; // Encrypted
-        perplexity?: string; // Encrypted
-        grok?: string; // Encrypted
+    apiKeys?: {
+        openai?: string;
+        gemini?: string;
+        perplexity?: string;
+        grok?: string;
     };
+    /** Which models have a key stored (from API). Never use masked values in form. */
+    apiKeyConfigured?: Record<string, boolean>;
+    /** When true, use OpenAI with OPENAI_API_KEY from env for all generations; ignores selected model and stored keys. */
+    useDefaultModelFromEnv?: boolean;
     modelConfig?: {
         openai?: {
             model: string;

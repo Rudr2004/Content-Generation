@@ -69,12 +69,21 @@ export async function isModelConfigured(model: AIModel): Promise<boolean> {
 
 /**
  * Get the active AI provider based on current settings
- * Falls back to OpenAI with environment variable if no model is selected
+ * Falls back to OpenAI with environment variable if no model is selected or "use default from ENV" is enabled
  */
 export async function getActiveAIProvider(): Promise<AIProvider> {
   const aiSettings = await getAISettings();
   const selectedModel = aiSettings?.selectedModel;
-  
+
+  // User opted to use default model (OpenAI) with key from environment
+  if (aiSettings?.useDefaultModelFromEnv) {
+    const envKey = process.env.OPENAI_API_KEY;
+    if (!envKey) {
+      throw new Error('Use default model from ENV is enabled but OPENAI_API_KEY is not set in environment');
+    }
+    return getAIProvider('openai', envKey, aiSettings?.modelConfig?.openai);
+  }
+
   // If no model selected, use OpenAI with environment variable
   if (!selectedModel) {
     const envKey = process.env.OPENAI_API_KEY;

@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import path from "path";
-import { storage, type HirePage, type BlogPost, type User } from "./storage";
+import { storage, type HirePage, type BlogPost, type User, type SiteSettings } from "./storage";
 import { insertContactSubmissionSchema, insertBlogPostSchema, insertUserSchema, loginSchema, forgotPasswordSchema, resetPasswordSchema, changePasswordSchema, insertAuthorSchema, insertServiceSchema, insertServiceTestimonialSchema, insertServiceCategorySchema, insertServiceSubcategorySchema, insertServicePageSchema, insertServiceDetailPageSchema, insertHirePageSchema, insertCaseStudyPageSchema, insertCaseStudyCategorySchema, insertTechnologySchema, insertAiServicePageSchema, insertIndustryPageSchema, insertSeoSettingsSchema, insertSeoKeywordsSchema, insertSeoAnalyticsSchema, insertSeoPageDataSchema, insertRobotsTxtSettingsSchema, insertPageIndexingStatusSchema, insertCentralLinkRegistrySchema, insertLinkUsageMappingSchema, insertLinkRedirectsSchema, insertLinkValidationSchema, insertSiteSettingsSchema } from "@shared/schema";
 import { z } from "zod";
 import { sendContactNotification } from "./email";
@@ -3682,12 +3682,8 @@ CRITICAL REGION COMPLIANCE RULES:
 
       let keywords = "";
 
-      // Try OpenAI first, fallback to predefined keywords if API fails
+      // Try AI provider first, fallback to predefined keywords if API fails
       try {
-        if (!process.env.OPENAI_API_KEY) {
-          throw new Error("OpenAI API key not configured");
-        }
-
         const { generateChatCompletion } = await import("./openai-client");
 
         const prompt = `Generate SEO-optimized keywords for a technology service targeting ONLY ${region} markets.
@@ -3727,12 +3723,7 @@ Target audience: Business decision makers in ${region} looking for technology se
 
 IMPORTANT: Return ONLY the keywords separated by commas. Each keyword should be relevant to ${region} markets. DO NOT include any keywords with USA or Canada unless they are in the region list.`;
 
-        const response = await openai.chat.completions.create({
-          model: "gpt-4o", // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
-          messages: [
-            {
-              role: "system",
-              content: `You are an SEO expert specializing in generating high-quality, relevant keywords for technology services targeting specific geographic regions.
+        const systemContent = `You are an SEO expert specializing in generating high-quality, relevant keywords for technology services targeting specific geographic regions.
 
 CRITICAL REGION COMPLIANCE RULES:
 1. ONLY use regions from the provided list: ${region}
@@ -3740,16 +3731,15 @@ CRITICAL REGION COMPLIANCE RULES:
 3. If the region is "India, Australia", generate keywords ONLY for India and Australia
 4. All location-based keywords must use ONLY: ${regions.map(r => r.trim()).join(', ')}
 5. Include major cities from the specified regions only (e.g., for India: Mumbai, Delhi, Bangalore; for Australia: Sydney, Melbourne, Brisbane)
-6. Generate keywords that are specific, actionable, and optimized for search engines in the target regions.`
-            },
-            {
-              role: "user",
-              content: prompt
-            }
+6. Generate keywords that are specific, actionable, and optimized for search engines in the target regions.`;
+
+        const response = await generateChatCompletion(
+          [
+            { role: "system", content: systemContent },
+            { role: "user", content: prompt },
           ],
-          max_tokens: 300,
-          temperature: 0.7,
-        });
+          { max_tokens: 300, temperature: 0.7 }
+        );
 
         keywords = response.choices[0].message.content?.trim() || "";
         
@@ -4571,19 +4561,14 @@ ${generatedContent.finalCta.button}
 
           // Generate content and testimonials in parallel
           const [contentResponse, testimonialsResponse] = await Promise.all([
-            openai.chat.completions.create({
-              model: "gpt-4o",
-              messages: [{ role: "user", content: contentPrompt }],
-              max_tokens: 2000,
-              temperature: 0.7,
-            }),
-            openai.chat.completions.create({
-              model: "gpt-4o",
-              messages: [{ role: "user", content: testimonialsPrompt }],
-              max_tokens: 800,
-              temperature: 0.8,
-              response_format: { type: "json_object" }
-            })
+            generateChatCompletion(
+              [{ role: "user", content: contentPrompt }],
+              { max_tokens: 2000, temperature: 0.7 }
+            ),
+            generateChatCompletion(
+              [{ role: "user", content: testimonialsPrompt }],
+              { max_tokens: 800, temperature: 0.8, response_format: { type: "json_object" } }
+            ),
           ]);
 
           response.content = contentResponse.choices[0].message.content?.trim() || '';
@@ -4615,13 +4600,10 @@ ${generatedContent.finalCta.button}
             "technologies": ["React", "Node.js", "MongoDB", "AWS", "Docker", "TypeScript"]
           }`;
 
-          const techResponse = await openai.chat.completions.create({
-            model: "gpt-4o", // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
-            messages: [{ role: "user", content: prompt }],
-            max_tokens: 300,
-            temperature: 0.7,
-            response_format: { type: "json_object" }
-          });
+          const techResponse = await generateChatCompletion(
+            [{ role: "user", content: prompt }],
+            { max_tokens: 300, temperature: 0.7, response_format: { type: "json_object" } }
+          );
 
           const techData = JSON.parse(techResponse.choices[0].message.content || '{"technologies":[]}');
           response.technologies = techData.technologies || [];
@@ -7273,98 +7255,158 @@ CRITICAL INSTRUCTIONS:
   // AI Model API Key Validation Routes
   app.post("/api/ai/validate-api-key", authenticateToken, authorizeRole(['super_admin', 'user_admin']), async (req, res) => {
     try {
-      const { model, apiKey } = req.body;
-      
+      const model = typeof req.body?.model === 'string' ? req.body.model.trim() : '';
+      const apiKey = typeof req.body?.apiKey === 'string' ? req.body.apiKey.trim() : '';
+
       if (!model || !apiKey) {
-        return res.status(400).json({ 
-          success: false, 
-          message: "Model and API key are required" 
+        return res.status(400).json({
+          success: false,
+          message: "Model and API key are required",
         });
       }
 
       const validModels = ['openai', 'gemini', 'perplexity', 'grok'];
       if (!validModels.includes(model)) {
-        return res.status(400).json({ 
-          success: false, 
-          message: `Invalid model. Must be one of: ${validModels.join(', ')}` 
+        return res.status(400).json({
+          success: false,
+          message: `Invalid model. Must be one of: ${validModels.join(', ')}`,
         });
       }
 
-      // Import dynamically to avoid circular dependencies
-      const { getAIProvider } = await import('./utils/unified-ai-client');
-      const provider = getAIProvider(model as any, apiKey);
-      
-      const isValid = await provider.validateApiKey(apiKey);
-      
-      if (isValid) {
-        res.json({ 
-          success: true, 
-          message: `API key for ${model} is valid` 
-        });
-      } else {
-        res.status(400).json({ 
-          success: false, 
-          message: `API key for ${model} is invalid` 
+      // Gemini: use dedicated validator with actionable error messages
+      if (model === 'gemini') {
+        const { validateGeminiKey } = await import('./utils/unified-ai-client');
+        const result = await validateGeminiKey(apiKey);
+        if (result.valid) {
+          return res.json({ success: true, message: `API key for ${model} is valid` });
+        }
+        return res.status(400).json({
+          success: false,
+          message: result.error ?? `API key for ${model} is invalid`,
         });
       }
+
+      // Other providers
+      const { getAIProvider } = await import('./utils/unified-ai-client');
+      const provider = getAIProvider(model as any, apiKey);
+      const isValid = await provider.validateApiKey(apiKey);
+
+      if (isValid) {
+        return res.json({ success: true, message: `API key for ${model} is valid` });
+      }
+      res.status(400).json({
+        success: false,
+        message: `API key for ${model} is invalid`,
+      });
     } catch (error: any) {
       console.error("Failed to validate API key:", error);
-      res.status(500).json({ 
-        success: false, 
-        message: error.message || "Failed to validate API key" 
+      res.status(500).json({
+        success: false,
+        message: error?.message ?? "Failed to validate API key",
       });
     }
   });
 
   app.post("/api/ai/test-model", authenticateToken, authorizeRole(['super_admin', 'user_admin']), async (req, res) => {
     try {
-      // Get the selected model from settings, not from request body
       const settings = await storage.getSiteSettings();
+      const useDefaultFromEnv = !!settings?.aiModelSettings?.useDefaultModelFromEnv;
       const selectedModel = settings?.aiModelSettings?.selectedModel;
-      
+
+      // When "Use default model from ENV" is on, always test OpenAI+ENV (what we use for generation).
+      if (useDefaultFromEnv) {
+        const envKey = process.env.OPENAI_API_KEY;
+        if (!envKey) {
+          return res.status(400).json({
+            success: false,
+            message: "Use default model from ENV is enabled but OPENAI_API_KEY is not set in environment.",
+          });
+        }
+        const { getActiveAIProvider } = await import('./utils/ai-settings-manager');
+        const provider = await getActiveAIProvider();
+        const testPrompt = "Say 'Hello, this is a test' and nothing else.";
+        const response = await provider.generateText(testPrompt, { maxTokens: 20 });
+        if (response && response.length > 0) {
+          return res.json({
+            success: true,
+            message: "Default model (OpenAI, from ENV) is working correctly",
+            testResponse: response,
+            model: "openai",
+          });
+        }
+        return res.status(400).json({
+          success: false,
+          message: "Default model (OpenAI, from ENV) test failed - no response received",
+          testResponse: response,
+        });
+      }
+
       if (!selectedModel) {
-        return res.status(400).json({ 
-          success: false, 
-          message: "No model selected. Please select a model in AI Model Settings first." 
+        return res.status(400).json({
+          success: false,
+          message: "No model selected. Please select a model in AI Model Settings first.",
         });
       }
 
       const validModels = ['openai', 'gemini', 'perplexity', 'grok'];
       if (!validModels.includes(selectedModel)) {
-        return res.status(400).json({ 
-          success: false, 
-          message: `Invalid model selected: ${selectedModel}. Must be one of: ${validModels.join(', ')}` 
+        return res.status(400).json({
+          success: false,
+          message: `Invalid model selected: ${selectedModel}. Must be one of: ${validModels.join(', ')}`,
         });
       }
 
-      // Import dynamically to avoid circular dependencies
+      // Gemini: test via list-models (same as validation). Avoids generateContent model/404 issues.
+      if (selectedModel === 'gemini') {
+        const { getDecryptedApiKey } = await import('./utils/ai-settings-manager');
+        const { validateGeminiKey } = await import('./utils/unified-ai-client');
+        const apiKey = await getDecryptedApiKey('gemini');
+        if (!apiKey) {
+          return res.status(400).json({
+            success: false,
+            message: "Gemini API key is not configured. Enter your key in Site Settings, then Save.",
+          });
+        }
+        const result = await validateGeminiKey(apiKey);
+        if (result.valid) {
+          return res.json({
+            success: true,
+            message: "Model gemini is working correctly",
+            testResponse: "API key valid (list-models).",
+            model: "gemini",
+          });
+        }
+        const hint = " Re-enter your key in Site Settings, click Validate, then Save.";
+        const msg = (result.error || "Gemini API key invalid.") + hint;
+        return res.status(400).json({ success: false, message: msg });
+      }
+
       const { getActiveAIProvider } = await import('./utils/ai-settings-manager');
       const provider = await getActiveAIProvider();
-      
-      // Test with a simple prompt
       const testPrompt = "Say 'Hello, this is a test' and nothing else.";
       const response = await provider.generateText(testPrompt, { maxTokens: 20 });
-      
+
       if (response && response.length > 0) {
-        res.json({ 
-          success: true, 
+        return res.json({
+          success: true,
           message: `Model ${selectedModel} is working correctly`,
           testResponse: response,
-          model: selectedModel
-        });
-      } else {
-        res.status(400).json({ 
-          success: false, 
-          message: `Model ${selectedModel} test failed - no response received`,
-          testResponse: response 
+          model: selectedModel,
         });
       }
+      return res.status(400).json({
+        success: false,
+        message: `Model ${selectedModel} test failed - no response received`,
+        testResponse: response,
+      });
     } catch (error: any) {
       console.error("Failed to test model:", error);
-      res.status(500).json({ 
-        success: false, 
-        message: error.message || "Failed to test model. Make sure the API key is configured and valid." 
-      });
+      const raw = (error?.message || String(error)).toLowerCase();
+      const apiKeyInvalid = raw.includes('api key not valid') || raw.includes('api_key_invalid') || raw.includes('invalid api key');
+      const message = apiKeyInvalid
+        ? "Saved API key is invalid. Re-enter your key in Site Settings, click Validate, then Save."
+        : (error?.message || "Failed to test model. Make sure the API key is configured and valid.");
+      return res.status(500).json({ success: false, message });
     }
   });
 
@@ -7373,21 +7415,27 @@ CRITICAL INSTRUCTIONS:
     try {
       const settings = await storage.getSiteSettings();
       
-      // Mask API keys for security (never send decrypted keys to client)
       const { maskApiKey } = await import('./utils/api-key-encryption');
       const cleanSettings = {
         ...settings,
         id: settings.id,
-      };
-      
-      if (cleanSettings.aiModelSettings?.apiKeys) {
+      } as Record<string, unknown>;
+
+      const ai = cleanSettings.aiModelSettings as Record<string, unknown> | undefined;
+      if (ai && typeof ai === 'object' && !Array.isArray(ai)) {
         const maskedKeys: Record<string, string> = {};
-        for (const [model, encryptedKey] of Object.entries(cleanSettings.aiModelSettings.apiKeys)) {
-          if (encryptedKey && typeof encryptedKey === 'string') {
-            maskedKeys[model] = maskApiKey(encryptedKey);
+        const configured: Record<string, boolean> = {};
+        const keys = ai.apiKeys as Record<string, string> | undefined;
+        if (keys && typeof keys === 'object') {
+          for (const [model, encryptedKey] of Object.entries(keys)) {
+            if (typeof encryptedKey === 'string' && encryptedKey) {
+              maskedKeys[model] = maskApiKey(encryptedKey);
+              configured[model] = true;
+            }
           }
         }
-        cleanSettings.aiModelSettings.apiKeys = maskedKeys;
+        const base = ai as Record<string, unknown>;
+        cleanSettings.aiModelSettings = { ...base, apiKeys: maskedKeys, apiKeyConfigured: configured };
       }
       
       res.json(cleanSettings);
@@ -7415,49 +7463,56 @@ CRITICAL INSTRUCTIONS:
       const updates = parsed.data;
       console.log('Parsed updates:', JSON.stringify(updates, null, 2)); // Debug log
       
-      // Ensure pageTitle is explicitly included if provided (even if empty string)
       if (req.body.pageTitle !== undefined) {
-        // Always set pageTitle if provided, even if empty string
         updates.pageTitle = req.body.pageTitle;
       }
+
+      // Merge API keys: keep existing encrypted keys; only overwrite when client sends new plaintext
+      const { encryptApiKey, isEncrypted, isMaskedKey } = await import('./utils/api-key-encryption');
+      const current = await storage.getSiteSettings();
+      const existingEncrypted = (current?.aiModelSettings?.apiKeys && typeof current.aiModelSettings.apiKeys === 'object')
+        ? { ...(current.aiModelSettings.apiKeys as Record<string, string>) }
+        : {};
+      const rawApiKeys = (req.body?.aiModelSettings as { apiKeys?: Record<string, string> })?.apiKeys;
+      if (rawApiKeys && typeof rawApiKeys === 'object') {
+        for (const [model, apiKey] of Object.entries(rawApiKeys)) {
+          if (typeof apiKey !== 'string' || !apiKey.trim()) continue;
+          if (isEncrypted(apiKey) || isMaskedKey(apiKey)) continue;
+          existingEncrypted[model] = encryptApiKey(apiKey.trim());
+        }
+      }
+      if (updates.aiModelSettings) {
+        const am = updates.aiModelSettings as Record<string, unknown>;
+        updates.aiModelSettings = { ...am, apiKeys: existingEncrypted } as typeof updates.aiModelSettings;
+      }
+
+      const sanitized: Partial<SiteSettings> = {};
+      for (const [k, v] of Object.entries(updates)) {
+        (sanitized as Record<string, unknown>)[k] = v === null ? undefined : v;
+      }
+      const settings = await storage.updateSiteSettings(sanitized);
+
+      const { resetAIProviderCache } = await import('./openai-client');
+      resetAIProviderCache();
+
+      const { maskApiKey } = await import('./utils/api-key-encryption');
+      const cleanSettings = { ...settings, id: settings.id } as Record<string, unknown>;
+      const ai = cleanSettings.aiModelSettings as Record<string, unknown> | undefined;
       
-      // Encrypt API keys if they are being updated
-      if (updates.aiModelSettings?.apiKeys) {
-        const { encryptApiKey, isEncrypted } = await import('./utils/api-key-encryption');
-        const encryptedKeys: Record<string, string> = {};
-        
-        for (const [model, apiKey] of Object.entries(updates.aiModelSettings.apiKeys)) {
-          if (apiKey && typeof apiKey === 'string') {
-            // Only encrypt if not already encrypted
-            if (isEncrypted(apiKey)) {
-              encryptedKeys[model] = apiKey; // Keep existing encrypted key
-            } else {
-              encryptedKeys[model] = encryptApiKey(apiKey);
+      if (ai && typeof ai === 'object' && !Array.isArray(ai)) {
+        const maskedKeys: Record<string, string> = {};
+        const configured: Record<string, boolean> = {};
+        const keys = ai.apiKeys as Record<string, string> | undefined;
+        if (keys && typeof keys === 'object') {
+          for (const [model, encryptedKey] of Object.entries(keys)) {
+            if (typeof encryptedKey === 'string' && encryptedKey) {
+              maskedKeys[model] = maskApiKey(encryptedKey);
+              configured[model] = true;
             }
           }
         }
-        
-        updates.aiModelSettings.apiKeys = encryptedKeys;
-      }
-      
-      const settings = await storage.updateSiteSettings(updates);
-      
-      // Clean up the response - mask API keys for security
-      const { maskApiKey } = await import('./utils/api-key-encryption');
-      const cleanSettings = {
-        ...settings,
-        id: settings.id,
-      };
-      
-      // Mask API keys in response
-      if (cleanSettings.aiModelSettings?.apiKeys) {
-        const maskedKeys: Record<string, string> = {};
-        for (const [model, encryptedKey] of Object.entries(cleanSettings.aiModelSettings.apiKeys)) {
-          if (encryptedKey && typeof encryptedKey === 'string') {
-            maskedKeys[model] = maskApiKey(encryptedKey);
-          }
-        }
-        cleanSettings.aiModelSettings.apiKeys = maskedKeys;
+        const base = ai as Record<string, unknown>;
+        cleanSettings.aiModelSettings = { ...base, apiKeys: maskedKeys, apiKeyConfigured: configured };
       }
       
       res.json({ success: true, settings: cleanSettings });
