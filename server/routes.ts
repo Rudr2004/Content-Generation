@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import path from "path";
-import { storage, type HirePage, type BlogPost, type User } from "./storage";
+import { storage, type HirePage, type BlogPost, type User, type SiteSettings } from "./storage";
 import { insertContactSubmissionSchema, insertBlogPostSchema, insertUserSchema, loginSchema, forgotPasswordSchema, resetPasswordSchema, changePasswordSchema, insertAuthorSchema, insertServiceSchema, insertServiceTestimonialSchema, insertServiceCategorySchema, insertServiceSubcategorySchema, insertServicePageSchema, insertServiceDetailPageSchema, insertHirePageSchema, insertCaseStudyPageSchema, insertCaseStudyCategorySchema, insertTechnologySchema, insertAiServicePageSchema, insertIndustryPageSchema, insertSeoSettingsSchema, insertSeoKeywordsSchema, insertSeoAnalyticsSchema, insertSeoPageDataSchema, insertRobotsTxtSettingsSchema, insertPageIndexingStatusSchema, insertCentralLinkRegistrySchema, insertLinkUsageMappingSchema, insertLinkRedirectsSchema, insertLinkValidationSchema, insertSiteSettingsSchema } from "@shared/schema";
 import { z } from "zod";
 import { sendContactNotification } from "./email";
@@ -3682,12 +3682,8 @@ CRITICAL REGION COMPLIANCE RULES:
 
       let keywords = "";
 
-      // Try OpenAI first, fallback to predefined keywords if API fails
+      // Try AI provider first, fallback to predefined keywords if API fails
       try {
-        if (!process.env.OPENAI_API_KEY) {
-          throw new Error("OpenAI API key not configured");
-        }
-
         const { generateChatCompletion } = await import("./openai-client");
 
         const prompt = `Generate SEO-optimized keywords for a technology service targeting ONLY ${region} markets.
@@ -3727,12 +3723,7 @@ Target audience: Business decision makers in ${region} looking for technology se
 
 IMPORTANT: Return ONLY the keywords separated by commas. Each keyword should be relevant to ${region} markets. DO NOT include any keywords with USA or Canada unless they are in the region list.`;
 
-        const response = await openai.chat.completions.create({
-          model: "gpt-4o", // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
-          messages: [
-            {
-              role: "system",
-              content: `You are an SEO expert specializing in generating high-quality, relevant keywords for technology services targeting specific geographic regions.
+        const systemContent = `You are an SEO expert specializing in generating high-quality, relevant keywords for technology services targeting specific geographic regions.
 
 CRITICAL REGION COMPLIANCE RULES:
 1. ONLY use regions from the provided list: ${region}
@@ -3740,16 +3731,15 @@ CRITICAL REGION COMPLIANCE RULES:
 3. If the region is "India, Australia", generate keywords ONLY for India and Australia
 4. All location-based keywords must use ONLY: ${regions.map(r => r.trim()).join(', ')}
 5. Include major cities from the specified regions only (e.g., for India: Mumbai, Delhi, Bangalore; for Australia: Sydney, Melbourne, Brisbane)
-6. Generate keywords that are specific, actionable, and optimized for search engines in the target regions.`
-            },
-            {
-              role: "user",
-              content: prompt
-            }
+6. Generate keywords that are specific, actionable, and optimized for search engines in the target regions.`;
+
+        const response = await generateChatCompletion(
+          [
+            { role: "system", content: systemContent },
+            { role: "user", content: prompt },
           ],
-          max_tokens: 300,
-          temperature: 0.7,
-        });
+          { max_tokens: 300, temperature: 0.7 }
+        );
 
         keywords = response.choices[0].message.content?.trim() || "";
         
@@ -4571,19 +4561,14 @@ ${generatedContent.finalCta.button}
 
           // Generate content and testimonials in parallel
           const [contentResponse, testimonialsResponse] = await Promise.all([
-            openai.chat.completions.create({
-              model: "gpt-4o",
-              messages: [{ role: "user", content: contentPrompt }],
-              max_tokens: 2000,
-              temperature: 0.7,
-            }),
-            openai.chat.completions.create({
-              model: "gpt-4o",
-              messages: [{ role: "user", content: testimonialsPrompt }],
-              max_tokens: 800,
-              temperature: 0.8,
-              response_format: { type: "json_object" }
-            })
+            generateChatCompletion(
+              [{ role: "user", content: contentPrompt }],
+              { max_tokens: 2000, temperature: 0.7 }
+            ),
+            generateChatCompletion(
+              [{ role: "user", content: testimonialsPrompt }],
+              { max_tokens: 800, temperature: 0.8, response_format: { type: "json_object" } }
+            ),
           ]);
 
           response.content = contentResponse.choices[0].message.content?.trim() || '';
@@ -4615,13 +4600,10 @@ ${generatedContent.finalCta.button}
             "technologies": ["React", "Node.js", "MongoDB", "AWS", "Docker", "TypeScript"]
           }`;
 
-          const techResponse = await openai.chat.completions.create({
-            model: "gpt-4o",
-            messages: [{ role: "user", content: prompt }],
-            max_tokens: 300,
-            temperature: 0.7,
-            response_format: { type: "json_object" }
-          });
+          const techResponse = await generateChatCompletion(
+            [{ role: "user", content: prompt }],
+            { max_tokens: 300, temperature: 0.7, response_format: { type: "json_object" } }
+          );
 
           const techData = JSON.parse(techResponse.choices[0].message.content || '{"technologies":[]}');
           response.technologies = techData.technologies || [];
@@ -7503,8 +7485,12 @@ CRITICAL INSTRUCTIONS:
         const am = updates.aiModelSettings as Record<string, unknown>;
         updates.aiModelSettings = { ...am, apiKeys: existingEncrypted } as typeof updates.aiModelSettings;
       }
-      
-      const settings = await storage.updateSiteSettings(updates);
+
+      const sanitized: Partial<SiteSettings> = {};
+      for (const [k, v] of Object.entries(updates)) {
+        (sanitized as Record<string, unknown>)[k] = v === null ? undefined : v;
+      }
+      const settings = await storage.updateSiteSettings(sanitized);
 
       const { resetAIProviderCache } = await import('./openai-client');
       resetAIProviderCache();
