@@ -1,11 +1,11 @@
 /**
  * AI Model Settings Component
- * 
+ *
  * Admin UI for managing AI model selection, API keys, and model configuration.
- * Supports OpenAI, Gemini, Perplexity, and Grok models.
+ * Supports OpenAI, Gemini, Perplexity, and Grok (Coming Soon — no public API key yet).
  */
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -18,11 +18,14 @@ import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { Alert, AlertDescription } from './ui/alert';
+import { Badge } from './ui/badge';
+import { Checkbox } from './ui/checkbox';
 import { Loader2, CheckCircle2, XCircle, Eye, EyeOff, Key, Sparkles, Shield, Settings, Zap } from 'lucide-react';
 import type { AIModelSettings, AIModel } from '../lib/types';
 
 const aiModelSettingsSchema = z.object({
   selectedModel: z.enum(['openai', 'gemini', 'perplexity', 'grok']).nullable(),
+  useDefaultModelFromEnv: z.boolean().optional(),
   apiKeys: z.object({
     openai: z.string().optional(),
     gemini: z.string().optional(),
@@ -51,7 +54,13 @@ const aiModelSettingsSchema = z.object({
 
 type AIModelSettingsFormData = z.infer<typeof aiModelSettingsSchema>;
 
-const MODEL_OPTIONS: { value: AIModel; label: string; description: string; defaultModel: string }[] = [
+const MODEL_OPTIONS: {
+  value: AIModel;
+  label: string;
+  description: string;
+  defaultModel: string;
+  comingSoon?: boolean;
+}[] = [
   {
     value: 'openai',
     label: 'OpenAI (GPT-4o)',
@@ -62,7 +71,7 @@ const MODEL_OPTIONS: { value: AIModel; label: string; description: string; defau
     value: 'gemini',
     label: 'Google Gemini',
     description: 'Google\'s advanced AI model with strong reasoning capabilities',
-    defaultModel: 'gemini-2.0-flash-exp',
+    defaultModel: 'gemini-2.0-flash',
   },
   {
     value: 'perplexity',
@@ -73,10 +82,14 @@ const MODEL_OPTIONS: { value: AIModel; label: string; description: string; defau
   {
     value: 'grok',
     label: 'Grok (xAI)',
-    description: 'xAI\'s conversational AI model',
+    description: 'No publicly available API key yet.',
     defaultModel: 'grok-2-1212',
+    comingSoon: true,
   },
 ];
+
+/** App default model when none selected or when user switches after an error. */
+const DEFAULT_APP_MODEL: AIModel = 'openai';
 
 export function AIModelSettings() {
   const { toast } = useToast();
@@ -84,6 +97,7 @@ export function AIModelSettings() {
   const [visibleKeys, setVisibleKeys] = useState<Record<string, boolean>>({});
   const [validatingKey, setValidatingKey] = useState<string | null>(null);
   const [testingModel, setTestingModel] = useState(false);
+  const [modelErrorOccurred, setModelErrorOccurred] = useState(false);
 
   // Fetch current settings
   const { data: settings, isLoading } = useQuery({
@@ -96,36 +110,77 @@ export function AIModelSettings() {
   });
 
   const aiSettings: AIModelSettings | null = settings?.aiModelSettings || null;
+  const apiKeyConfigured = aiSettings?.apiKeyConfigured ?? {};
+  const hasInitialized = useRef(false);
 
   const form = useForm<AIModelSettingsFormData>({
     resolver: zodResolver(aiModelSettingsSchema),
     defaultValues: {
-      selectedModel: aiSettings?.selectedModel || null,
-      apiKeys: aiSettings?.apiKeys || {},
-      modelConfig: aiSettings?.modelConfig || {},
-    },
-    values: {
-      selectedModel: aiSettings?.selectedModel || null,
-      apiKeys: aiSettings?.apiKeys || {},
-      modelConfig: aiSettings?.modelConfig || {},
+      selectedModel: null,
+      useDefaultModelFromEnv: false,
+      apiKeys: {},
+      modelConfig: {},
     },
   });
+
+  useEffect(() => {
+    if (isLoading || !settings || hasInitialized.current) return;
+    hasInitialized.current = true;
+    form.reset({
+      selectedModel: aiSettings?.selectedModel ?? null,
+      useDefaultModelFromEnv: !!aiSettings?.useDefaultModelFromEnv,
+      apiKeys: {},
+      modelConfig: aiSettings?.modelConfig ?? {},
+    });
+  }, [isLoading, settings, aiSettings?.selectedModel, aiSettings?.useDefaultModelFromEnv, aiSettings?.modelConfig, form]);
+
+  const isDirty = form.formState.isDirty;
+  const selectedModel = form.watch('selectedModel');
+  const useDefaultFromEnv = !!form.watch('useDefaultModelFromEnv');
+  const savedUseDefaultFromEnv = !!aiSettings?.useDefaultModelFromEnv;
+  const savedModel = aiSettings?.selectedModel ?? null;
+  const selectedVsSavedMismatch = selectedModel !== savedModel;
+  const cannotTest = isDirty || (!savedUseDefaultFromEnv && selectedVsSavedMismatch);
+
+  // Sync selectedModel, useDefaultModelFromEnv, and modelConfig from server when not dirty (e.g. after save + refetch)
+  useEffect(() => {
+    if (isLoading || !aiSettings || isDirty) return;
+    form.setValue('selectedModel', aiSettings.selectedModel ?? null);
+    form.setValue('useDefaultModelFromEnv', !!aiSettings.useDefaultModelFromEnv);
+    form.setValue('modelConfig', aiSettings.modelConfig ?? {});
+  }, [isLoading, aiSettings, isDirty, form]);
+
+  const isMaskedOrPlaceholder = (k: string) => !k || !k.trim() || k.includes('...');
 
   // Update settings mutation
   const updateMutation = useMutation({
     mutationFn: async (data: Partial<AIModelSettingsFormData>) => {
+      const keys = data.apiKeys ?? {};
+      const apiKeysToSend: Record<string, string> = {};
+      for (const [model, v] of Object.entries(keys)) {
+        if (typeof v === 'string' && !isMaskedOrPlaceholder(v)) apiKeysToSend[model] = v.trim();
+      }
       const response = await apiRequest('POST', '/api/site-settings', {
         ...settings,
         aiModelSettings: {
           selectedModel: data.selectedModel ?? aiSettings?.selectedModel ?? null,
-          apiKeys: data.apiKeys ?? aiSettings?.apiKeys ?? {},
+          useDefaultModelFromEnv: !!data.useDefaultModelFromEnv,
+          apiKeys: apiKeysToSend,
           modelConfig: data.modelConfig ?? aiSettings?.modelConfig ?? {},
         },
       });
       return response.json();
     },
-    onSuccess: () => {
+    onSuccess: (data: { settings?: { aiModelSettings?: AIModelSettings } }) => {
       queryClient.invalidateQueries({ queryKey: ['site-settings'] });
+      const next = data?.settings?.aiModelSettings;
+      form.reset({
+        selectedModel: next?.selectedModel ?? null,
+        useDefaultModelFromEnv: !!next?.useDefaultModelFromEnv,
+        apiKeys: {},
+        modelConfig: next?.modelConfig ?? {},
+      });
+      setModelErrorOccurred(false);
       toast({
         title: 'Success',
         description: 'AI model settings updated successfully',
@@ -140,29 +195,29 @@ export function AIModelSettings() {
     },
   });
 
-  // Validate API key
   const validateApiKey = async (model: AIModel, apiKey: string) => {
-    if (!apiKey || apiKey.trim() === '') {
+    if (isMaskedOrPlaceholder(apiKey)) {
       toast({
         title: 'Error',
-        description: 'Please enter an API key',
+        description: 'Enter your API key above to validate. Keys are not stored until you save.',
         variant: 'destructive',
       });
       return false;
     }
-
     setValidatingKey(model);
     try {
-      const response = await apiRequest('POST', '/api/ai/validate-api-key', { model, apiKey });
+      const response = await apiRequest('POST', '/api/ai/validate-api-key', { model, apiKey: apiKey.trim() });
       const data = await response.json();
       
       if (data.success) {
+        setModelErrorOccurred(false);
         toast({
           title: 'Success',
           description: `API key for ${model} is valid`,
         });
         return true;
       } else {
+        setModelErrorOccurred(true);
         toast({
           title: 'Error',
           description: data.message || 'Invalid API key',
@@ -171,6 +226,7 @@ export function AIModelSettings() {
         return false;
       }
     } catch (error: any) {
+      setModelErrorOccurred(true);
       toast({
         title: 'Error',
         description: error.message || 'Failed to validate API key',
@@ -182,13 +238,22 @@ export function AIModelSettings() {
     }
   };
 
-  // Test selected model
+  // Test selected model or default-from-ENV (uses saved settings; disabled when form not saved or selected !== saved)
   const testModel = async () => {
-    const selectedModel = form.watch('selectedModel');
-    if (!selectedModel) {
+    if (!selectedModel && !savedUseDefaultFromEnv) {
       toast({
         title: 'Error',
-        description: 'Please select a model first',
+        description: 'Select a model or enable "Use default model from ENV" first',
+        variant: 'destructive',
+      });
+      return;
+    }
+    if (cannotTest) {
+      toast({
+        title: 'Error',
+        description: selectedVsSavedMismatch
+          ? 'Selected model does not match saved model. Save your changes first, then test.'
+          : 'Save your changes first to test the model.',
         variant: 'destructive',
       });
       return;
@@ -196,7 +261,6 @@ export function AIModelSettings() {
 
     setTestingModel(true);
     try {
-      // Test endpoint uses the selected model from settings, not from request body
       const response = await apiRequest('POST', '/api/ai/test-model', {});
       
       if (!response.ok) {
@@ -205,13 +269,17 @@ export function AIModelSettings() {
       }
       
       const data = await response.json();
-      
+      const testedModel = data.model ?? savedModel ?? selectedModel;
+      const modelLabel = MODEL_OPTIONS.find(m => m.value === testedModel)?.label ?? testedModel;
+
       if (data.success) {
+        setModelErrorOccurred(false);
         toast({
           title: 'Success',
-          description: data.message || `Model ${selectedModel} is working correctly`,
+          description: data.message || `Saved model (${modelLabel}) is working correctly`,
         });
       } else {
+        setModelErrorOccurred(true);
         toast({
           title: 'Error',
           description: data.message || 'Model test failed',
@@ -220,6 +288,7 @@ export function AIModelSettings() {
       }
     } catch (error: any) {
       console.error('Test model error:', error);
+      setModelErrorOccurred(true);
       toast({
         title: 'Error',
         description: error.message || 'Failed to test model. Make sure the API key is configured.',
@@ -230,23 +299,24 @@ export function AIModelSettings() {
     }
   };
 
+  const useDefaultModel = () => {
+    form.setValue('selectedModel', DEFAULT_APP_MODEL);
+    setModelErrorOccurred(false);
+    const label = MODEL_OPTIONS.find(m => m.value === DEFAULT_APP_MODEL)?.label ?? 'OpenAI';
+    toast({
+      title: 'Switched to default model',
+      description: `Using ${label}. Configure its API key if needed, then Save.`,
+    });
+  };
+
+  const dismissModelError = () => setModelErrorOccurred(false);
+
   const onSubmit = (data: AIModelSettingsFormData) => {
     updateMutation.mutate(data);
   };
 
   const toggleKeyVisibility = (model: string) => {
     setVisibleKeys(prev => ({ ...prev, [model]: !prev[model] }));
-  };
-
-  const maskApiKey = (key: string | undefined): string => {
-    if (!key) return '';
-    if (key.length <= 8) return '••••••••';
-    return `${key.substring(0, 4)}...${key.substring(key.length - 4)}`;
-  };
-
-  const isKeyMasked = (key: string | undefined): boolean => {
-    if (!key) return false;
-    return key.includes('...') || key.length <= 8;
   };
 
   if (isLoading) {
@@ -297,16 +367,31 @@ export function AIModelSettings() {
             </Label>
             <Select
               value={form.watch('selectedModel') || ''}
-              onValueChange={(value) => form.setValue('selectedModel', value as AIModel || null)}
+              onValueChange={(value) => {
+                form.setValue('selectedModel', value as AIModel || null);
+                setModelErrorOccurred(false);
+              }}
             >
               <SelectTrigger id="selectedModel" className="h-12 text-base">
                 <SelectValue placeholder="Select a model (default: OpenAI)" />
               </SelectTrigger>
               <SelectContent>
                 {MODEL_OPTIONS.map((option) => (
-                  <SelectItem key={option.value} value={option.value} className="py-3">
+                  <SelectItem
+                    key={option.value}
+                    value={option.value}
+                    disabled={option.comingSoon}
+                    className="py-3"
+                  >
                     <div className="flex flex-col gap-1">
-                      <div className="font-semibold">{option.label}</div>
+                      <div className="flex items-center gap-2 font-semibold">
+                        {option.label}
+                        {option.comingSoon && (
+                          <Badge variant="secondary" className="text-xs font-normal">
+                            Coming Soon
+                          </Badge>
+                        )}
+                      </div>
                       <div className="text-xs text-muted-foreground">{option.description}</div>
                     </div>
                   </SelectItem>
@@ -317,7 +402,12 @@ export function AIModelSettings() {
               <div className="flex items-start gap-2 p-3 bg-muted/50 rounded-lg border">
                 <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5" />
                 <div>
-                  <p className="text-sm font-medium">Currently selected: <strong>{selectedModelInfo.label}</strong></p>
+                  <p className="text-sm font-medium">
+                    Currently selected: <strong>{selectedModelInfo.label}</strong>
+                    {selectedModelInfo.comingSoon && (
+                      <Badge variant="secondary" className="ml-2 text-xs font-normal">Coming Soon</Badge>
+                    )}
+                  </p>
                   <p className="text-xs text-muted-foreground mt-1">{selectedModelInfo.description}</p>
                 </div>
               </div>
@@ -325,27 +415,97 @@ export function AIModelSettings() {
           </div>
 
           {/* Test Model Button */}
-          {form.watch('selectedModel') && (
-            <Button
-              type="button"
-              variant="outline"
-              onClick={testModel}
-              disabled={testingModel}
-              className="w-full h-11 text-base"
-            >
-              {testingModel ? (
-                <>
-                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                  Testing Model...
-                </>
-              ) : (
-                <>
-                  <CheckCircle2 className="mr-2 h-5 w-5" />
-                  Test Selected Model
-                </>
+          {((selectedModel && !selectedModelInfo?.comingSoon) || useDefaultFromEnv) && (
+            <div className="space-y-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={testModel}
+                disabled={testingModel || cannotTest}
+                title={
+                  cannotTest
+                    ? !savedUseDefaultFromEnv && selectedVsSavedMismatch
+                      ? 'Selected model does not match saved model. Save first to test.'
+                      : 'Save your changes first to test the model.'
+                    : undefined
+                }
+                className="w-full h-11 text-base"
+              >
+                {testingModel ? (
+                  <>
+                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                    Testing Model...
+                  </>
+                ) : (
+                  <>
+                    <CheckCircle2 className="mr-2 h-5 w-5" />
+                    {savedUseDefaultFromEnv ? 'Test default model (ENV)' : 'Test Saved Model'}
+                  </>
+                )}
+              </Button>
+              {cannotTest && (
+                <p className="text-sm text-muted-foreground">
+                  {!savedUseDefaultFromEnv && selectedVsSavedMismatch
+                    ? 'Selected model does not match saved model. Save first to test.'
+                    : 'Save your changes first to test the model.'}
+                </p>
               )}
-            </Button>
+            </div>
           )}
+
+          {/* After error: offer "Use default model" so user can switch */}
+          {modelErrorOccurred && selectedModel && (
+            <Alert className="bg-amber-50 dark:bg-amber-950 border-amber-200 dark:border-amber-800">
+              <div className="flex flex-col gap-3">
+                <p className="text-sm">
+                  {selectedModel === DEFAULT_APP_MODEL ? (
+                    <>An error occurred with the default model. Check your API key, then Save and Test.</>
+                  ) : (
+                    <>An error occurred with the selected model. You can switch to the default model and try again.</>
+                  )}
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {selectedModel !== DEFAULT_APP_MODEL ? (
+                    <Button
+                      type="button"
+                      variant="default"
+                      size="sm"
+                      onClick={useDefaultModel}
+                      className="bg-amber-700 hover:bg-amber-800"
+                    >
+                      Use default model ({MODEL_OPTIONS.find(m => m.value === DEFAULT_APP_MODEL)?.label ?? 'OpenAI'})
+                    </Button>
+                  ) : null}
+                  <Button type="button" variant="outline" size="sm" onClick={dismissModelError}>
+                    Dismiss
+                  </Button>
+                </div>
+              </div>
+            </Alert>
+          )}
+
+          {/* Use default model (OpenAI) with key from ENV */}
+          <div className="flex flex-col gap-2 rounded-lg border p-4 bg-muted/30">
+            <div className="flex items-start gap-3">
+              <Checkbox
+                id="useDefaultModelFromEnv"
+                checked={!!form.watch('useDefaultModelFromEnv')}
+                onCheckedChange={(c) => form.setValue('useDefaultModelFromEnv', !!c)}
+                className="mt-0.5"
+              />
+              <div className="space-y-1">
+                <Label
+                  htmlFor="useDefaultModelFromEnv"
+                  className="text-base font-semibold cursor-pointer leading-tight"
+                >
+                  Use default model (OpenAI) with key from environment
+                </Label>
+                <p className="text-sm text-muted-foreground">
+                  When enabled, all generations use OpenAI (GPT-4o) with <code className="px-1.5 py-0.5 bg-muted rounded text-xs">OPENAI_API_KEY</code> from your environment. The selected model and stored API keys are ignored. Useful when the selected model fails (e.g. quota) or you prefer a central ENV key.
+                </p>
+              </div>
+            </div>
+          </div>
         </CardContent>
       </Card>
 
@@ -373,39 +533,47 @@ export function AIModelSettings() {
           )}
           {(() => {
             const selectedModel = form.watch('selectedModel');
-            // Only show API key field for the selected model
-            if (!selectedModel) {
-              return null; // Don't show any API key fields if no model is selected
-            }
-            
+            if (!selectedModel) return null;
+
             const modelsToShow = MODEL_OPTIONS.filter(m => m.value === selectedModel);
-            
+
             return modelsToShow.map((modelOption) => {
               const model = modelOption.value;
+
+              if (modelOption.comingSoon) {
+                return (
+                  <Alert key={model} className="bg-muted/50 border-muted-foreground/20">
+                    <AlertDescription className="text-sm">
+                      <strong className="text-foreground">{modelOption.label}</strong>
+                      <span className="text-muted-foreground"> — Coming Soon. No publicly available API key yet.</span>
+                    </AlertDescription>
+                  </Alert>
+                );
+              }
+
               const apiKey = form.watch(`apiKeys.${model}`) || '';
               const isVisible = visibleKeys[model];
-              const isMasked = isKeyMasked(apiKey);
-              const displayKey = isVisible && !isMasked ? apiKey : maskApiKey(apiKey);
+              const configured = apiKeyConfigured[model];
+              const placeholder = configured
+                ? 'Key configured • Enter new key to change'
+                : `Enter ${modelOption.label} API key`;
 
               return (
                 <div key={model} className="space-y-3 p-4 border rounded-lg bg-card hover:bg-muted/50 transition-colors">
-                <Label htmlFor={`apiKey-${model}`} className="text-base font-semibold flex items-center gap-2">
-                  <Key className="h-4 w-4" />
-                  {modelOption.label} API Key
-                </Label>
-                <div className="flex gap-3">
-                  <div className="relative flex-1">
-                    <Input
-                      id={`apiKey-${model}`}
-                      type={isVisible && !isMasked ? 'text' : 'password'}
-                      value={displayKey}
-                      onChange={(e) => {
-                        form.setValue(`apiKeys.${model}`, e.target.value);
-                      }}
-                      placeholder={`Enter ${modelOption.label} API key`}
-                      className="pr-12 h-11 text-base"
-                    />
-                    {apiKey && (
+                  <Label htmlFor={`apiKey-${model}`} className="text-base font-semibold flex items-center gap-2">
+                    <Key className="h-4 w-4" />
+                    {modelOption.label} API Key
+                  </Label>
+                  <div className="flex gap-3">
+                    <div className="relative flex-1">
+                      <Input
+                        id={`apiKey-${model}`}
+                        type={isVisible ? 'text' : 'password'}
+                        value={apiKey}
+                        onChange={(e) => form.setValue(`apiKeys.${model}`, e.target.value)}
+                        placeholder={placeholder}
+                        className="pr-12 h-11 text-base"
+                      />
                       <Button
                         type="button"
                         variant="ghost"
@@ -413,41 +581,31 @@ export function AIModelSettings() {
                         className="absolute right-1 top-1 h-9 px-3 hover:bg-muted"
                         onClick={() => toggleKeyVisibility(model)}
                       >
-                        {isVisible && !isMasked ? (
-                          <EyeOff className="h-4 w-4" />
-                        ) : (
-                          <Eye className="h-4 w-4" />
-                        )}
+                        {isVisible ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                       </Button>
-                    )}
+                    </div>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      title={isMaskedOrPlaceholder(apiKey) ? 'Enter your API key to validate.' : undefined}
+                      onClick={() => {
+                        const key = form.getValues(`apiKeys.${model}`) ?? '';
+                        validateApiKey(model, key);
+                      }}
+                      disabled={validatingKey === model || isMaskedOrPlaceholder(apiKey)}
+                      className="h-11 px-6"
+                    >
+                      {validatingKey === model ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <>
+                          <CheckCircle2 className="mr-2 h-4 w-4" />
+                          Validate
+                        </>
+                      )}
+                    </Button>
                   </div>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={async () => {
-                      const key = form.getValues(`apiKeys.${model}`);
-                      if (key) {
-                        const isValid = await validateApiKey(model, key);
-                        if (isValid) {
-                          // Save the validated key
-                          form.setValue(`apiKeys.${model}`, key);
-                        }
-                      }
-                    }}
-                    disabled={validatingKey === model || !apiKey}
-                    className="h-11 px-6"
-                  >
-                    {validatingKey === model ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                    ) : (
-                      <>
-                        <CheckCircle2 className="mr-2 h-4 w-4" />
-                        Validate
-                      </>
-                    )}
-                  </Button>
                 </div>
-              </div>
               );
             });
           })()}
@@ -455,7 +613,7 @@ export function AIModelSettings() {
       </Card>
 
       {/* Model Configuration */}
-      {form.watch('selectedModel') && (
+      {form.watch('selectedModel') && !selectedModelInfo?.comingSoon && (
         <Card className="border-2">
           <CardHeader className="pb-4">
             <CardTitle className="flex items-center gap-2 text-xl">
@@ -471,12 +629,13 @@ export function AIModelSettings() {
               <Label htmlFor="model-name" className="text-base font-semibold">Model Name</Label>
               <Input
                 id="model-name"
-                value={form.watch(`modelConfig.${form.watch('selectedModel')}.model`) || defaultModel}
+                value={form.watch('modelConfig')?.[selectedModel!]?.model ?? defaultModel}
                 onChange={(e) => {
-                  const selectedModel = form.watch('selectedModel');
-                  if (selectedModel) {
-                    form.setValue(`modelConfig.${selectedModel}.model`, e.target.value);
-                  }
+                  if (!selectedModel) return;
+                  const cfg = { ...(form.getValues('modelConfig') ?? {}) };
+                  const cur = cfg[selectedModel] ?? {};
+                  cfg[selectedModel] = { ...cur, model: e.target.value };
+                  form.setValue('modelConfig', cfg);
                 }}
                 placeholder={defaultModel}
                 className="h-11 text-base"
@@ -494,12 +653,13 @@ export function AIModelSettings() {
                 min="0"
                 max="2"
                 step="0.1"
-                value={form.watch(`modelConfig.${form.watch('selectedModel')}.temperature`) || 0.7}
+                value={form.watch('modelConfig')?.[selectedModel!]?.temperature ?? 0.7}
                 onChange={(e) => {
-                  const selectedModel = form.watch('selectedModel');
-                  if (selectedModel) {
-                    form.setValue(`modelConfig.${selectedModel}.temperature`, parseFloat(e.target.value));
-                  }
+                  if (!selectedModel) return;
+                  const cfg = { ...(form.getValues('modelConfig') ?? {}) };
+                  const cur = cfg[selectedModel] ?? {};
+                  cfg[selectedModel] = { ...cur, temperature: parseFloat(e.target.value) };
+                  form.setValue('modelConfig', cfg);
                 }}
                 placeholder="0.7"
                 className="h-11 text-base"

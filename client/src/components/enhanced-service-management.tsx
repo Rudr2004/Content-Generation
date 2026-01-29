@@ -39,6 +39,26 @@ import { RichTextEditor } from "@/components/ui/rich-text-editor";
 import { useSiteSettings } from "@/contexts/SiteSettingsContext";
 import { resolveRegion } from "@/lib/region-resolver";
 
+const AI_GENERATION_TIMEOUT_MS = 90_000;
+
+async function fetchWithTimeout(
+  url: string,
+  init?: Omit<RequestInit, "signal"> & { timeoutMs?: number }
+): Promise<Response> {
+  const { timeoutMs = AI_GENERATION_TIMEOUT_MS, ...rest } = (init ?? {}) as RequestInit & { timeoutMs?: number };
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    return await fetch(url, { ...rest, signal: controller.signal });
+  } catch (e) {
+    if (e instanceof Error && e.name === "AbortError")
+      throw new Error("Request timed out. The AI service may be busy; please try again in a moment.");
+    throw e;
+  } finally {
+    clearTimeout(id);
+  }
+}
+
 interface Service {
   id: number;
   title: string;
@@ -282,23 +302,24 @@ function ServiceFormComponent({ service, onSuccess, onCancel }: ServiceFormProps
       }
       console.log('Full request body:', requestBodyForLog);
 
-      const response = await fetch('/api/ai-service-pages/generate-content', {
-        method: 'POST',
+      const response = await fetchWithTimeout("/api/ai-service-pages/generate-content", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${authToken}`,
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${authToken}`,
         },
         body: JSON.stringify(requestBody),
+        timeoutMs: AI_GENERATION_TIMEOUT_MS,
       });
 
       if (!response.ok) {
-        let errorMessage = 'Failed to generate AI content';
+        let errorMessage = "Failed to generate AI content";
         try {
           const errorData = await response.json();
           errorMessage = errorData.message || errorData.error || errorMessage;
-          console.error('API Error Response:', errorData);
+          console.error("API Error Response:", errorData);
         } catch (e) {
-          console.error('Failed to parse error response:', e);
+          console.error("Failed to parse error response:", e);
         }
         throw new Error(errorMessage);
       }
@@ -386,23 +407,24 @@ function ServiceFormComponent({ service, onSuccess, onCancel }: ServiceFormProps
     setGeneratingField(field);
 
     try {
-      // Generate specific field content using OpenAI
-      const authToken = localStorage.getItem('authToken');
-      const response = await fetch('/api/ai-service-pages/generate-content', {
-        method: 'POST',
+      const authToken = localStorage.getItem("authToken");
+      const response = await fetchWithTimeout("/api/ai-service-pages/generate-content", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${authToken}`,
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${authToken}`,
         },
-        body: JSON.stringify({
-          serviceName,
-          category,
-          field
-        }),
+        body: JSON.stringify({ serviceName, category, field }),
+        timeoutMs: AI_GENERATION_TIMEOUT_MS,
       });
 
       if (!response.ok) {
-        throw new Error('Failed to generate field content');
+        let msg = "Failed to generate field content";
+        try {
+          const d = await response.json();
+          msg = d.message || d.error || msg;
+        } catch (_) { /* ignore */ }
+        throw new Error(msg);
       }
 
       const result = await response.json();
@@ -576,23 +598,31 @@ function ServiceFormComponent({ service, onSuccess, onCancel }: ServiceFormProps
           break;
       }
 
-      const authToken = localStorage.getItem('authToken');
-      const response = await fetch('/api/ai-service-pages/generate-content', {
-        method: 'POST',
+      const authToken = localStorage.getItem("authToken");
+      const response = await fetchWithTimeout("/api/ai-service-pages/generate-content", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${authToken}`,
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${authToken}`,
         },
         body: JSON.stringify({
           serviceName: currentTitle,
           category,
           subCategory,
           type,
-          aiTechnologies: form.watch('aiTechnologies')
-        })
+          aiTechnologies: form.watch("aiTechnologies"),
+        }),
+        timeoutMs: AI_GENERATION_TIMEOUT_MS,
       });
 
-      if (!response.ok) throw new Error('Failed to generate content');
+      if (!response.ok) {
+        let msg = "Failed to generate content";
+        try {
+          const d = await response.json();
+          msg = d.message || d.error || msg;
+        } catch (_) { /* ignore */ }
+        throw new Error(msg);
+      }
 
       const data = await response.json();
 

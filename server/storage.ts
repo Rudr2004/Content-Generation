@@ -190,6 +190,8 @@ export interface ColorSettings {
 
 export interface AIModelSettings {
   selectedModel: "openai" | "gemini" | "perplexity" | "grok" | null;
+  /** When true, use OpenAI with OPENAI_API_KEY from env for all generations; ignores selected model and stored keys. */
+  useDefaultModelFromEnv?: boolean;
   apiKeys?: {
     openai?: string; // Encrypted
     gemini?: string; // Encrypted
