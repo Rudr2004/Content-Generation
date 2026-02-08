@@ -6,6 +6,7 @@ import { ArrowRight, Building, Globe, Brain, Smartphone, ShoppingCart, Shield, Z
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { HOMEPAGE_CASE_STUDIES } from "@/lib/homepage-content";
 
 interface CaseStudyCategory {
   id: number;
@@ -193,27 +194,43 @@ export function HomeCaseStudiesSection() {
     return null; // Don't render if no data
   }
 
+  const caseStudies = HOMEPAGE_CASE_STUDIES;
+
   return (
-    <section className="py-20 bg-gray-50">
+    <section
+      className="py-20"
+      style={{ backgroundColor: "var(--form-input-bg, #f9fafb)" }}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Clean Header */}
         <motion.div
           className="text-center mb-16"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <div className="inline-flex items-center px-6 py-3 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 text-white text-sm font-semibold mb-8 shadow-lg">
+          <div
+            className="inline-flex items-center px-6 py-3 rounded-full text-white text-sm font-semibold mb-8 shadow-lg"
+            style={{
+              background:
+                "linear-gradient(to right, var(--homepage-hero-start, #3b82f6), var(--homepage-hero-middle, #8b5cf6))",
+            }}
+          >
             <Building className="mr-2 h-4 w-4" />
-            Success Stories
+            {caseStudies.badge}
           </div>
 
-          <h2 className="text-4xl md:text-5xl font-bold text-slate-900 mb-6 heading-georgia">
-            Transforming Businesses Across Industries
+          <h2
+            className="text-4xl md:text-5xl font-bold mb-6 heading-georgia"
+            style={{ color: "var(--header-text, #111827)" }}
+          >
+            {caseStudies.title}
           </h2>
 
-          <p className="text-lg text-slate-600 max-w-2xl mx-auto text-poppins">
-            Explore our portfolio of successful AI and technology implementations that have delivered measurable results for our clients
+          <p
+            className="text-lg max-w-2xl mx-auto text-poppins"
+            style={{ color: "var(--header-text, #4b5563)" }}
+          >
+            {caseStudies.subtitle}
           </p>
         </motion.div>
 
