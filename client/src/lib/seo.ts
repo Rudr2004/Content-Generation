@@ -78,24 +78,22 @@ export const LOCATION_KEYWORDS = [
 // Page-specific SEO metadata
 export const SEO_PAGES: Record<string, SEOMetadata> = {
   home: {
-    title: "GreenAppleX - AI & Web3 Development Company USA",
-    description: "Top AI & Web3 development company USA. Hire expert developers for AI, blockchain, and mobile apps. 500+ projects delivered.",
+    title: "Bootsolo - Marketing for Solopreneurs & Lean Tech Founders",
+    description: "Lean marketing agency for solopreneurs and tech founders. Brand strategy, website design, content marketing, SEO, and paid ads—built for founders who need results, not bureaucracy.",
     keywords: [
-      "Custom software development",
-      "generative AI development company",
-      "hire mobile app developers",
-      "Web3 development company",
-      "AI and Web3 solutions",
-      "Enterprise AI services",
-      "blockchain development firm",
-      "digital transformation consulting",
-      "hire AI developers",
-      "web3 development services",
-      "React Native app development",
-      "Top mobile app developers"
+      "marketing for solopreneurs",
+      "marketing agency for startups",
+      "lean marketing agency",
+      "brand strategy for founders",
+      "content marketing for SaaS",
+      "SEO for solopreneurs",
+      "marketing for tech founders",
+      "affordable marketing agency",
+      "growth marketing for startups",
+      "website design for solopreneurs"
     ],
-    ogTitle: "GreenAppleX - AI & Web3 Development Company USA",
-    ogDescription: "Leading AI development company USA delivering Web3 solutions. Hire top developers for AI, mobile apps, and blockchain. 500+ projects delivered.",
+    ogTitle: "Bootsolo - Marketing for Solopreneurs & Lean Tech Founders",
+    ogDescription: "Your lean marketing partner. Brand strategy, website design, content marketing, SEO, and paid ads—built for solopreneurs and lean tech founders.",
     canonicalUrl: "https://greenapplex.com/"
   },
 

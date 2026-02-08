@@ -32,6 +32,7 @@ import EnterpriseSolutions from "@/pages/enterprise-solutions";
 import CaseStudies from "@/pages/modern-case-studies";
 import IndividualCaseStudy from "@/pages/individual-case-study";
 import IndustryPage from "@/pages/industry-page";
+import ModernServices from "@/pages/modern-services";
 import { SEODashboard } from "@/components/seo-dashboard";
 import { ScrollToTop } from "@/components/scroll-to-top";
 import { AuthProvider } from "@/contexts/AuthContext";
@@ -113,6 +114,9 @@ function Router() {
       </Route>
       <Route path="/privacy-policy">
         <SEOOptimizedRoute component={PrivacyPolicy} seoKey="privacy-policy" />
+      </Route>
+      <Route path="/services">
+        <SEOOptimizedRoute component={ModernServices} seoKey="services" path="/services" />
       </Route>
       <Route path="/services/all">
         <SEOOptimizedRoute component={() => {

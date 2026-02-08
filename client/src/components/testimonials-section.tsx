@@ -52,14 +52,28 @@ export function TestimonialsSection() {
           transition={{ duration: 0.8 }}
           viewport={{ once: true }}
         >
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6">
+          <h2
+            className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6"
+            style={{ color: "var(--header-text, #111827)" }}
+          >
             What Our{" "}
-            <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+            <span
+              style={{
+                background:
+                  "linear-gradient(to right, var(--homepage-hero-start, #3b82f6), var(--homepage-hero-middle, #8b5cf6), var(--homepage-hero-end, #ec4899))",
+                WebkitBackgroundClip: "text",
+                backgroundClip: "text",
+                color: "transparent",
+              }}
+            >
               Clients Say
             </span>
           </h2>
-          <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-            Trusted by industry leaders worldwide to deliver exceptional results
+          <p
+            className="text-lg md:text-xl max-w-3xl mx-auto leading-relaxed"
+            style={{ color: "var(--header-text, #4b5563)" }}
+          >
+            Trusted by solopreneurs and lean tech founders worldwide
           </p>
         </motion.div>
 

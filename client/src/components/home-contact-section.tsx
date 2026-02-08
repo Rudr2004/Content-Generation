@@ -24,6 +24,7 @@ import {
   SelectValue
 } from "@/components/ui/select";
 import { SERVICES } from "@/lib/constants";
+import { HOMEPAGE_CONTACT } from "@/lib/homepage-content";
 import { GetInTouchSection } from "./get-in-touch-section";
 
 export function HomeContactSection() {
@@ -74,17 +75,27 @@ export function HomeContactSection() {
     contactMutation.mutate(submissionData);
   };
 
+  const contact = HOMEPAGE_CONTACT;
+
   return (
-    <section id="contact-section" className="py-12 sm:py-16 lg:py-20 bg-gray-50">
+    <section
+      id="contact-section"
+      className="py-12 sm:py-16 lg:py-20"
+      style={{ backgroundColor: "var(--form-input-bg, #f9fafb)" }}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header Section */}
         <div className="text-center mb-12 sm:mb-16">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6 text-gray-900 heading-georgia leading-tight">
-            Ready to Transform Your Business?
+          <h2
+            className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6 heading-georgia leading-tight"
+            style={{ color: "var(--header-text, #111827)" }}
+          >
+            {contact.title}
           </h2>
-          <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-3xl mx-auto text-poppins leading-relaxed px-4 sm:px-0">
-            Let's discuss how our AI, Web3, and digital solutions can accelerate your growth.
-            Get a free consultation with our experts.
+          <p
+            className="text-base sm:text-lg md:text-xl max-w-3xl mx-auto text-poppins leading-relaxed px-4 sm:px-0"
+            style={{ color: "var(--header-text, #4b5563)" }}
+          >
+            {contact.subtitle}
           </p>
         </div>
 
@@ -98,8 +109,19 @@ export function HomeContactSection() {
             </div>
 
             {/* Our Locations */}
-            <div className="bg-white p-6 sm:p-8 rounded-lg shadow-sm border border-gray-200">
-              <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4 sm:mb-6 heading-georgia">Our Locations</h3>
+            <div
+              className="p-6 sm:p-8 rounded-lg shadow-sm border"
+              style={{
+                backgroundColor: "var(--homepage-hero-bg, #ffffff)",
+                borderColor: "var(--header-border, #e5e7eb)",
+              }}
+            >
+              <h3
+                className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 heading-georgia"
+                style={{ color: "var(--header-text, #111827)" }}
+              >
+                Our Locations
+              </h3>
               <div className="space-y-6">
                 {/* Massachusetts */}
                 <div className="flex gap-3 sm:gap-4 items-start">
@@ -128,10 +150,19 @@ export function HomeContactSection() {
 
           {/* Right Column - Contact Form */}
           <div className="order-1 xl:order-2">
-            <div className="bg-white p-6 sm:p-8 lg:p-10 rounded-lg shadow-lg border border-gray-200 w-full max-w-2xl mx-auto xl:max-w-none">
+            <div
+              className="p-6 sm:p-8 lg:p-10 rounded-lg shadow-lg border w-full max-w-2xl mx-auto xl:max-w-none"
+              style={{
+                backgroundColor: "var(--homepage-hero-bg, #ffffff)",
+                borderColor: "var(--header-border, #e5e7eb)",
+              }}
+            >
               <div className="text-center xl:text-left mb-6 sm:mb-8">
-                <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 heading-georgia">
-                  Start Your Project Today
+                <h3
+                  className="text-xl sm:text-2xl lg:text-3xl font-bold heading-georgia"
+                  style={{ color: "var(--header-text, #111827)" }}
+                >
+                  {contact.formTitle}
                 </h3>
               </div>
 
