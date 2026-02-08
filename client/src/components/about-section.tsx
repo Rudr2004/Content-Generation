@@ -1,30 +1,76 @@
-import { ArrowRight, CheckCircle2, Award, Users, Globe2, Rocket } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Link } from "wouter";
-import { STATS, COMPANY_INFO } from "@/lib/constants";
+import { Award } from "lucide-react";
 import { HeroAnimatedButton } from "@/components/ui/hero-animated-button";
 import { useSiteSettings } from "@/contexts/SiteSettingsContext";
+import { STATS } from "@/lib/constants";
+import { HOMEPAGE_ABOUT } from "@/lib/homepage-content";
 
+/**
+ * About section - Bootsolo positioning and stats.
+ * Uses CSS variables for theme compatibility.
+ */
 export function AboutSection() {
   const { settings } = useSiteSettings();
-  const siteName = settings?.siteName || COMPANY_INFO.name;
+  const siteName = settings?.siteName || "Bootsolo";
+  const about = HOMEPAGE_ABOUT;
 
   return (
-    <section id="about" className="py-24 bg-gray-50">
+    <section
+      id="about"
+      className="py-24"
+      style={{ backgroundColor: "var(--form-input-bg, #f9fafb)" }}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-20">
-          <div className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-50 via-purple-50 to-pink-50 rounded-full text-sm font-semibold mb-8 border border-gray-200 text-poppins">
-            <Award className="mr-2 h-4 w-4 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent" />
-            <span className="bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">Technology Solutions Company</span>
+          <div
+            className="inline-flex items-center px-6 py-3 rounded-full text-sm font-semibold mb-8 border text-poppins"
+            style={{
+              background:
+                "linear-gradient(to right, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1), rgba(236, 72, 153, 0.1))",
+              borderColor: "var(--header-border, #e5e7eb)",
+            }}
+          >
+            <Award
+              className="mr-2 h-4 w-4"
+              style={{
+                color: "var(--homepage-hero-start, #3b82f6)",
+              }}
+            />
+            <span
+              style={{
+                background:
+                  "linear-gradient(to right, var(--homepage-hero-start, #3b82f6), var(--homepage-hero-middle, #8b5cf6), var(--homepage-hero-end, #ec4899))",
+                WebkitBackgroundClip: "text",
+                backgroundClip: "text",
+                color: "transparent",
+              }}
+            >
+              {about.badge}
+            </span>
           </div>
-          <h1 className="text-5xl lg:text-6xl font-bold text-gray-900 mb-8 heading-georgia">
-            Leading AI Development &
+          <h1
+            className="text-5xl lg:text-6xl font-bold mb-8 heading-georgia"
+            style={{ color: "var(--header-text, #111827)" }}
+          >
+            {about.title}
             <div>
-              <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent"> Enterprise Software Solutions Company</span>
+              <span
+                style={{
+                  background:
+                    "linear-gradient(to right, var(--homepage-hero-start, #3b82f6), var(--homepage-hero-middle, #8b5cf6), var(--homepage-hero-end, #ec4899))",
+                  WebkitBackgroundClip: "text",
+                  backgroundClip: "text",
+                  color: "transparent",
+                }}
+              >
+                {about.titleHighlight}
+              </span>
             </div>
           </h1>
-          <p className="text-xl text-gray-600 max-w-5xl mx-auto font-light leading-relaxed text-poppins">
-            Founded in 2021, <strong>{siteName}</strong> is a leading AI development, enterprise software development, and digital transformation company helping global businesses achieve AI-powered growth. As a true technological companion, {siteName} empowers startups to enterprise-level businesses with custom AI solutions, generative AI development, and innovative software solutions.
+          <p
+            className="text-xl max-w-5xl mx-auto font-light leading-relaxed text-poppins"
+            style={{ color: "var(--header-text, #4b5563)" }}
+          >
+            {about.description}
           </p>
         </div>
 
@@ -32,12 +78,28 @@ export function AboutSection() {
           {STATS.map((stat) => (
             <div
               key={stat.label}
-              className="text-center bg-white p-6 sm:p-8 rounded-lg shadow-sm border border-gray-100"
+              className="text-center p-6 sm:p-8 rounded-lg shadow-sm border"
+              style={{
+                backgroundColor: "var(--homepage-hero-bg, #ffffff)",
+                borderColor: "var(--header-border, #e5e7eb)",
+              }}
             >
-              <div className="text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent mb-2 sm:mb-3 heading-georgia">
+              <div
+                className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-2 sm:mb-3 heading-georgia"
+                style={{
+                  background:
+                    "linear-gradient(to right, var(--homepage-hero-start, #3b82f6), var(--homepage-hero-middle, #8b5cf6), var(--homepage-hero-end, #ec4899))",
+                  WebkitBackgroundClip: "text",
+                  backgroundClip: "text",
+                  color: "transparent",
+                }}
+              >
                 {stat.value}
               </div>
-              <div className="text-xs sm:text-sm md:text-base text-gray-600 font-medium text-poppins">
+              <div
+                className="text-xs sm:text-sm md:text-base font-medium text-poppins"
+                style={{ color: "var(--header-text, #4b5563)" }}
+              >
                 {stat.label}
               </div>
             </div>

@@ -79,6 +79,17 @@ interface IndustryPage {
   metaDescription?: string;
 }
 
+// Bootsolo navigation - simplified for marketing agency
+const bootsoloNavItems = [
+  { href: "/", label: "Home", hasDropdown: false },
+  { href: "/#who-we-help", label: "Who We Help", hasDropdown: false },
+  { href: "/services", label: "Services", hasDropdown: false },
+  { href: "/case-studies", label: "Case Studies", hasDropdown: false },
+  { href: "/blog", label: "Resources", hasDropdown: false },
+  { href: "/about", label: "About", hasDropdown: false },
+  { href: "/contact", label: "Contact", hasDropdown: false },
+];
+
 const staticNavItems = [
   {
     href: "/services",
@@ -504,7 +515,14 @@ export function Navigation() {
   const [mobileActiveDropdown, setMobileActiveDropdown] = useState<string | null>(null);
   const [contactModalOpen, setContactModalOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [currentHash, setCurrentHash] = useState(() => (typeof window !== "undefined" ? window.location.hash : ""));
   const dropdownTimeout = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    const onHashChange = () => setCurrentHash(window.location.hash);
+    window.addEventListener("hashchange", onHashChange);
+    return () => window.removeEventListener("hashchange", onHashChange);
+  }, []);
 
   // Load service data from API
   const { data: categories = [] } = useQuery<ServiceCategory[]>({
@@ -549,6 +567,9 @@ export function Navigation() {
 
   // Create dynamic navigation items with hierarchical data
   const getNavItems = () => {
+    if (COMPANY_INFO.name === "Bootsolo") {
+      return bootsoloNavItems;
+    }
     const dynamicServicesItem = {
       href: "/services",
       label: "Services",
@@ -698,35 +719,45 @@ export function Navigation() {
     });
   };
 
+  const useDarkNav = COMPANY_INFO.name === "Bootsolo";
+  const navTextColor = useDarkNav ? "rgba(255,255,255,0.95)" : "var(--navbar-text, #374151)";
+  const navBg = useDarkNav
+    ? "rgba(15, 23, 42, 0.75)"
+    : "rgba(255, 255, 255, 0.98)";
+  const navBorder = useDarkNav ? "rgba(255,255,255,0.06)" : "var(--navbar-border, #e5e7eb)";
+  const navShadow = useDarkNav ? "none" : "0 4px 30px rgba(0,0,0,0.06)";
+
   return (
     <motion.nav
-      className={`border-b fixed w-full top-0 z-50 transition-all duration-300 ${isScrolled ? 'shadow-lg' : 'shadow-sm'}`}
+      className={`border-b fixed w-full top-0 z-50 transition-all duration-300 backdrop-blur-md ${useDarkNav ? "navbar-dark" : "navbar-light"}`}
       style={{
-        backgroundColor: 'var(--navbar-bg, #ffffff)',
-        borderColor: 'var(--navbar-border, #f3f4f6)',
-        color: 'var(--navbar-text, #4b5563)'
+        backgroundColor: navBg,
+        borderColor: navBorder,
+        color: navTextColor,
+        boxShadow: navShadow,
+        WebkitBackdropFilter: "blur(12px)",
+        backdropFilter: "blur(12px)",
       }}
       animate={{
-        height: isScrolled ? 60 : 80,
-        backgroundColor: isScrolled ? 'var(--navbar-bg, rgba(255, 255, 255, 0.98))' : 'var(--navbar-bg, rgba(255, 255, 255, 1))'
+        height: isScrolled ? 64 : 72,
       }}
-      transition={{ duration: 0.3, ease: "easeInOut" }}
+      transition={{ duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
     >
       <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 xl:px-8">
         <motion.div
           className="flex justify-between items-center"
-          animate={{ height: isScrolled ? 60 : 80 }}
-          transition={{ duration: 0.3, ease: "easeInOut" }}
+          animate={{ height: isScrolled ? 64 : 72 }}
+          transition={{ duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
         >
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2 sm:space-x-3 group flex-shrink-0">
             <motion.div
-              className="flex items-center justify-center"
+              className="flex items-center justify-center rounded-lg overflow-hidden"
               animate={{
-                width: isScrolled ? 32 : 40,
-                height: isScrolled ? 32 : 40
+                width: isScrolled ? 36 : 40,
+                height: isScrolled ? 36 : 40
               }}
-              transition={{ duration: 0.3, ease: "easeInOut" }}
+              transition={{ duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
             >
               <motion.img
                 src={logoImg}
@@ -761,32 +792,26 @@ export function Navigation() {
                 }}
               />
             </motion.div>
-            <motion.div
-              className="hidden sm:block"
-              animate={{
-                opacity: isScrolled ? 0 : 1,
-                x: isScrolled ? -20 : 0
-              }}
-              transition={{ duration: 0.3, ease: "easeInOut" }}
+            <span 
+              className="hidden sm:block text-lg sm:text-xl font-semibold transition-all duration-300 heading-modern"
+              style={useDarkNav
+                ? { color: "white" }
+                : {
+                    background: 'linear-gradient(to right, var(--gradient-start, #3b82f6), var(--gradient-middle, #8b5cf6), var(--gradient-end, #ec4899))',
+                    WebkitBackgroundClip: 'text',
+                    backgroundClip: 'text',
+                    color: 'transparent'
+                  }}
             >
-              <span 
-                className="text-lg sm:text-xl lg:text-2xl font-normal bg-clip-text text-transparent transition-all duration-300 heading-georgia"
-                style={{
-                  background: 'linear-gradient(to right, var(--gradient-start, #3b82f6), var(--gradient-middle, #8b5cf6), var(--gradient-end, #ec4899))',
-                  WebkitBackgroundClip: 'text',
-                  backgroundClip: 'text'
-                }}
-              >
-                {siteName}
-              </span>
-            </motion.div>
+              {siteName}
+            </span>
           </Link>
 
-          {/* Desktop Navigation */}
-          <div className="hidden xl:flex items-center space-x-6 2xl:space-x-8">
+          {/* Desktop Navigation - flex-1 min-w-0 ensures nav can shrink; overflow-x-auto allows scroll on narrow viewports */}
+          <div className="hidden lg:flex flex-1 min-w-0 items-center justify-center lg:justify-end gap-x-1 xl:gap-x-2 2xl:gap-x-4 overflow-x-auto scrollbar-hide mx-2">
             {navItems.map((item, index) => {
-              // Special handling for Services menu - use dynamic component
-              if (item.label === "Services") {
+              // Special handling for Services menu - use dynamic component (not for Bootsolo)
+              if (item.label === "Services" && item.hasDropdown && COMPANY_INFO.name !== "Bootsolo") {
                 return (
                   <div
                     key="services-menu"
@@ -811,10 +836,19 @@ export function Navigation() {
               }
 
               // Regular navigation items
+              const pathMatch = location.split("?")[0];
+              const itemHref = (item as { href?: string }).href;
+              const isActive = itemHref
+                ? itemHref === "/#who-we-help"
+                  ? pathMatch === "/" && currentHash === "#who-we-help"
+                  : pathMatch === "/"
+                    ? itemHref === "/"
+                    : pathMatch === itemHref || (itemHref !== "/" && pathMatch.startsWith(itemHref + "/"))
+                : false;
               return (
                 <div
-                  key={item.href || item.label}
-                  className="relative group"
+                  key={itemHref || item.label}
+                  className="relative group flex-shrink-0"
                   onMouseEnter={() => {
                     if (item.hasDropdown) {
                       if (dropdownTimeout.current) {
@@ -829,31 +863,18 @@ export function Navigation() {
                     }
                   }}
                 >
-                  {item.href ? (
+                  {itemHref ? (
                     <Link
-                      href={item.href}
-                      className={`flex items-center space-x-1 transition-colors font-medium text-base lg:text-lg text-poppins ${location === item.href ? "bg-clip-text text-transparent" : ""}`}
+                      href={itemHref}
+                      className={`nav-link flex items-center space-x-1 py-2 px-1 font-medium text-[13px] sm:text-[14px] text-poppins rounded-md transition-colors duration-200 -mx-1 whitespace-nowrap ${isActive ? "nav-link-active" : ""} ${useDarkNav ? "nav-link-dark" : "nav-link-light"}`}
                       style={{
-                        color: location === item.href ? 'transparent' : 'var(--navbar-text, #374151)',
-                        background: location === item.href 
+                        color: isActive ? 'transparent' : navTextColor,
+                        background: isActive
                           ? 'linear-gradient(to right, var(--gradient-start, #3b82f6), var(--gradient-middle, #8b5cf6), var(--gradient-end, #ec4899))'
-                          : 'transparent',
-                        WebkitBackgroundClip: location === item.href ? 'text' : 'initial',
-                        backgroundClip: location === item.href ? 'text' : 'initial'
-                      }}
-                      onMouseEnter={(e) => {
-                        if (location !== item.href) {
-                          e.currentTarget.style.background = 'linear-gradient(to right, var(--gradient-start, #3b82f6), var(--gradient-middle, #8b5cf6), var(--gradient-end, #ec4899))';
-                          e.currentTarget.style.WebkitBackgroundClip = 'text';
-                          e.currentTarget.style.backgroundClip = 'text';
-                          e.currentTarget.style.color = 'transparent';
-                        }
-                      }}
-                      onMouseLeave={(e) => {
-                        if (location !== item.href) {
-                          e.currentTarget.style.background = 'transparent';
-                          e.currentTarget.style.color = 'var(--navbar-text, #374151)';
-                        }
+                          : 'none',
+                        WebkitBackgroundClip: isActive ? 'text' : 'initial',
+                        backgroundClip: isActive ? 'text' : 'initial',
+                        backgroundColor: 'transparent',
                       }}
                     >
                       <span>{item.label}</span>
@@ -909,26 +930,12 @@ export function Navigation() {
                                 <Link
                                   key={subIndex}
                                   href={subItem.href}
-                                  className="group block px-3 py-2.5 text-sm border-b last:border-b-0 relative overflow-hidden transition-all duration-300"
+                                  className="group block px-3 py-2.5 text-sm border-b last:border-b-0 relative overflow-hidden transition-colors duration-200 hover:text-[var(--navbar-active,#2563eb)]"
                                   style={{
                                     color: 'var(--navbar-text, #374151)',
                                     borderColor: 'var(--navbar-border, #f3f4f6)'
                                   }}
-                                  onMouseEnter={(e) => {
-                                    e.currentTarget.style.background = 'linear-gradient(to right, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1))';
-                                    e.currentTarget.style.color = 'var(--navbar-active, #2563eb)';
-                                  }}
-                                  onMouseLeave={(e) => {
-                                    e.currentTarget.style.background = 'transparent';
-                                    e.currentTarget.style.color = 'var(--navbar-text, #374151)';
-                                  }}
                                 >
-                                  <div 
-                                    className="absolute inset-0 opacity-0 group-hover:opacity-5 transition-opacity duration-300"
-                                    style={{
-                                      background: 'linear-gradient(to right, var(--gradient-start, #3b82f6), var(--gradient-middle, #8b5cf6), var(--gradient-end, #ec4899))'
-                                    }}
-                                  ></div>
                                   <div className="relative flex items-center justify-between">
                                     <span className="font-medium group-hover:font-semibold transition-all duration-200">
                                       {subItem.label}
@@ -964,7 +971,7 @@ export function Navigation() {
                                         <Link
                                           key={subIndex}
                                           href={subItem.href}
-                                          className="flex items-center justify-between p-3 rounded-lg hover:bg-blue-50 hover:border hover:border-blue-200 transition-all duration-200 group border border-transparent"
+                                          className="flex items-center justify-between p-3 rounded-lg hover:text-[var(--navbar-active,#2563eb)] transition-colors duration-200 group border border-transparent"
                                           onClick={() => setActiveDropdown(null)}
                                         >
                                           <div className="flex items-start space-x-3">
@@ -999,54 +1006,107 @@ export function Navigation() {
             })}
 
             {/* Right Side Action Buttons */}
-            <div className="flex items-center space-x-2 lg:space-x-4">
-              <Button
-                onClick={handleContactClick}
-                className="bg-transparent hover:bg-gray-50 text-gray-800 border-2 border-gray-300 hover:border-gray-400 px-3 lg:px-8 py-2 lg:py-3 font-normal rounded-full shadow-md hover:shadow-lg transition-all duration-300 text-sm lg:text-base" style={{ fontFamily: 'Poppins, sans-serif' }}
-              >
-                <span className="hidden lg:inline">Let's Connect</span>
-                <span className="lg:hidden">Connect</span>
-              </Button>
+            <div className="flex items-center space-x-2 lg:space-x-4 flex-shrink-0 ml-2">
+              {COMPANY_INFO.name === "Bootsolo" ? (
+                <>
+                  <Link href="/#newsletter">
+                    <button
+                      type="button"
+                      className="px-4 lg:px-5 py-2.5 font-medium rounded-full text-sm transition-all duration-200 border"
+                      style={{
+                        fontFamily: "Poppins, sans-serif",
+                        ...(useDarkNav
+                          ? { borderColor: "rgba(255,255,255,0.5)", color: "white", background: "transparent" }
+                          : { borderColor: "#e5e7eb", color: "#374151", background: "transparent" }
+                        )
+                      }}
+                      onMouseEnter={(e) => {
+                        if (useDarkNav) {
+                          e.currentTarget.style.background = "rgba(255,255,255,0.1)";
+                          e.currentTarget.style.borderColor = "rgba(255,255,255,0.8)";
+                        } else {
+                          e.currentTarget.style.background = "#f9fafb";
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = "transparent";
+                        e.currentTarget.style.borderColor = useDarkNav ? "rgba(255,255,255,0.5)" : "#e5e7eb";
+                      }}
+                    >
+                      Join Newsletter
+                    </button>
+                  </Link>
+                  <Button
+                    onClick={handleContactClick}
+                    className="text-white px-5 lg:px-6 py-2.5 font-semibold rounded-full text-sm transition-all duration-200 shadow-lg hover:shadow-xl"
+                    style={{
+                      fontFamily: "Poppins, sans-serif",
+                      background: "linear-gradient(to right, var(--gradient-start, #3b82f6), var(--gradient-middle, #8b5cf6), var(--gradient-end, #ec4899))",
+                    }}
+                    onMouseEnter={(e) => { e.currentTarget.style.transform = "scale(1.02)"; e.currentTarget.style.filter = "brightness(1.05)"; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.transform = "scale(1)"; e.currentTarget.style.filter = "none"; }}
+                  >
+                    Free Growth Audit
+                  </Button>
+                </>
+              ) : (
+                <Button
+                  onClick={handleContactClick}
+                  className="bg-transparent hover:bg-gray-50 text-gray-800 border-2 border-gray-300 hover:border-gray-400 px-3 lg:px-8 py-2 lg:py-3 font-normal rounded-full shadow-md hover:shadow-lg transition-all duration-300 text-sm lg:text-base"
+                  style={{ fontFamily: "Poppins, sans-serif" }}
+                >
+                  <span className="hidden lg:inline">Let's Connect</span>
+                  <span className="lg:hidden">Connect</span>
+                </Button>
+              )}
             </div>
           </div>
 
           {/* Mobile and Tablet Navigation */}
-          <div className="xl:hidden">
+          <div className="lg:hidden">
             <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="text-gray-700 ml-2">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="ml-2 min-w-[44px] min-h-[44px] touch-manipulation"
+                  style={{ color: useDarkNav ? "white" : "var(--navbar-text, #374151)" }}
+                  aria-label="Open menu"
+                >
                   <Menu className="h-6 w-6 sm:h-7 sm:w-7" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-[280px] sm:w-[350px] lg:w-[400px] overflow-y-auto">
-                <div className="flex flex-col space-y-3 mt-6 px-2">
-                  {navItems.map((item) => (
-                    <div key={item.href} className="space-y-2">
-                      {!item.hasDropdown ? (
+              <SheetContent
+                side="right"
+                className={`w-[85vw] max-w-[320px] sm:w-[350px] sm:max-w-[350px] lg:w-[400px] overflow-y-auto ${
+                  useDarkNav ? "!bg-[#0f172a] border-white/10 text-white [&_button]:text-white [&_button]:hover:bg-white/10" : ""
+                }`}
+              >
+                <div className={`flex flex-col space-y-3 mt-6 px-2 ${useDarkNav ? "mobile-sheet-dark" : ""}`}>
+                  {navItems.map((item) => {
+                    const mPathMatch = location.split("?")[0];
+                    const mItemHref = (item as { href?: string }).href;
+                    const mIsActive = mItemHref
+                      ? mItemHref === "/#who-we-help"
+                        ? mPathMatch === "/" && currentHash === "#who-we-help"
+                        : mPathMatch === "/"
+                          ? mItemHref === "/"
+                          : mPathMatch === mItemHref || (mItemHref !== "/" && mPathMatch.startsWith(mItemHref + "/"))
+                      : false;
+                    return (
+                    <div key={mItemHref || item.label} className="space-y-2">
+                      {!item.hasDropdown && mItemHref ? (
                         <Link
-                          href={item.href}
-                          className={`block text-lg sm:text-xl transition-colors font-medium text-poppins px-2 py-1 rounded-lg ${location === item.href ? "bg-clip-text text-transparent" : ""}`}
+                          href={mItemHref}
+                          className={`block text-lg sm:text-xl font-medium text-poppins px-3 py-2 rounded-md transition-colors mobile-nav-link ${mIsActive ? "mobile-nav-link-active" : ""}`}
                           style={{
-                            color: location === item.href ? 'transparent' : 'var(--navbar-text, #374151)',
-                            background: location === item.href 
+                            color: mIsActive ? 'transparent' : (useDarkNav ? 'rgba(255,255,255,0.95)' : 'var(--navbar-text, #374151)'),
+                            background: mIsActive 
                               ? 'linear-gradient(to right, var(--gradient-start, #3b82f6), var(--gradient-middle, #8b5cf6), var(--gradient-end, #ec4899))'
-                              : 'transparent',
-                            WebkitBackgroundClip: location === item.href ? 'text' : 'initial',
-                            backgroundClip: location === item.href ? 'text' : 'initial'
-                          }}
-                          onMouseEnter={(e) => {
-                            if (location !== item.href) {
-                              e.currentTarget.style.background = 'linear-gradient(to right, var(--gradient-start, #3b82f6), var(--gradient-middle, #8b5cf6), var(--gradient-end, #ec4899))';
-                              e.currentTarget.style.WebkitBackgroundClip = 'text';
-                              e.currentTarget.style.backgroundClip = 'text';
-                              e.currentTarget.style.color = 'transparent';
-                            }
-                          }}
-                          onMouseLeave={(e) => {
-                            if (location !== item.href) {
-                              e.currentTarget.style.background = 'transparent';
-                              e.currentTarget.style.color = 'var(--navbar-text, #374151)';
-                            }
+                              : 'none',
+                            WebkitBackgroundClip: mIsActive ? 'text' : 'initial',
+                            backgroundClip: mIsActive ? 'text' : 'initial',
+                            backgroundColor: 'transparent',
                           }}
                           onClick={() => setMobileMenuOpen(false)}
                         >
@@ -1056,26 +1116,15 @@ export function Navigation() {
                         <div>
                           <button
                             onClick={() => setMobileActiveDropdown(mobileActiveDropdown === item.label ? null : item.label)}
-                            className={`w-full flex items-center justify-between px-3 py-2 sm:px-4 sm:py-3 rounded-lg text-lg sm:text-xl font-medium transition-all duration-300 text-poppins ${location === item.href ? "bg-clip-text text-transparent" : ""}`}
+                            className={`w-full flex items-center justify-between px-3 py-2 sm:px-4 sm:py-3 rounded-lg text-lg sm:text-xl font-medium transition-all duration-300 text-poppins ${mIsActive ? "bg-clip-text text-transparent" : ""}`}
                             style={{
-                              color: location === item.href ? 'transparent' : (mobileActiveDropdown === item.label ? 'var(--navbar-active, #2563eb)' : 'var(--navbar-text, #374151)'),
-                              background: location === item.href 
+                              color: mIsActive ? 'transparent' : (useDarkNav ? 'rgba(255,255,255,0.95)' : (mobileActiveDropdown === item.label ? 'var(--navbar-active, #2563eb)' : 'var(--navbar-text, #374151)')),
+                              background: mIsActive 
                                 ? 'linear-gradient(to right, var(--gradient-start, #3b82f6), var(--gradient-middle, #8b5cf6), var(--gradient-end, #ec4899))'
-                                : (mobileActiveDropdown === item.label ? 'var(--navbar-hover, #eff6ff)' : 'transparent'),
-                              WebkitBackgroundClip: location === item.href ? 'text' : 'initial',
-                              backgroundClip: location === item.href ? 'text' : 'initial'
-                            }}
-                            onMouseEnter={(e) => {
-                              if (location !== item.href && mobileActiveDropdown !== item.label) {
-                                e.currentTarget.style.background = 'var(--navbar-hover, #eff6ff)';
-                                e.currentTarget.style.color = 'var(--navbar-active, #2563eb)';
-                              }
-                            }}
-                            onMouseLeave={(e) => {
-                              if (location !== item.href && mobileActiveDropdown !== item.label) {
-                                e.currentTarget.style.background = 'transparent';
-                                e.currentTarget.style.color = 'var(--navbar-text, #374151)';
-                              }
+                                : 'none',
+                              WebkitBackgroundClip: mIsActive ? 'text' : 'initial',
+                              backgroundClip: mIsActive ? 'text' : 'initial',
+                              backgroundColor: 'transparent',
                             }}
                           >
                             <span className="transition-colors duration-300">{item.label}</span>
@@ -1233,7 +1282,8 @@ export function Navigation() {
                         </div>
                       )}
                     </div>
-                  ))}
+                  );
+                  })}
                   <div className="mt-8 space-y-3 px-2">
                     <Button
                       onClick={() => {
@@ -1252,7 +1302,7 @@ export function Navigation() {
                         e.currentTarget.style.filter = 'none';
                       }}
                     >
-                      Let's Connect
+                      {COMPANY_INFO.name === "Bootsolo" ? "Free Growth Audit" : "Let's Connect"}
                     </Button>
                   </div>
                 </div>
@@ -1282,10 +1332,19 @@ export function Navigation() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2, duration: 0.6 }}
                   >
-                    Ready to Transform Your{" "}
-                    <span className="bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
-                      Digital Future?
-                    </span>
+                    {COMPANY_INFO.name === "Bootsolo" ? (
+                      <>Let's Make Your{" "}
+                        <span className="bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+                          Growth Inevitable
+                        </span>
+                      </>
+                    ) : (
+                      <>Ready to Transform Your{" "}
+                        <span className="bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+                          Digital Future?
+                        </span>
+                      </>
+                    )}
                   </motion.h2>
                   <motion.p
                     className="text-base sm:text-lg text-gray-600 max-w-3xl mx-auto font-light leading-relaxed text-poppins"
@@ -1293,7 +1352,9 @@ export function Navigation() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.3, duration: 0.6 }}
                   >
-                    Let's discuss your project and explore how {siteName} can help you achieve your technology goals.
+                    {COMPANY_INFO.name === "Bootsolo"
+                      ? `Book a free growth audit. We'll map your next 90 days and reveal the 2–3 moves that change everything.`
+                      : `Let's discuss your project and explore how ${siteName} can help you achieve your technology goals.`}
                   </motion.p>
                 </div>
 

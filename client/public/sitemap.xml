@@ -3,7 +3,7 @@
   <!-- Homepage -->
   <url>
     <loc>https://greenapplex.com/</loc>
-    <lastmod>2026-01-29</lastmod>
+    <lastmod>2026-02-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
@@ -11,14 +11,14 @@
   <!-- Main Pages -->
   <url>
     <loc>https://greenapplex.com/about</loc>
-    <lastmod>2026-01-29</lastmod>
+    <lastmod>2026-02-08</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
     <loc>https://greenapplex.com/contact</loc>
-    <lastmod>2026-01-29</lastmod>
+    <lastmod>2026-02-08</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -26,7 +26,7 @@
 
   <url>
     <loc>https://greenapplex.com/privacy-policy</loc>
-    <lastmod>2026-01-29</lastmod>
+    <lastmod>2026-02-08</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
@@ -34,7 +34,7 @@
   <!-- Services Main Page -->
   <url>
     <loc>https://greenapplex.com/services</loc>
-    <lastmod>2026-01-29</lastmod>
+    <lastmod>2026-02-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -42,7 +42,7 @@
   <!-- Individual Service Pages -->
   <url>
     <loc>https://greenapplex.com/services/accelerate-growth-efficiency-with-our-digital-transformation-services</loc>
-    <lastmod>2026-01-29</lastmod>
+    <lastmod>2026-02-08</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -50,7 +50,7 @@
   <!-- Hire Developer Pages -->
   <url>
     <loc>https://greenapplex.com/hire-developers/llm</loc>
-    <lastmod>2026-01-29</lastmod>
+    <lastmod>2026-02-08</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -58,7 +58,7 @@
   <!-- Case Studies Main Page -->
   <url>
     <loc>https://greenapplex.com/case-studies</loc>
-    <lastmod>2026-01-29</lastmod>
+    <lastmod>2026-02-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -66,7 +66,7 @@
   <!-- Individual Case Studies -->
   <url>
     <loc>https://greenapplex.com/case-studies/realestate</loc>
-    <lastmod>2026-01-29</lastmod>
+    <lastmod>2026-02-08</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -74,7 +74,7 @@
   <!-- Blog Main Page -->
   <url>
     <loc>https://greenapplex.com/blog</loc>
-    <lastmod>2026-01-29</lastmod>
+    <lastmod>2026-02-08</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>

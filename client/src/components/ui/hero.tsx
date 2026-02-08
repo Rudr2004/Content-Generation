@@ -1,162 +1,132 @@
-import { ArrowRight, Play, Rocket } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Link } from "wouter";
-import { AnimatedButton } from "@/components/ui/animated-button";
+import { motion } from "framer-motion";
 import { HeroAnimatedButton } from "@/components/ui/hero-animated-button";
-import { useSiteSettings } from "@/contexts/SiteSettingsContext";
-import { COMPANY_INFO } from "@/lib/constants";
+import { HOMEPAGE_HERO, HERO_IMAGE_URL } from "@/lib/homepage-content";
 
-// Helper function to convert hex to RGB
-function hexToRgb(hex: string): string {
-  if (hex.startsWith('rgba')) return hex;
-  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  return result ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : '59, 130, 246';
-}
+const fadeUp = {
+  hidden: { opacity: 0, y: 28 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, delay: i * 0.1, ease: [0.25, 0.46, 0.45, 0.94] },
+  }),
+};
 
-// Helper function to get RGB from CSS variable
-function getRgbFromCssVar(cssVar: string, fallback: string): string {
-  if (typeof window === 'undefined') return fallback;
-  const value = getComputedStyle(document.documentElement).getPropertyValue(cssVar).trim();
-  if (!value) return fallback;
-  // If it's already rgba format, extract RGB values
-  if (value.startsWith('rgba')) {
-    const match = value.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
-    return match ? `${match[1]}, ${match[2]}, ${match[3]}` : fallback;
-  }
-  // If it's hex, convert it
-  return hexToRgb(value);
-}
-
+/**
+ * Hero section with full-bleed background image.
+ * Uses CSS variables for theme compatibility.
+ */
 export function Hero() {
-  const { settings } = useSiteSettings();
-  const siteName = settings?.siteName || COMPANY_INFO.name;
+  const hero = HOMEPAGE_HERO;
 
   return (
-    <section 
-      className="pt-24 pb-20 relative overflow-hidden"
-      style={{ backgroundColor: 'var(--homepage-hero-bg, #ffffff)' }}
+    <section
+      className="relative min-h-[90vh] flex items-center justify-center overflow-hidden"
+      style={{ backgroundColor: "var(--homepage-hero-bg, #0f172a)" }}
     >
-      <div 
-        className="absolute inset-0"
+      {/* Background image – Ken Burns animation (slow zoom/pan), no color overlay */}
+      <div
+        className="absolute inset-0 animate-hero-ken-burns"
         style={{
-          background: `linear-gradient(to bottom right, var(--homepage-hero-overlay-start, rgba(59, 130, 246, 0.3)), var(--homepage-hero-overlay-middle, rgba(255, 255, 255, 1)), var(--homepage-hero-overlay-end, rgba(34, 197, 94, 0.2)))`
+          backgroundImage: `url(${HERO_IMAGE_URL})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
         }}
-      ></div>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-        <div className="text-center">
-          <div 
-            className="inline-flex items-center px-6 py-3 rounded-full text-sm font-semibold mb-8 border text-poppins"
+      />
+      {/* Web3-style floating particles – subtle white dots, no color blocking */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {[...Array(12)].map((_, i) => (
+          <div
+            key={i}
+            className={`absolute w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-white/40 ${
+              i % 3 === 0 ? "animate-particle-1" : i % 3 === 1 ? "animate-particle-2" : "animate-particle-3"
+            }`}
             style={{
-              background: `linear-gradient(to right, 
-                rgba(${getRgbFromCssVar('--homepage-hero-start', '#3b82f6')}, 0.1), 
-                rgba(${getRgbFromCssVar('--homepage-hero-middle', '#8b5cf6')}, 0.1), 
-                rgba(${getRgbFromCssVar('--homepage-hero-end', '#ec4899')}, 0.1)
-              )`,
-              borderColor: 'var(--header-border, #e5e7eb)'
+              left: `${15 + (i * 7) % 70}%`,
+              top: `${10 + (i * 11) % 80}%`,
+              animationDelay: `${i * 0.5}s`,
             }}
+          />
+        ))}
+      </div>
+      {/* Subtle grid – very faint, animated pulse */}
+      <div
+        className="absolute inset-0 opacity-[0.02] sm:opacity-[0.03] animate-grid-pulse pointer-events-none"
+        style={{
+          backgroundImage: `
+            linear-gradient(rgba(255,255,255,0.8) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255,255,255,0.8) 1px, transparent 1px)
+          `,
+          backgroundSize: "80px 80px",
+        }}
+      />
+
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-28 lg:py-36 text-center">
+        {/* Frosted content area – ensures text readability, image stays visible */}
+        <div className="relative inline-block rounded-3xl px-6 py-8 sm:px-10 sm:py-12 backdrop-blur-xl bg-black/10 sm:bg-black/15 border border-white/10">
+          <motion.div
+            custom={0}
+            initial="hidden"
+            animate="visible"
+            variants={fadeUp}
+            className="relative"
           >
-            <Rocket 
-              className="mr-2 h-4 w-4 bg-clip-text text-transparent" 
-              style={{
-                background: 'linear-gradient(to right, var(--homepage-hero-start, #3b82f6), var(--homepage-hero-middle, #8b5cf6), var(--homepage-hero-end, #ec4899))',
-                WebkitBackgroundClip: 'text',
-                backgroundClip: 'text'
-              }}
-            />
-            <span 
-              className="bg-clip-text text-transparent"
-              style={{
-                background: 'linear-gradient(to right, var(--homepage-hero-start, #3b82f6), var(--homepage-hero-middle, #8b5cf6), var(--homepage-hero-end, #ec4899))',
-                WebkitBackgroundClip: 'text',
-                backgroundClip: 'text'
-              }}
+            <motion.h1
+              className="relative text-4xl sm:text-5xl lg:text-6xl xl:text-7xl mb-6 lg:mb-8 leading-[1.1] max-w-5xl mx-auto font-bold tracking-tight text-poppins"
+              style={{ color: "var(--homepage-hero-text, #ffffff)" }}
             >
-              Transformative Digital Solutions
-            </span>
-          </div>
-          <h1 className="text-4xl lg:text-7xl font-bold mb-8 leading-tight max-w-5xl mx-auto heading-georgia" style={{ color: 'var(--header-text, #111827)' }}>
-            Build Your Future with{" "}
-            <span 
-              className="bg-clip-text text-transparent"
-              style={{
-                background: 'linear-gradient(to right, var(--homepage-hero-start, #3b82f6), var(--homepage-hero-middle, #8b5cf6), var(--homepage-hero-end, #ec4899))',
-                WebkitBackgroundClip: 'text',
-                backgroundClip: 'text'
-              }}
+              {hero.headline}
+            </motion.h1>
+          </motion.div>
+          <motion.p
+          custom={1}
+          initial="hidden"
+          animate="visible"
+          variants={fadeUp}
+          className="text-lg sm:text-xl lg:text-2xl mb-10 lg:mb-12 leading-relaxed max-w-3xl mx-auto font-normal text-poppins"
+          style={{ color: "var(--homepage-hero-subtext, rgba(255, 255, 255, 0.92))" }}
+        >
+            {hero.subheadline}
+          </motion.p>
+          <motion.div
+            custom={2}
+            initial="hidden"
+            animate="visible"
+            variants={fadeUp}
+            className="flex flex-col sm:flex-row gap-4 sm:gap-5 justify-center mt-8"
+          >
+            <HeroAnimatedButton
+              href={hero.primaryCta.href}
+              variant="hero-image"
             >
-              {siteName}
-            </span>
-          </h1>
-          <p className="text-xl lg:text-2xl mb-12 leading-relaxed max-w-4xl mx-auto font-light text-poppins" style={{ color: 'var(--header-text, #4b5563)' }}>
-            {siteName} delivers transformative solutions in generative AI, Web3, mobile apps, custom software, and digital transformation, empowering startups and enterprises to lead their industries.
-          </p>
-
-          <div className="flex flex-col sm:flex-row gap-6 justify-center mb-16">
-            <HeroAnimatedButton href="/contact">
-              <span className="text-poppins">Talk To An AI Specialist</span>
+              <span className="text-poppins font-semibold">{hero.primaryCta.text}</span>
             </HeroAnimatedButton>
-            <HeroAnimatedButton href="#demo">
-              <span className="text-poppins">Watch Demo</span>
+            <HeroAnimatedButton
+              href={hero.secondaryCta.href}
+              variant="hero-image-outline"
+            >
+              <span className="text-poppins font-medium">{hero.secondaryCta.text}</span>
             </HeroAnimatedButton>
-          </div>
-
-          {/* Stats Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-16">
-            <div className="text-center">
-              <div 
-                className="text-4xl lg:text-5xl font-bold bg-clip-text text-transparent mb-2 heading-georgia"
-                style={{
-                  background: 'linear-gradient(to right, var(--homepage-hero-start, #3b82f6), var(--homepage-hero-middle, #8b5cf6), var(--homepage-hero-end, #ec4899))',
-                  WebkitBackgroundClip: 'text',
-                  backgroundClip: 'text'
-                }}
-              >
-                500+
-              </div>
-              <div className="text-sm font-medium text-poppins" style={{ color: 'var(--header-text, #4b5563)' }}>Projects Delivered</div>
-            </div>
-            <div className="text-center">
-              <div 
-                className="text-4xl lg:text-5xl font-bold bg-clip-text text-transparent mb-2 heading-georgia"
-                style={{
-                  background: 'linear-gradient(to right, var(--homepage-hero-start, #3b82f6), var(--homepage-hero-middle, #8b5cf6), var(--homepage-hero-end, #ec4899))',
-                  WebkitBackgroundClip: 'text',
-                  backgroundClip: 'text'
-                }}
-              >
-                50M+
-              </div>
-              <div className="text-sm font-medium text-poppins" style={{ color: 'var(--header-text, #4b5563)' }}>App Downloads</div>
-            </div>
-            <div className="text-center">
-              <div 
-                className="text-4xl lg:text-5xl font-bold bg-clip-text text-transparent mb-2 heading-georgia"
-                style={{
-                  background: 'linear-gradient(to right, var(--homepage-hero-start, #3b82f6), var(--homepage-hero-middle, #8b5cf6), var(--homepage-hero-end, #ec4899))',
-                  WebkitBackgroundClip: 'text',
-                  backgroundClip: 'text'
-                }}
-              >
-                200+
-              </div>
-              <div className="text-sm font-medium text-poppins" style={{ color: 'var(--header-text, #4b5563)' }}>Expert Developers</div>
-            </div>
-            <div className="text-center">
-              <div 
-                className="text-4xl lg:text-5xl font-bold bg-clip-text text-transparent mb-2 heading-georgia"
-                style={{
-                  background: 'linear-gradient(to right, var(--homepage-hero-start, #3b82f6), var(--homepage-hero-middle, #8b5cf6), var(--homepage-hero-end, #ec4899))',
-                  WebkitBackgroundClip: 'text',
-                  backgroundClip: 'text'
-                }}
-              >
-                98%
-              </div>
-              <div className="text-sm font-medium text-poppins" style={{ color: 'var(--header-text, #4b5563)' }}>Client Satisfaction</div>
-            </div>
-          </div>
+          </motion.div>
         </div>
       </div>
+
+      {/* Scroll indicator */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.2, duration: 0.6 }}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-10"
+      >
+        <span className="text-xs font-medium tracking-widest uppercase text-white/60 text-poppins">Scroll</span>
+        <motion.div
+          animate={{ y: [0, 6, 0] }}
+          transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+          className="w-6 h-10 rounded-full border-2 border-white/40 flex justify-center pt-2"
+        >
+          <div className="w-1.5 h-1.5 rounded-full bg-white/80" />
+        </motion.div>
+      </motion.div>
     </section>
   );
 }

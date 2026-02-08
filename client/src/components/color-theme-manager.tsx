@@ -288,6 +288,12 @@ export function ColorThemeManager() {
             root.style.setProperty("--homepage-hero-middle", colors.pages.homepage.heroGradient?.middle || currentColors.pages.homepage.heroGradient.middle);
             root.style.setProperty("--homepage-hero-end", colors.pages.homepage.heroGradient?.end || currentColors.pages.homepage.heroGradient.end);
             root.style.setProperty("--homepage-hero-bg", colors.pages.homepage.heroBg || currentColors.pages.homepage.heroBg);
+            root.style.setProperty("--homepage-hero-text", colors.pages.homepage.heroTextColor || currentColors.pages.homepage.heroTextColor);
+            root.style.setProperty("--homepage-hero-subtext", colors.pages.homepage.heroSubtextColor || currentColors.pages.homepage.heroSubtextColor);
+            root.style.setProperty("--hero-primary-btn-bg", colors.pages.homepage.heroPrimaryButtonBg ?? currentColors.pages.homepage.heroPrimaryButtonBg ?? "#ffffff");
+            root.style.setProperty("--hero-primary-btn-text", colors.pages.homepage.heroPrimaryButtonText ?? currentColors.pages.homepage.heroPrimaryButtonText ?? "#111827");
+            root.style.setProperty("--hero-secondary-btn-border", colors.pages.homepage.heroSecondaryButtonBorder ?? currentColors.pages.homepage.heroSecondaryButtonBorder ?? "rgba(255,255,255,0.9)");
+            root.style.setProperty("--homepage-section-bg", colors.pages.homepage.sectionBg || currentColors.pages.homepage.sectionBg);
             // Always apply overlay colors - they're critical for the hero background
             root.style.setProperty("--homepage-hero-overlay-start", colors.pages.homepage.heroGradientOverlay?.start || currentColors.pages.homepage.heroGradientOverlay.start);
             root.style.setProperty("--homepage-hero-overlay-middle", colors.pages.homepage.heroGradientOverlay?.middle || currentColors.pages.homepage.heroGradientOverlay.middle);
@@ -298,6 +304,9 @@ export function ColorThemeManager() {
             root.style.setProperty("--homepage-hero-middle", currentColors.pages.homepage.heroGradient.middle);
             root.style.setProperty("--homepage-hero-end", currentColors.pages.homepage.heroGradient.end);
             root.style.setProperty("--homepage-hero-bg", currentColors.pages.homepage.heroBg);
+            root.style.setProperty("--homepage-hero-text", currentColors.pages.homepage.heroTextColor);
+            root.style.setProperty("--homepage-hero-subtext", currentColors.pages.homepage.heroSubtextColor);
+            root.style.setProperty("--homepage-section-bg", currentColors.pages.homepage.sectionBg);
             root.style.setProperty("--homepage-hero-overlay-start", currentColors.pages.homepage.heroGradientOverlay.start);
             root.style.setProperty("--homepage-hero-overlay-middle", currentColors.pages.homepage.heroGradientOverlay.middle);
             root.style.setProperty("--homepage-hero-overlay-end", currentColors.pages.homepage.heroGradientOverlay.end);
@@ -788,7 +797,7 @@ export function ColorThemeManager() {
                                                     label="Gradient Start"
                                                     value={colorSettings.buttons.gradient.start}
                                                     onChange={(value) => updateColor(["buttons", "gradient", "start"], value)}
-                                                    description="Used in: Navigation logo gradient, navigation active links, footer site name gradient, 'View All Services' buttons, CTA buttons, button hover states (with brightness filter)"
+                                                    description="Used in: Navigation, footer, CTA buttons, homepage section headings (Who We Help, Process, Services, etc.), Process section numbered steps, gradient text across site"
                                                 />
                                                 <ColorPickerField
                                                     label="Gradient Middle"
@@ -800,7 +809,7 @@ export function ColorThemeManager() {
                                                     label="Gradient End"
                                                     value={colorSettings.buttons.gradient.end}
                                                     onChange={(value) => updateColor(["buttons", "gradient", "end"], value)}
-                                                    description="Used in: All gradient elements (end color) - buttons, button hover states, text gradients, navigation, footer, hero sections"
+                                                    description="Used in: All gradient elements - buttons, homepage headings, Process section, navigation, footer, hero sections"
                                                 />
                                             </div>
                                         </AccordionContent>
@@ -825,9 +834,60 @@ export function ColorThemeManager() {
                                                     <div className="grid grid-cols-1 gap-4">
                                                         <ColorPickerField
                                                             label="Background Color"
-                                                            value={colorSettings.pages.homepage.heroBg || "#ffffff"}
+                                                            value={colorSettings.pages.homepage.heroBg || currentColors.pages.homepage.heroBg}
                                                             onChange={(value) => updateColor(["pages", "homepage", "heroBg"], value)}
-                                                            description="Used in: Homepage Hero section - Base background color (white by default, appears behind the gradient overlay)"
+                                                            description="Used in: Homepage Hero section - Base background color (dark slate for Bootsolo theme)"
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <h4 className="text-sm font-semibold mb-3 text-gray-700 dark:text-gray-300">Hero Text Colors</h4>
+                                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                        <ColorPickerField
+                                                            label="Headline Color"
+                                                            value={colorSettings.pages.homepage?.heroTextColor || currentColors.pages.homepage.heroTextColor}
+                                                            onChange={(value) => updateColor(["pages", "homepage", "heroTextColor"], value)}
+                                                            description="Used in: Hero headline text (white by default for image background)"
+                                                        />
+                                                        <ColorPickerField
+                                                            label="Subheadline Color"
+                                                            value={colorSettings.pages.homepage?.heroSubtextColor || currentColors.pages.homepage.heroSubtextColor}
+                                                            onChange={(value) => updateColor(["pages", "homepage", "heroSubtextColor"], value)}
+                                                            description="Used in: Hero subheadline text (use rgba for transparency)"
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <h4 className="text-sm font-semibold mb-3 text-gray-700 dark:text-gray-300">Hero Buttons (Image-Suited)</h4>
+                                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                                        <ColorPickerField
+                                                            label="Primary Button Background"
+                                                            value={colorSettings.pages.homepage?.heroPrimaryButtonBg ?? currentColors.pages.homepage.heroPrimaryButtonBg ?? "#ffffff"}
+                                                            onChange={(value) => updateColor(["pages", "homepage", "heroPrimaryButtonBg"], value)}
+                                                            description="Used in: Hero primary CTA button (white suits image backgrounds)"
+                                                        />
+                                                        <ColorPickerField
+                                                            label="Primary Button Text"
+                                                            value={colorSettings.pages.homepage?.heroPrimaryButtonText ?? currentColors.pages.homepage.heroPrimaryButtonText ?? "#111827"}
+                                                            onChange={(value) => updateColor(["pages", "homepage", "heroPrimaryButtonText"], value)}
+                                                            description="Used in: Hero primary button text color"
+                                                        />
+                                                        <ColorPickerField
+                                                            label="Secondary Button Border"
+                                                            value={colorSettings.pages.homepage?.heroSecondaryButtonBorder ?? currentColors.pages.homepage.heroSecondaryButtonBorder ?? "rgba(255,255,255,0.9)"}
+                                                            onChange={(value) => updateColor(["pages", "homepage", "heroSecondaryButtonBorder"], value)}
+                                                            description="Used in: Hero outline/secondary button border"
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <h4 className="text-sm font-semibold mb-3 text-gray-700 dark:text-gray-300">Page Sections</h4>
+                                                    <div className="grid grid-cols-1 gap-4">
+                                                        <ColorPickerField
+                                                            label="Section Background"
+                                                            value={colorSettings.pages.homepage?.sectionBg || currentColors.pages.homepage.sectionBg}
+                                                            onChange={(value) => updateColor(["pages", "homepage", "sectionBg"], value)}
+                                                            description="Used in: Process section, Who We Help, Value Props, Services, and other homepage sections below the hero"
                                                         />
                                                     </div>
                                                 </div>

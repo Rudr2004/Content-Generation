@@ -3,20 +3,17 @@ import { Hero } from "@/components/ui/hero";
 import { Footer } from "@/components/ui/footer";
 import { useSiteSettings } from "@/contexts/SiteSettingsContext";
 import { COMPANY_INFO } from "@/lib/constants";
-import { TrustedPartners } from "@/components/trusted-partners";
+import { WhoWeHelpSection } from "@/components/who-we-help-section";
+import { ValuePropositionSection } from "@/components/value-proposition-section";
 import { InteractiveServiceTabs } from "@/components/interactive-service-tabs";
-import { AboutSection } from "@/components/about-section";
-import { TestimonialsSection } from "@/components/testimonials-section";
-import { InsightsSection } from "@/components/insights-section";
-import { ContactSection } from "@/components/contact-section";
-import { HomeContactSection } from "@/components/home-contact-section";
-import { GetInTouchSection } from "@/components/get-in-touch-section";
+import { ProcessSection } from "@/components/process-section";
+import { BootsoloCaseStudiesSection } from "@/components/bootsolo-case-studies-section";
+import { ResourcesSection } from "@/components/resources-section";
+import { NewsletterSection } from "@/components/newsletter-section";
+import { AboutBootsoloSection } from "@/components/about-bootsolo-section";
+import { FinalCtaSection } from "@/components/final-cta-section";
 import { SEOAnalytics } from "@/components/seo-analytics";
 import { SEOHead } from "@/components/seo-head";
-import { ProcessSection } from "@/components/process-section";
-import { TechnologyStackSection } from "@/components/technology-stack-section";
-import { InternalLinks } from "@/components/internal-links";
-import { HomeCaseStudiesSection } from "@/components/home-case-studies-section";
 import { PerformanceOptimizer } from "@/components/performance-optimizer";
 
 import { SEO_PAGES } from "@/lib/seo";
@@ -26,12 +23,10 @@ export default function Home() {
   const seoData = SEO_PAGES.home;
   const { settings, isLoading } = useSiteSettings();
   const siteName = settings?.siteName || COMPANY_INFO.name;
-  
-  // Handle loading state gracefully
+
   if (isLoading && !settings) {
     return <div className="min-h-screen" />;
   }
-
 
   const combinedStructuredData = {
     "@context": "https://schema.org",
@@ -45,14 +40,14 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-50">
       <SEOHead
         title={seoData.title}
         description={seoData.description}
         keywords={seoData.keywords}
         canonicalUrl={seoData.canonicalUrl}
-        ogTitle={seoData.ogTitle?.replace("GreenAppleX", siteName)}
-        ogDescription={seoData.ogDescription?.replace("GreenAppleX", siteName)}
+        ogTitle={seoData.ogTitle?.replace("Bootsolo", siteName)}
+        ogDescription={seoData.ogDescription?.replace("Bootsolo", siteName)}
         ogImage="https://greenapplex.com/attached_assets/1_1752498834690.png"
         structuredData={combinedStructuredData}
       />
@@ -61,16 +56,15 @@ export default function Home() {
       <Navigation />
       <main id="main-content">
         <Hero />
-        <TrustedPartners />
+        <WhoWeHelpSection />
+        <ValuePropositionSection />
         <InteractiveServiceTabs />
-        <AboutSection />
         <ProcessSection />
-        <TechnologyStackSection />
-        <HomeCaseStudiesSection />
-        <InternalLinks />
-        <TestimonialsSection />
-        <InsightsSection />
-        <HomeContactSection />
+        <BootsoloCaseStudiesSection />
+        <ResourcesSection />
+        <NewsletterSection />
+        <AboutBootsoloSection />
+        <FinalCtaSection />
       </main>
       <Footer />
     </div>

@@ -35,7 +35,7 @@ export default function CaseStudies() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-white">
+      <div className="min-h-screen" style={{ backgroundColor: "var(--homepage-section-bg, #f8fafc)" }}>
         <Navigation />
         <div className="flex items-center justify-center min-h-[60vh]">
           <div className="text-center">
@@ -68,7 +68,7 @@ export default function CaseStudies() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen" style={{ backgroundColor: "var(--homepage-section-bg, #f8fafc)" }}>
       <Navigation />
       <ModernCaseStudyListing caseStudies={caseStudies} isLoading={isLoading} />
       <Footer />

@@ -142,6 +142,22 @@ export function SiteSettingsProvider({ children }: { children: React.ReactNode }
                             if (value.homepage.heroBg) {
                                 root.style.setProperty("--homepage-hero-bg", value.homepage.heroBg);
                             }
+                            if (value.homepage.heroTextColor) {
+                                root.style.setProperty("--homepage-hero-text", value.homepage.heroTextColor);
+                            }
+                            if (value.homepage.heroSubtextColor) {
+                                root.style.setProperty("--homepage-hero-subtext", value.homepage.heroSubtextColor);
+                            }
+                            if (value.homepage.heroPrimaryButtonBg) {
+                                root.style.setProperty("--hero-primary-btn-bg", value.homepage.heroPrimaryButtonBg);
+                                root.style.setProperty("--hero-primary-btn-text", value.homepage.heroPrimaryButtonText || "#111827");
+                            }
+                            if (value.homepage.heroSecondaryButtonBorder) {
+                                root.style.setProperty("--hero-secondary-btn-border", value.homepage.heroSecondaryButtonBorder);
+                            }
+                            if (value.homepage.sectionBg) {
+                                root.style.setProperty("--homepage-section-bg", value.homepage.sectionBg);
+                            }
                             if (value.homepage.heroGradientOverlay) {
                                 root.style.setProperty("--homepage-hero-overlay-start", value.homepage.heroGradientOverlay.start);
                                 root.style.setProperty("--homepage-hero-overlay-middle", value.homepage.heroGradientOverlay.middle);
@@ -244,6 +260,9 @@ export function SiteSettingsProvider({ children }: { children: React.ReactNode }
                 root.style.setProperty("--homepage-hero-middle", colors.pages.homepage.heroGradient?.middle || currentColors.pages.homepage.heroGradient.middle);
                 root.style.setProperty("--homepage-hero-end", colors.pages.homepage.heroGradient?.end || currentColors.pages.homepage.heroGradient.end);
                 root.style.setProperty("--homepage-hero-bg", colors.pages.homepage.heroBg || currentColors.pages.homepage.heroBg);
+                root.style.setProperty("--homepage-hero-text", colors.pages.homepage.heroTextColor || currentColors.pages.homepage.heroTextColor);
+                root.style.setProperty("--homepage-hero-subtext", colors.pages.homepage.heroSubtextColor || currentColors.pages.homepage.heroSubtextColor);
+                root.style.setProperty("--homepage-section-bg", colors.pages.homepage.sectionBg || currentColors.pages.homepage.sectionBg);
                 root.style.setProperty("--homepage-hero-overlay-start", colors.pages.homepage.heroGradientOverlay?.start || currentColors.pages.homepage.heroGradientOverlay.start);
                 root.style.setProperty("--homepage-hero-overlay-middle", colors.pages.homepage.heroGradientOverlay?.middle || currentColors.pages.homepage.heroGradientOverlay.middle);
                 root.style.setProperty("--homepage-hero-overlay-end", colors.pages.homepage.heroGradientOverlay?.end || currentColors.pages.homepage.heroGradientOverlay.end);
@@ -252,6 +271,9 @@ export function SiteSettingsProvider({ children }: { children: React.ReactNode }
                 root.style.setProperty("--homepage-hero-middle", currentColors.pages.homepage.heroGradient.middle);
                 root.style.setProperty("--homepage-hero-end", currentColors.pages.homepage.heroGradient.end);
                 root.style.setProperty("--homepage-hero-bg", currentColors.pages.homepage.heroBg);
+                root.style.setProperty("--homepage-hero-text", currentColors.pages.homepage.heroTextColor);
+                root.style.setProperty("--homepage-hero-subtext", currentColors.pages.homepage.heroSubtextColor);
+                root.style.setProperty("--homepage-section-bg", currentColors.pages.homepage.sectionBg);
                 root.style.setProperty("--homepage-hero-overlay-start", currentColors.pages.homepage.heroGradientOverlay.start);
                 root.style.setProperty("--homepage-hero-overlay-middle", currentColors.pages.homepage.heroGradientOverlay.middle);
                 root.style.setProperty("--homepage-hero-overlay-end", currentColors.pages.homepage.heroGradientOverlay.end);
@@ -446,6 +468,9 @@ export function SiteSettingsProvider({ children }: { children: React.ReactNode }
                 root.style.setProperty("--homepage-hero-middle", colors.pages.homepage.heroGradient?.middle || currentColors.pages.homepage.heroGradient.middle);
                 root.style.setProperty("--homepage-hero-end", colors.pages.homepage.heroGradient?.end || currentColors.pages.homepage.heroGradient.end);
                 root.style.setProperty("--homepage-hero-bg", colors.pages.homepage.heroBg || currentColors.pages.homepage.heroBg);
+                root.style.setProperty("--homepage-hero-text", colors.pages.homepage.heroTextColor || currentColors.pages.homepage.heroTextColor);
+                root.style.setProperty("--homepage-hero-subtext", colors.pages.homepage.heroSubtextColor || currentColors.pages.homepage.heroSubtextColor);
+                root.style.setProperty("--homepage-section-bg", colors.pages.homepage.sectionBg || currentColors.pages.homepage.sectionBg);
                 root.style.setProperty("--homepage-hero-overlay-start", colors.pages.homepage.heroGradientOverlay?.start || currentColors.pages.homepage.heroGradientOverlay.start);
                 root.style.setProperty("--homepage-hero-overlay-middle", colors.pages.homepage.heroGradientOverlay?.middle || currentColors.pages.homepage.heroGradientOverlay.middle);
                 root.style.setProperty("--homepage-hero-overlay-end", colors.pages.homepage.heroGradientOverlay?.end || currentColors.pages.homepage.heroGradientOverlay.end);
@@ -454,6 +479,9 @@ export function SiteSettingsProvider({ children }: { children: React.ReactNode }
                 root.style.setProperty("--homepage-hero-middle", currentColors.pages.homepage.heroGradient.middle);
                 root.style.setProperty("--homepage-hero-end", currentColors.pages.homepage.heroGradient.end);
                 root.style.setProperty("--homepage-hero-bg", currentColors.pages.homepage.heroBg);
+                root.style.setProperty("--homepage-hero-text", currentColors.pages.homepage.heroTextColor);
+                root.style.setProperty("--homepage-hero-subtext", currentColors.pages.homepage.heroSubtextColor);
+                root.style.setProperty("--homepage-section-bg", currentColors.pages.homepage.sectionBg);
                 root.style.setProperty("--homepage-hero-overlay-start", currentColors.pages.homepage.heroGradientOverlay.start);
                 root.style.setProperty("--homepage-hero-overlay-middle", currentColors.pages.homepage.heroGradientOverlay.middle);
                 root.style.setProperty("--homepage-hero-overlay-end", currentColors.pages.homepage.heroGradientOverlay.end);

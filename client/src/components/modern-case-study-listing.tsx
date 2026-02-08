@@ -5,7 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ArrowRight, Search, Filter, Calendar, Building2, TrendingUp, Star, Eye, Clock } from 'lucide-react';
+import { Search, Filter, Calendar, Building2, TrendingUp, Star, Eye, Clock, ArrowRight } from 'lucide-react';
+import { PageHeroBanner } from '@/components/ui/page-hero-banner';
 import { motion, AnimatePresence } from 'framer-motion';
 import { HomeContactSection } from './home-contact-section';
 import { parseMarkdownToHtml } from '@/lib/markdown-utils';
@@ -144,7 +145,7 @@ export function ModernCaseStudyListing({ caseStudies, isLoading }: ModernCaseStu
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: "var(--homepage-section-bg, #f8fafc)" }}>
         <div className="text-center">
           <div className="animate-spin w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full mx-auto mb-4"></div>
           <p className="text-gray-600">Loading case studies...</p>
@@ -165,74 +166,18 @@ export function ModernCaseStudyListing({ caseStudies, isLoading }: ModernCaseStu
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
-      {/* Hero Section */}
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-        className="relative bg-gradient-to-r from-slate-900 via-blue-900 to-indigo-900 text-white overflow-hidden"
-      >
-        <div className="absolute inset-0 bg-black/20"></div>
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-20">
-          <div className="text-center mb-8 sm:mb-12 mt-10 sm:mt-4">
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 leading-tight bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent px-4 sm:px-0"
-            >
-              Success Stories
-            </motion.h1>
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-              className="text-base sm:text-lg md:text-xl text-blue-100 max-w-3xl mx-auto leading-relaxed px-4 sm:px-0"
-            >
-              Discover how we've helped businesses transform their operations and achieve remarkable results through innovative technology solutions.
-            </motion.p>
-          </div>
-
-          {/* Stats */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6 }}
-            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 max-w-4xl mx-auto px-4 sm:px-0"
-          >
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 sm:p-6 border border-white/20 text-center">
-              <Star className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-400 mx-auto mb-2" />
-              <p className="text-2xl sm:text-3xl font-bold text-white">{caseStudies.length}+</p>
-              <p className="text-sm sm:text-base text-blue-200">Success Stories</p>
-            </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 sm:p-6 border border-white/20 text-center">
-              <TrendingUp className="w-6 h-6 sm:w-8 sm:h-8 text-green-400 mx-auto mb-2" />
-              <p className="text-2xl sm:text-3xl font-bold text-white">95%</p>
-              <p className="text-sm sm:text-base text-blue-200">Client Satisfaction</p>
-            </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 sm:p-6 border border-white/20 text-center sm:col-span-2 md:col-span-1">
-              <Building2 className="w-6 h-6 sm:w-8 sm:h-8 text-blue-400 mx-auto mb-2" />
-              <p className="text-2xl sm:text-3xl font-bold text-white">{categories.length}+</p>
-              <p className="text-sm sm:text-base text-blue-200">Industries Served</p>
-            </div>
-          </motion.div>
-          <div className='flex justify-center items-center mt-6 sm:mt-8 px-4 sm:px-0'>
-            <Button
-              size="lg"
-              onClick={scrollToContact}
-              className="bg-white text-blue-600 hover:bg-gray-100 text-base sm:text-lg px-6 sm:px-8 py-4 sm:py-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 w-full sm:w-auto max-w-xs sm:max-w-none"
-            >
-              Start Your Project
-              <ArrowRight className="ml-2 sm:ml-3 h-5 w-5 sm:h-6 sm:w-6" />
-            </Button>
-          </div>
-        </div>
-
-        {/* Animated background elements */}
-        <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-0 left-0 w-48 h-48 bg-indigo-500/10 rounded-full blur-3xl"></div>
-      </motion.div>
+    <div className="min-h-screen" style={{ backgroundColor: "var(--homepage-section-bg, #f8fafc)" }}>
+      <PageHeroBanner
+        title="Success Stories"
+        subtitle="Discover how we've helped businesses transform their operations and achieve remarkable results through innovative technology solutions."
+        stats={[
+          { icon: Star, value: `${caseStudies.length}+`, label: "Success Stories" },
+          { icon: TrendingUp, value: "95%", label: "Client Satisfaction" },
+          { icon: Building2, value: `${categories.length}+`, label: "Industries Served" },
+        ]}
+        ctaText="Start Your Project"
+        ctaOnClick={scrollToContact}
+      />
 
       {/* Search and Filter Section */}
       <motion.div
@@ -241,7 +186,7 @@ export function ModernCaseStudyListing({ caseStudies, isLoading }: ModernCaseStu
         transition={{ delay: 0.3 }}
         className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12"
       >
-        <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 lg:p-8 mb-8 sm:mb-12">
+        <div className="rounded-xl shadow-lg p-4 sm:p-6 lg:p-8 mb-8 sm:mb-12" style={{ backgroundColor: "var(--casestudy-card-bg, #ffffff)" }}>
           <div className="flex flex-col lg:flex-row gap-4 sm:gap-6">
             <div className="flex-1">
               <div className="relative">
