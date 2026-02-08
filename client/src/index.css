@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 @import './styles/service-pages.css';
 @import './styles/scrollbar.css';
 
@@ -176,6 +177,94 @@
   .heading-georgia {
     font-family: 'Georgia', serif;
   }
+
+  .heading-modern {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  /* Homepage section headings - gradient text, modern typography */
+  .heading-homepage {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+    background: linear-gradient(135deg, var(--header-text, #0f172a) 0%, #334155 40%, #475569 70%, var(--gradient-start, #3b82f6) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .heading-homepage-gradient {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+    background: linear-gradient(135deg, var(--gradient-start, #3b82f6), var(--gradient-middle, #8b5cf6), var(--gradient-end, #ec4899));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* Nav links: no background, gradient text on hover only */
+  .nav-link {
+    background-color: transparent !important;
+    background-image: none !important;
+  }
+  /* Active page: gradient text - must override default */
+  .nav-link-active {
+    color: transparent !important;
+    background: linear-gradient(to right, var(--gradient-start, #3b82f6), var(--gradient-middle, #8b5cf6), var(--gradient-end, #ec4899)) !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+  }
+  .nav-link:hover:not(.nav-link-active) {
+    color: transparent !important;
+    background-color: transparent !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+  }
+  .nav-link-light:hover:not(.nav-link-active) {
+    background-image: linear-gradient(to right, var(--gradient-start, #3b82f6), var(--gradient-middle, #8b5cf6), var(--gradient-end, #ec4899)) !important;
+  }
+  .nav-link-dark:hover:not(.nav-link-active) {
+    background-image: linear-gradient(to right, rgba(255,255,255,0.95), rgba(255,255,255,0.9)) !important;
+  }
+
+  /* Mobile nav links: no background on hover */
+  .mobile-nav-link {
+    background-color: transparent !important;
+  }
+  .mobile-nav-link-active {
+    color: transparent !important;
+    background: linear-gradient(to right, var(--gradient-start, #3b82f6), var(--gradient-middle, #8b5cf6), var(--gradient-end, #ec4899)) !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+  }
+  .mobile-nav-link:hover:not(.mobile-nav-link-active) {
+    color: var(--gradient-start, #3b82f6) !important;
+  }
+
+  /* Dark mobile sheet (Bootsolo) - white text, dark bg */
+  .mobile-sheet-dark a,
+  .mobile-sheet-dark button {
+    color: rgba(255, 255, 255, 0.95);
+  }
+  .mobile-sheet-dark .border-blue-100 {
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+  .mobile-sheet-dark .border-gray-200 {
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+  .mobile-sheet-dark .text-gray-400,
+  .mobile-sheet-dark .text-gray-500,
+  .mobile-sheet-dark .text-gray-700 {
+    color: rgba(255, 255, 255, 0.85);
+  }
+  .mobile-sheet-dark .hover\:bg-blue-50:hover,
+  .mobile-sheet-dark button:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+  }
 }
 
 /* Custom animations for process section */
@@ -218,6 +307,120 @@
 .backdrop-blur-sm {
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
+}
+
+/* Homepage glass cards - CMS themeable; gradient colors come from --gradient-start etc */
+.glass-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  box-shadow: 
+    0 4px 24px -4px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  transition: all 0.3s ease;
+}
+.glass-card:hover {
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 
+    0 20px 40px -12px rgba(59, 130, 246, 0.12),
+    0 0 0 1px rgba(59, 130, 246, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+
+/* Web3-style animated background orbs (for sections - not hero) */
+@keyframes float-orb-1 {
+  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.6; }
+  33% { transform: translate(30px, -40px) scale(1.05); opacity: 0.7; }
+  66% { transform: translate(-20px, 20px) scale(0.95); opacity: 0.5; }
+}
+@keyframes float-orb-2 {
+  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.5; }
+  50% { transform: translate(-40px, -30px) scale(1.1); opacity: 0.65; }
+}
+@keyframes float-orb-3 {
+  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.4; }
+  33% { transform: translate(50px, 30px) scale(1.08); opacity: 0.55; }
+  66% { transform: translate(-30px, -20px) scale(0.92); opacity: 0.45; }
+}
+@keyframes grid-pulse {
+  0%, 100% { opacity: 0.03; }
+  50% { opacity: 0.08; }
+}
+.animate-orb-1 { animation: float-orb-1 18s ease-in-out infinite; }
+.animate-orb-2 { animation: float-orb-2 22s ease-in-out infinite; }
+.animate-orb-3 { animation: float-orb-3 20s ease-in-out infinite; }
+.animate-grid-pulse { animation: grid-pulse 6s ease-in-out infinite; }
+
+/* Hero: Ken Burns – slow zoom/pan on background image */
+@keyframes hero-ken-burns {
+  0% { transform: scale(1) translate(0, 0); }
+  100% { transform: scale(1.08) translate(-1%, -1%); }
+}
+.animate-hero-ken-burns {
+  animation: hero-ken-burns 20s ease-in-out infinite alternate;
+}
+
+/* Page hero CTA – uses CMS hero button colors */
+.page-hero-cta {
+  background-color: var(--hero-primary-btn-bg, #ffffff) !important;
+  color: var(--hero-primary-btn-text, #111827) !important;
+}
+.page-hero-cta:hover {
+  filter: brightness(0.97);
+}
+
+/* Hero secondary button hover – gradient instead of solid white (CMS gradient vars) */
+.hero-image-outline-hover:hover {
+  background: var(--hero-secondary-btn-hover) !important;
+  border-color: transparent !important;
+  color: #ffffff !important;
+}
+
+/* Hero: Floating particles – Web3-style dots */
+@keyframes particle-float-1 {
+  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.6; }
+  25% { transform: translate(15px, -25px) scale(1.2); opacity: 0.8; }
+  50% { transform: translate(-10px, -15px) scale(0.9); opacity: 0.5; }
+  75% { transform: translate(20px, 10px) scale(1.1); opacity: 0.7; }
+}
+@keyframes particle-float-2 {
+  0%, 100% { transform: translate(0, 0); opacity: 0.5; }
+  50% { transform: translate(-20px, 20px); opacity: 0.7; }
+}
+@keyframes particle-float-3 {
+  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.4; }
+  33% { transform: translate(30px, -10px) scale(1.3); opacity: 0.6; }
+  66% { transform: translate(-25px, -20px) scale(0.8); opacity: 0.3; }
+}
+.animate-particle-1 { animation: particle-float-1 12s ease-in-out infinite; }
+.animate-particle-2 { animation: particle-float-2 15s ease-in-out infinite; }
+.animate-particle-3 { animation: particle-float-3 18s ease-in-out infinite; }
+
+/* Hero: Shimmer line – subtle scan effect */
+@keyframes hero-shimmer {
+  0% { transform: translateY(-100%); opacity: 0; }
+  10% { opacity: 0.15; }
+  90% { opacity: 0.15; }
+  100% { transform: translateY(100vh); opacity: 0; }
+}
+
+/* Process line shimmer - horizontal timeline */
+@keyframes line-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.process-line-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.4) 20%,
+    rgba(255, 255, 255, 0.6) 50%,
+    rgba(255, 255, 255, 0.4) 80%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: line-shimmer 3s ease-in-out infinite;
 }
 
 /* Enhanced hover animations */
@@ -405,10 +608,16 @@ h1, h2, h3, h4, h5, h6 {
   --homepage-hero-start: #3b82f6;
   --homepage-hero-middle: #8b5cf6;
   --homepage-hero-end: #ec4899;
-  --homepage-hero-bg: #ffffff;
-  --homepage-hero-overlay-start: rgba(59, 130, 246, 0.3);
-  --homepage-hero-overlay-middle: rgba(255, 255, 255, 1);
-  --homepage-hero-overlay-end: rgba(34, 197, 94, 0.2);
+  --homepage-hero-bg: #0f172a;
+  --homepage-hero-text: #ffffff;
+  --homepage-hero-subtext: rgba(255, 255, 255, 0.92);
+  --hero-primary-btn-bg: #ffffff;
+  --hero-primary-btn-text: #111827;
+  --hero-secondary-btn-border: rgba(255, 255, 255, 0.9);
+  --homepage-hero-overlay-start: rgba(15, 23, 42, 0.65);
+  --homepage-hero-overlay-middle: rgba(30, 41, 59, 0.8);
+  --homepage-hero-overlay-end: rgba(55, 48, 163, 0.95);
+  --homepage-section-bg: #f9fafb;
   --blog-card-bg: #ffffff;
   --blog-text: #374151;
   --blog-link: #2563eb;

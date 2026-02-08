@@ -43,6 +43,11 @@ export interface ExtractedColors {
   pages: {
     homepage: {
       heroBg: string;
+      heroTextColor: string;
+      heroSubtextColor: string;
+      heroPrimaryButtonBg?: string;
+      heroPrimaryButtonText?: string;
+      heroSecondaryButtonBorder?: string;
       heroGradient: { start: string; middle: string; end: string };
       heroGradientOverlay: { start: string; middle: string; end: string };
       sectionBg?: string;
@@ -136,18 +141,23 @@ export const currentColors: ExtractedColors = {
   },
   pages: {
     homepage: {
+      heroBg: "#0f172a", // Dark slate base (Bootsolo dark hero)
+      heroTextColor: "#ffffff",
+      heroSubtextColor: "rgba(255, 255, 255, 0.92)",
+      heroPrimaryButtonBg: "#ffffff", // White button suits image
+      heroPrimaryButtonText: "#111827",
+      heroSecondaryButtonBorder: "rgba(255, 255, 255, 0.9)",
       heroGradient: {
         start: "#3b82f6", // blue-500
         middle: "#8b5cf6", // purple-500
         end: "#ec4899", // pink-500
       },
-      sectionBg: "#ffffff",
-      textColor: "#1a1a1a",
-      heroBg: "#ffffff", // Hero section background color
+      sectionBg: "#f9fafb",
+      textColor: "#111827",
       heroGradientOverlay: {
-        start: "rgba(59, 130, 246, 0.3)", // Light blue overlay start
-        middle: "rgba(255, 255, 255, 1)", // White middle
-        end: "rgba(34, 197, 94, 0.2)", // Light green overlay end
+        start: "rgba(15, 23, 42, 0.65)", // Dark overlay left
+        middle: "rgba(30, 41, 59, 0.8)", // Dark overlay center
+        end: "rgba(55, 48, 163, 0.95)", // Dark purple overlay right
       },
     },
     blog: {

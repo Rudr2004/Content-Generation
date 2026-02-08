@@ -26,9 +26,12 @@ import { Footer } from "@/components/ui/footer";
 import { SafeImage } from "@/components/ui/safe-image";
 import { parseMarkdownToHtml, parseMarkdownLinks, cleanTitleText } from "@/lib/markdown-utils";
 import { HomeContactSection } from "@/components/contact-form-light";
+import { useSiteSettings } from "@/contexts/SiteSettingsContext";
+import { COMPANY_INFO } from "@/lib/constants";
+import { PageHeroBanner } from "@/components/ui/page-hero-banner";
 
 // BlogCard component that fetches author information
-function BlogCard({ post, onPostClick }: { post: any, onPostClick: () => void }) {
+function BlogCard({ post, onPostClick, siteName }: { post: any, onPostClick: () => void; siteName: string }) {
   // Fetch author information
   const { data: author } = useQuery({
     queryKey: ["/api/authors", post.authorId],
@@ -118,7 +121,7 @@ function BlogCard({ post, onPostClick }: { post: any, onPostClick: () => void })
             )}
             <div>
               <div className="font-medium text-poppins">
-                {author?.name || "GreenAppleX Team"}
+                {author?.name || `${siteName} Team`}
               </div>
               <div className="text-xs text-poppins">
                 {format(new Date(post.publishedAt || post.createdAt), 'MMM d, yyyy')}
@@ -146,6 +149,8 @@ const BLOG_CATEGORIES = [
 export default function Blog() {
   const [location, setLocation] = useLocation();
   const { toast } = useToast();
+  const { settings } = useSiteSettings();
+  const siteName = settings?.siteName || COMPANY_INFO.name;
 
   // Extract slug from URL
   const slug = location.startsWith('/blog/') && !location.includes('?') ? location.replace('/blog/', '') : null;
@@ -177,15 +182,15 @@ export default function Blog() {
 
   // If viewing a specific blog post
   if (slug && singlePost) {
-    return <BlogPostView post={singlePost} />;
+    return <BlogPostView post={singlePost} siteName={siteName} />;
   }
 
   // Blog listing page
-  return <BlogListingView posts={posts} isLoading={isLoading} initialCategory={categoryParam} />;
+  return <BlogListingView posts={posts} isLoading={isLoading} initialCategory={categoryParam} siteName={siteName} />;
 }
 
 // Component for viewing a single blog post
-function BlogPostView({ post }: { post: any }) {
+function BlogPostView({ post, siteName }: { post: any; siteName: string }) {
   const [, setLocation] = useLocation();
   const [readingProgress, setReadingProgress] = useState(0);
   const [tocItems, setTocItems] = useState<{ id: string, title: string, level: number }[]>([]);
@@ -250,7 +255,7 @@ function BlogPostView({ post }: { post: any }) {
   return (
     <>
       <SEOHead
-        title={`${cleanTitleText(post.title || '')} | GreenAppleX Blog`}
+        title={`${cleanTitleText(post.title || '')} | ${siteName} Blog`}
         description={post.excerpt || post.content?.replace(/<[^>]*>/g, '').substring(0, 155)}
         keywords={post.tags || ["Blog", "Technology", "GreenAppleX"]}
         canonicalUrl={`https://www.greenapplex.com/blog/${post.slug}`}
@@ -316,7 +321,7 @@ function BlogPostView({ post }: { post: any }) {
                     <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white font-semibold text-xs">
                       {author?.name ? author.name.charAt(0) : "GA"}
                     </div>
-                    <span className="font-medium">{author?.name || "GreenAppleX Team"}</span>
+                    <span className="font-medium">{author?.name || `${siteName} Team`}</span>
                   </div>
                   <div className="flex items-center gap-1">
                     <Clock className="h-4 w-4" />
@@ -499,7 +504,7 @@ function BlogPostView({ post }: { post: any }) {
                           <p className="text-blue-600 font-medium mb-3 text-sm">{author.title}</p>
                         )}
                         <p className="text-gray-700 leading-relaxed text-sm">
-                          {author.bio || `${author.name} is a technology expert and writer at GreenAppleX, specializing in cutting-edge solutions for enterprise digital transformation.`}
+                          {author.bio || `${author.name} is a technology expert and writer at ${siteName}, specializing in cutting-edge solutions for enterprise digital transformation.`}
                         </p>
                       </div>
                     </div>
@@ -518,7 +523,7 @@ function BlogPostView({ post }: { post: any }) {
 }
 
 // Component for blog listing
-function BlogListingView({ posts, isLoading, initialCategory }: { posts: any[], isLoading: boolean, initialCategory?: string | null }) {
+function BlogListingView({ posts, isLoading, initialCategory, siteName }: { posts: any[], isLoading: boolean, initialCategory?: string | null; siteName: string }) {
   const [, setLocation] = useLocation();
   const [selectedCategory, setSelectedCategory] = useState(initialCategory || "all");
 
@@ -548,43 +553,37 @@ function BlogListingView({ posts, isLoading, initialCategory }: { posts: any[], 
   return (
     <>
       <SEOHead
-        title="Blog - Latest Insights & Tech Trends | GreenAppleX"
-        description="Explore the latest insights on AI, Web3, mobile development, and digital transformation from the GreenAppleX team."
-        keywords={["Blog", "Tech Insights", "AI", "Web3", "Mobile Development", "Digital Transformation", "GreenAppleX"]}
+        title={`Blog - Latest Insights & Tech Trends | ${siteName}`}
+        description={`Explore the latest insights on AI, Web3, mobile development, and digital transformation from the ${siteName} team.`}
+        keywords={["Blog", "Tech Insights", "AI", "Web3", "Mobile Development", "Digital Transformation", siteName]}
         canonicalUrl="https://www.greenapplex.com/blog"
       />
 
       <Navigation />
 
-      <div className="min-h-screen bg-white">
-        {/* Header Section */}
-        <div className="bg-white pt-24 pb-12">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center">
-              <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6 leading-tight heading-georgia">
-                GreenAppleX Blog
-              </h1>
-              <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto text-poppins">
-                Discover insights on AI, Web3, mobile development, and digital transformation from our team of experts.
-              </p>
-            </div>
-
-            {/* Category Filter */}
-            <div className="flex flex-wrap justify-center gap-3 mb-12">
+      <div className="min-h-screen" style={{ backgroundColor: "var(--homepage-section-bg, #f8fafc)" }}>
+        <PageHeroBanner
+          title={`${siteName} Blog`}
+          subtitle="Discover insights on AI, Web3, mobile development, and digital transformation from our team of experts."
+          children={
+            <div className="flex flex-wrap justify-center gap-3 mt-8 px-4">
               {BLOG_CATEGORIES.map((category) => (
                 <Button
                   key={category.value}
-                  variant={selectedCategory === category.value ? "default" : "outline"}
                   size="sm"
                   onClick={() => handleCategoryChange(category.value)}
-                  className="transition-all duration-300"
+                  className={
+                    selectedCategory === category.value
+                      ? "bg-white/90 text-gray-900 hover:bg-white border-white/30"
+                      : "bg-white/10 backdrop-blur-sm border border-white/30 text-white hover:bg-white/20"
+                  }
                 >
                   {category.name}
                 </Button>
               ))}
             </div>
-          </div>
-        </div>
+          }
+        />
 
         {/* Blog Posts Grid */}
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
@@ -603,6 +602,7 @@ function BlogListingView({ posts, isLoading, initialCategory }: { posts: any[], 
                   key={post.id}
                   post={post}
                   onPostClick={() => setLocation(`/blog/${post.slug}`)}
+                  siteName={siteName}
                 />
               ))}
             </div>
